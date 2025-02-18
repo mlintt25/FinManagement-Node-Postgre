@@ -2,7 +2,7 @@ import express from 'express'
 import { validationResult, ValidationChain } from 'express-validator'
 import { RunnableValidationChains } from 'express-validator/lib/middlewares/schema'
 import HTTP_STATUS from '~/constants/httpStatus'
-import { EntityError, ErrorWithStatus } from '~/models/Errors'
+import { EntityError, ErrorWithStatus } from '~/utils/errors'
 // can be reused by many routes
 
 // sequential processing, stops running validations chain if the previous one fails.

@@ -1,0 +1,140 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model users {
+  id                    String           @id @default(uuid()) @map("id")
+  name                  String
+  avatar                String?
+  email                 String           @unique
+  password              String
+  email_verify_token    String?
+  password_verify_token String?
+  phone                 String?
+  dob                   DateTime?
+  address               String?
+  gender                Gender?
+  job                   String?
+  verify                VerifyStatus
+  created_at            DateTime         @default(now())
+  updated_at            DateTime         @updatedAt
+  money_accounts        money_accounts[]
+}
+
+model money_accounts {
+  id                    String              @id @default(uuid())
+  money_account_type_id String
+  user_id               String
+  name                  String
+  account_balance       Decimal             @default(0.00)
+  save_to_report        Boolean
+  bank_type             Int?
+  credit_limit          Decimal?
+  created_at            DateTime            @default(now())
+  updated_at            DateTime            @updatedAt
+  budgets               budgets[]
+  events                events[]
+  money_account_type    money_account_types @relation(fields: [money_account_type_id], references: [id])
+  user                  users               @relation(fields: [user_id], references: [id])
+  transactions          transactions[]
+}
+
+model money_account_types {
+  id             String           @id @default(uuid())
+  icon           String
+  name           String
+  created_at     DateTime         @default(now())
+  updated_at     DateTime         @updatedAt
+  money_accounts money_accounts[]
+}
+
+model transaction_types {
+  id                          String                        @id @default(uuid())
+  icon                        String
+  name                        String
+  type                        TransactionCategory
+  is_check                    Boolean                       @map("is_check")
+  created_at                  DateTime                      @default(now())
+  updated_at                  DateTime                      @updatedAt
+  transaction_type_categories transaction_type_categories[]
+}
+
+model transaction_type_categories {
+  id                  String                        @id @default(uuid())
+  transaction_type_id String
+  icon                String
+  name                String
+  parent_id           String?
+  created_at          DateTime                      @default(now())
+  updated_at          DateTime                      @updatedAt
+  budgets             budgets[]
+  parent_category     transaction_type_categories?  @relation("SubCategories", fields: [parent_id], references: [id])
+  sub_categories      transaction_type_categories[] @relation("SubCategories")
+  transaction_type    transaction_types             @relation(fields: [transaction_type_id], references: [id])
+  transactions        transactions[]
+}
+
+model transactions {
+  id                           String                      @id @default(uuid())
+  transaction_type_category_id String
+  money_account_id             String
+  event_id                     String?
+  amount_of_money              Decimal
+  description                  String?
+  related_party                String?
+  reminder_date                DateTime?
+  occur_date                   DateTime                    @default(now())
+  deleted_at                   DateTime?
+  created_at                   DateTime                    @default(now())
+  updated_at                   DateTime                    @updatedAt
+  event                        events?                     @relation(fields: [event_id], references: [id])
+  money_account                money_accounts              @relation(fields: [money_account_id], references: [id])
+  transaction_type_category    transaction_type_categories @relation(fields: [transaction_type_category_id], references: [id])
+}
+
+model events {
+  id               String          @id @default(uuid())
+  money_account_id String?
+  icon             String
+  name             String
+  end_date         DateTime?
+  created_at       DateTime        @default(now())
+  updated_at       DateTime        @updatedAt
+  money_account    money_accounts? @relation(fields: [money_account_id], references: [id])
+  transactions     transactions[]
+}
+
+model budgets {
+  id                           BigInt                      @id @default(autoincrement())
+  transaction_type_category_id String
+  money_account_id             String
+  amount_of_money              Decimal
+  occur_date                   DateTime                    @default(now())
+  repeat_budget                Boolean                     @default(false)
+  created_at                   DateTime                    @default(now())
+  updated_at                   DateTime                    @updatedAt
+  money_account                money_accounts              @relation(fields: [money_account_id], references: [id])
+  transaction_type_category    transaction_type_categories @relation(fields: [transaction_type_category_id], references: [id])
+}
+
+enum Gender {
+  Male
+  Female
+  Other
+}
+
+enum VerifyStatus {
+  Verified
+  Unverified
+  Banned
+}
+
+enum TransactionCategory {
+  Expense
+  Income
+}

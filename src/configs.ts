@@ -3,6 +3,7 @@ import { config } from 'dotenv'
 config()
 export const envConfig = {
   port: (process.env.PORT as string) || 4000,
+  databaseURL: process.env.DATABASE_URL as string,
   passwordSecret: process.env.PASSWORD_SECRET as string,
   JWTSecretAccessToken: process.env.JWT_SECRET_ACCESS_TOKEN as string,
   JWTSecretRefreshToken: process.env.JWT_SECRET_REFRESH_TOKEN as string,
