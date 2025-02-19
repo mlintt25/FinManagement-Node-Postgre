@@ -1,16 +1,42 @@
 import { config } from 'dotenv'
+import fs from 'fs'
+import path from 'path'
+import z from 'zod'
 
-config()
-export const envConfig = {
-  port: (process.env.PORT as string) || 4000,
-  databaseURL: process.env.DATABASE_URL as string,
-  passwordSecret: process.env.PASSWORD_SECRET as string,
-  JWTSecretAccessToken: process.env.JWT_SECRET_ACCESS_TOKEN as string,
-  JWTSecretRefreshToken: process.env.JWT_SECRET_REFRESH_TOKEN as string,
-  JWTSecretEmailVerifyToken: process.env.JWT_SECRET_EMAIL_VERIFY_TOKEN as string,
-  JWTSecretForgotPasswordToken: process.env.JWT_SECRET_FORGOT_PASSWORD_TOKEN as string,
-  accessTokenExpiresIn: process.env.ACCESS_TOKEN_EXPIRES_IN as string,
-  refreshTokenExpiresIn: process.env.REFRESH_TOKEN_EXPIRES_IN as string,
-  emailVerifyTokenExpiresIn: process.env.EMAIL_VERIFY_TOKEN_EXPIRES_IN as string,
-  forgotPasswordTokenExpiresIn: process.env.FORGOT_PASSWORD_TOKEN_EXPIRES_IN as string
+config({
+  path: '.env'
+})
+
+const checkEnv = async () => {
+  const chalk = (await import('chalk')).default
+  if (!fs.existsSync(path.resolve('.env'))) {
+    console.log(chalk.blue(`Cannot find .env environment file`))
+    process.exit(1)
+  }
 }
+
+checkEnv()
+
+export const configSchema = z.object({
+  PORT: z.coerce.number().default(4000),
+  DATABASE_URL: z.string(),
+  PASSWORD_SECRET: z.string(),
+  JWT_SECRET_ACCESS_TOKEN: z.string(),
+  JWT_SECRET_REFRESH_TOKEN: z.string(),
+  JWT_SECRET_EMAIL_VERIFY_TOKEN: z.string(),
+  JWT_SECRET_FORGOT_PASSWORD_TOKEN: z.string(),
+  ACCESS_TOKEN_EXPIRES_IN: z.string(),
+  REFRESH_TOKEN_EXPIRES_IN: z.string(),
+  EMAIL_VERIFY_TOKEN_EXPIRES_IN: z.string(),
+  FORGOT_PASSWORD_TOKEN_EXPIRES_IN: z.string()
+})
+
+const configServer = configSchema.safeParse(process.env)
+
+if (!configServer.success) {
+  console.error(configServer.error.issues)
+  throw new Error('The declared values ​in the .env file are invalid.')
+}
+
+const envConfig = configServer.data
+export default envConfig

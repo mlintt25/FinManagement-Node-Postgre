@@ -1,14 +1,14 @@
 import express from 'express'
 import { defaultErrorHandler } from './middlewares/errors.middleware'
-import { envConfig } from './configs'
 import { createServer } from 'http'
 import cors from 'cors'
 import prisma from './database'
 import authRouter from './routes/auth.route'
 import { isPrismaClientInitializationError } from './utils/errors'
+import envConfig from './configs'
 
 const prefix = '/api'
-const port = envConfig.port
+const port = envConfig.PORT
 const app = express()
 const httpServer = createServer(app)
 

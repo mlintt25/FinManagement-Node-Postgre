@@ -10,11 +10,13 @@ export const defaultErrorHandler = (err: any, req: Request, res: Response, next:
       const { issues } = err
       const errors = issues.map((issue) => {
         return {
-          field: issue.path.join('.'),
-          message: issue.message
+          message: issue.message,
+          field: issue.path.join('.')
         }
       })
-      return res.status(HTTP_STATUS.UNPROCESSABLE_ENTITY).json({ errorInfo: errors })
+      return res
+        .status(HTTP_STATUS.UNPROCESSABLE_ENTITY)
+        .json({ message: 'Unprocessable entity...', errorInfo: errors })
     }
     if (err instanceof ErrorWithStatus) {
       return res.status(err.status).json(omit(err, ['status']))

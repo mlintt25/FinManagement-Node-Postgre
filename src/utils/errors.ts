@@ -18,10 +18,10 @@ export class AuthError extends ErrorWithStatus {
 }
 
 export class EntityError extends ErrorWithStatus {
-  errors: { message: string; field: string }[]
-  constructor(errors: { message: string; field: string }[]) {
+  errorInfo: { message: string; field: string }[]
+  constructor(errorInfo: { message: string; field: string }[]) {
     super({ message: 'Unprocessable entity...', status: HTTP_STATUS.UNPROCESSABLE_ENTITY })
-    this.errors = errors
+    this.errorInfo = errorInfo
   }
 }
 
