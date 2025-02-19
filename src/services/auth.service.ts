@@ -1,6 +1,10 @@
+import { Role } from '@prisma/client'
 import { envConfig } from '~/configs'
 import { TokenType, UserVerifyStatus } from '~/constants/enums'
+import { USERS_MESSAGES } from '~/constants/messages'
 import prisma from '~/database'
+import { RegisterBodyType } from '~/schemaValidations/auth.schema'
+import { hashPassword } from '~/utils/hash'
 import { signToken, verifyToken } from '~/utils/jwt'
 
 class AuthService {
@@ -79,6 +83,21 @@ class AuthService {
       }
     })
     return { access_token, refresh_token }
+  }
+
+  async register(body: RegisterBodyType) {
+    // Get name from email (keindev@gmail.com -> keindev)
+    const name = body.email.split('@')[0]
+    await prisma.users.create({
+      data: {
+        name: name,
+        email: body.email,
+        password: hashPassword(body.password),
+        role: Role.User,
+        verify: UserVerifyStatus.Unverified
+      }
+    })
+    return USERS_MESSAGES.REGISTER_SUCCESS
   }
 }
 

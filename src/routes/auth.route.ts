@@ -1,6 +1,6 @@
 import { Router } from 'express'
-import { loginController } from '~/controllers/auth.controller'
-import { loginValidator } from '~/middlewares/auth.middleware'
+import { loginController, registerController } from '~/controllers/auth.controller'
+import { loginValidator, registerValidator } from '~/middlewares/auth.middleware'
 import { wrapRequestHandler } from '~/utils/handlers'
 
 const authRouter = Router()
@@ -13,5 +13,13 @@ const authRouter = Router()
  * @returns {Object} Response object with message and data.
  */
 authRouter.post('/login', loginValidator, wrapRequestHandler(loginController))
+/**
+ * @description Register a new account.
+ * @path /register
+ * @method POST
+ * @body { email: string, password: string, confirmPassword: string }
+ * @returns {Object} Response object with message.
+ */
+authRouter.post('/register', registerValidator, wrapRequestHandler(registerController))
 
 export default authRouter
