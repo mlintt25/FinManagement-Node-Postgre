@@ -1,14 +1,5 @@
 import { Prisma } from '@prisma/client'
 import HTTP_STATUS from '~/constants/httpStatus'
-import { USERS_MESSAGES } from '~/constants/messages'
-
-type ErrorsType = Record<
-  string,
-  {
-    msg: string
-    [key: string]: any
-  }
->
 
 export class ErrorWithStatus {
   message: string
@@ -26,17 +17,17 @@ export class AuthError extends ErrorWithStatus {
   }
 }
 
-export class ForbiddenError extends ErrorWithStatus {
-  constructor(message: string) {
-    super({ message, status: HTTP_STATUS.FORBIDDEN })
+export class EntityError extends ErrorWithStatus {
+  errors: { message: string; field: string }[]
+  constructor(errors: { message: string; field: string }[]) {
+    super({ message: 'Unprocessable entity...', status: HTTP_STATUS.UNPROCESSABLE_ENTITY })
+    this.errors = errors
   }
 }
 
-export class EntityError extends ErrorWithStatus {
-  errors: ErrorsType
-  constructor({ message = USERS_MESSAGES.VALIDATION_ERROR, errors }: { message?: string; errors: ErrorsType }) {
-    super({ message, status: HTTP_STATUS.UNPROCESSABLE_ENTITY })
-    this.errors = errors
+export class ForbiddenError extends ErrorWithStatus {
+  constructor(message: string) {
+    super({ message, status: HTTP_STATUS.FORBIDDEN })
   }
 }
 
