@@ -43,3 +43,7 @@ export class EntityError extends ErrorWithStatus {
 export function isPrismaClientKnownRequestError(error: unknown): error is Prisma.PrismaClientKnownRequestError {
   return error instanceof Prisma.PrismaClientKnownRequestError
 }
+
+export function isPrismaClientInitializationError(error: unknown): error is Prisma.PrismaClientInitializationError {
+  return error instanceof Prisma.PrismaClientInitializationError
+}

@@ -1,7 +1,7 @@
 export enum UserVerifyStatus {
-  Unverified,
-  Verrified,
-  Banned
+  Unverified = 'Unverified',
+  Verified = 'Verified',
+  Banned = 'Banned'
 }
 
 export enum TokenType {
@@ -9,4 +9,9 @@ export enum TokenType {
   RefreshToken,
   ForgotPasswordToken,
   EmailVerifyToken
+}
+
+export enum Role {
+  User = 'User', // Default
+  Admin = 'Admin'
 }
