@@ -1,5 +1,6 @@
 import { Role } from '@prisma/client'
-import { envConfig } from '~/configs'
+import envConfig from '~/configs'
+
 import { TokenType, UserVerifyStatus } from '~/constants/enums'
 import { USERS_MESSAGES } from '~/constants/messages'
 import prisma from '~/database'
@@ -11,9 +12,9 @@ class AuthService {
   async signAccessToken({ user_id, verify }: { user_id: string; verify: UserVerifyStatus }) {
     return signToken({
       payload: { user_id, token_type: TokenType.AccessToken, verify },
-      privateKey: envConfig.JWTSecretAccessToken,
+      privateKey: envConfig.JWT_SECRET_ACCESS_TOKEN,
       options: {
-        expiresIn: envConfig.accessTokenExpiresIn
+        expiresIn: envConfig.ACCESS_TOKEN_EXPIRES_IN
       }
     })
   }
@@ -27,14 +28,14 @@ class AuthService {
           verify,
           exp
         },
-        privateKey: envConfig.JWTSecretRefreshToken
+        privateKey: envConfig.JWT_SECRET_REFRESH_TOKEN
       })
     }
     return signToken({
       payload: { user_id, token_type: TokenType.RefreshToken, verify },
-      privateKey: envConfig.JWTSecretRefreshToken,
+      privateKey: envConfig.JWT_SECRET_REFRESH_TOKEN,
       options: {
-        expiresIn: envConfig.refreshTokenExpiresIn
+        expiresIn: envConfig.REFRESH_TOKEN_EXPIRES_IN
       }
     })
   }
@@ -42,9 +43,9 @@ class AuthService {
   async signEmailVerifyToken({ user_id, verify }: { user_id: string; verify: UserVerifyStatus }) {
     return signToken({
       payload: { user_id, token_type: TokenType.EmailVerifyToken, verify },
-      privateKey: envConfig.JWTSecretEmailVerifyToken,
+      privateKey: envConfig.JWT_SECRET_EMAIL_VERIFY_TOKEN,
       options: {
-        expiresIn: envConfig.emailVerifyTokenExpiresIn
+        expiresIn: envConfig.EMAIL_VERIFY_TOKEN_EXPIRES_IN
       }
     })
   }
@@ -52,9 +53,9 @@ class AuthService {
   async signForgotPasswordToken({ user_id, verify }: { user_id: string; verify: UserVerifyStatus }) {
     return signToken({
       payload: { user_id, token_type: TokenType.ForgotPasswordToken, verify },
-      privateKey: envConfig.JWTSecretForgotPasswordToken,
+      privateKey: envConfig.JWT_SECRET_FORGOT_PASSWORD_TOKEN,
       options: {
-        expiresIn: envConfig.forgotPasswordTokenExpiresIn
+        expiresIn: envConfig.FORGOT_PASSWORD_TOKEN_EXPIRES_IN
       }
     })
   }
@@ -66,7 +67,7 @@ class AuthService {
   private decodeRefreshToken(refresh_token: string) {
     return verifyToken({
       token: refresh_token,
-      secretOrPublicKey: envConfig.JWTSecretRefreshToken
+      secretOrPublicKey: envConfig.JWT_SECRET_REFRESH_TOKEN
     })
   }
 
