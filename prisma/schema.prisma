@@ -13,6 +13,7 @@ model users {
   avatar                String?
   email                 String           @unique
   password              String
+  role                  Role             @default(User)
   email_verify_token    String?
   password_verify_token String?
   phone                 String?
@@ -24,6 +25,7 @@ model users {
   created_at            DateTime         @default(now())
   updated_at            DateTime         @updatedAt
   money_accounts        money_accounts[]
+  refresh_tokens        refresh_tokens[]
 }
 
 model money_accounts {
@@ -122,6 +124,15 @@ model budgets {
   transaction_type_category    transaction_type_categories @relation(fields: [transaction_type_category_id], references: [id])
 }
 
+model refresh_tokens {
+  id         String   @id @default(uuid())
+  user_id    String
+  token      String
+  expires_at DateTime
+  created_at DateTime @default(now())
+  user       users    @relation(fields: [user_id], references: [id])
+}
+
 enum Gender {
   Male
   Female
@@ -137,4 +148,9 @@ enum VerifyStatus {
 enum TransactionCategory {
   Expense
   Income
+}
+
+enum Role {
+  User
+  Admin
 }
