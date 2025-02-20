@@ -1,10 +1,10 @@
 import { Role } from '@prisma/client'
 import envConfig from '~/configs'
-
 import { TokenType, UserVerifyStatus } from '~/constants/enums'
 import { USERS_MESSAGES } from '~/constants/messages'
 import prisma from '~/database'
 import { RegisterBodyType } from '~/schemaValidations/auth.schema'
+import { sendWelcomeEmail } from '~/utils/email'
 import { hashPassword } from '~/utils/hash'
 import { signToken, verifyToken } from '~/utils/jwt'
 
@@ -89,15 +89,17 @@ class AuthService {
   async register(body: RegisterBodyType) {
     // Get name from email (keindev@gmail.com -> keindev)
     const name = body.email.split('@')[0]
+    const [hashedPassword] = await Promise.all([hashPassword(body.password)])
     await prisma.users.create({
       data: {
         name: name,
         email: body.email,
-        password: hashPassword(body.password),
+        password: hashedPassword,
         role: Role.User,
         verify: UserVerifyStatus.Unverified
       }
     })
+    await sendWelcomeEmail(body.email, { name })
     return USERS_MESSAGES.REGISTER_SUCCESS
   }
 }

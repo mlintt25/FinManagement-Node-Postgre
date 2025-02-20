@@ -3,7 +3,7 @@ import { USERS_MESSAGES } from '~/constants/messages'
 import prisma from '~/database'
 import { LoginBody, RegisterBody } from '~/schemaValidations/auth.schema'
 import { AuthError, EntityError } from '~/utils/errors'
-import { hashPassword } from '~/utils/hash'
+import { verifyPassword } from '~/utils/hash'
 
 export const loginValidator = async (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -11,8 +11,7 @@ export const loginValidator = async (req: Request, res: Response, next: NextFunc
     const { email, password } = validatedData
     const user = await prisma.users.findUnique({
       where: {
-        email,
-        password: hashPassword(password)
+        email
       },
       select: {
         id: true,
@@ -20,13 +19,18 @@ export const loginValidator = async (req: Request, res: Response, next: NextFunc
         email: true,
         verify: true,
         role: true,
-        avatar: true
+        avatar: true,
+        password: true // Only select in login case
       }
     })
-    if (user === null) {
+    const isEmailOrPasswordValid = user && (await verifyPassword(password, user.password))
+
+    if (!isEmailOrPasswordValid) {
       throw new AuthError(USERS_MESSAGES.EMAIL_OR_PASSWORD_IS_INCORRECT)
     }
-    ;(req as Request).user = user
+    // Remove password field from user object
+    const { password: _, ...safeUser } = user
+    ;(req as Request & { user: typeof safeUser }).user = safeUser
 
     next()
   } catch (error) {
