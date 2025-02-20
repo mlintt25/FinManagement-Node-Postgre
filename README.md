@@ -69,7 +69,27 @@ npm install
 
 These files will store your environment-specific variables such as database URI, JWT secret, etc.
 
-#### Step 4. Running the application
+#### Step 4. Initialize Prisma and PostgreSQL
+
+First make sure you have changed your PostgreSQL account _username_ and _password_ into the **DATABASE_URL** variable in the _.env_ file.
+
+```bash
+DATABASE_URL = postgresql://<username>:<password>@localhost:5432/personal_finance_management
+```
+
+Then run the following command:
+
+```bash
+npx prisma db push
+```
+
+- Additionally you can use the following command to see more commands to interact with Prisma:
+
+```bash
+npx prisma
+```
+
+#### Step 5. Running the application
 
 You can now run the application in different environments by using the following scripts defined in _**package.json**_:
 
