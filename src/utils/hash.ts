@@ -1,10 +1,11 @@
-import { createHash } from 'crypto'
-import envConfig from '~/configs'
+import bcrypt from 'bcrypt'
 
-export function sha256(content: string) {
-  return createHash('sha256').update(content).digest('hex')
+const SALT_ROUNDS = 10
+
+export async function hashPassword(password: string): Promise<string> {
+  return bcrypt.hash(password, SALT_ROUNDS)
 }
 
-export function hashPassword(password: string) {
-  return sha256(password + envConfig.PASSWORD_SECRET)
+export async function verifyPassword(password: string, hash: string): Promise<boolean> {
+  return bcrypt.compare(password, hash)
 }
