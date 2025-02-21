@@ -108,6 +108,47 @@ class AuthService {
     await prisma.refresh_tokens.delete({ where: { token: refreshToken } })
     return true
   }
+
+  async refreshToken({
+    oldRefreshToken,
+    user_id,
+    verify,
+    exp
+  }: {
+    oldRefreshToken: string
+    user_id: string
+    verify: UserVerifyStatus
+    exp: number
+  }) {
+    const [newAccessToken, newRefreshToken] = await Promise.all([
+      this.signAccessToken({ user_id, verify }),
+      this.signRefreshToken({ user_id, verify, exp })
+    ])
+    const decodedRefreshToken = await this.decodeRefreshToken(newRefreshToken)
+    /**
+     * Executes a database transaction to refresh the user's token.
+     *
+     * Transaction ensures atomicity ("all or nothing"):
+     * - If all queries succeed, changes are committed to the database.
+     * - If any query fails, the entire transaction is rolled back, restoring the original state.
+     *
+     * This guarantees:
+     * 1. Data integrity: Prevents invalid or partial data updates.
+     * 2. Race condition prevention: Ensures consistency during concurrent requests.
+     */
+    await prisma.$transaction([
+      prisma.refresh_tokens.delete({ where: { token: oldRefreshToken } }),
+      prisma.refresh_tokens.create({
+        data: {
+          user_id,
+          token: newRefreshToken,
+          expires_at: new Date(decodedRefreshToken.exp * 1000)
+        }
+      })
+    ])
+
+    return { accessToken: newAccessToken, refreshToken: newRefreshToken }
+  }
 }
 
 const authService = new AuthService()

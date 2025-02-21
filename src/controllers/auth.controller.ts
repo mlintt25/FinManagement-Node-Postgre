@@ -9,6 +9,8 @@ import {
   LoginResType,
   LogoutBodyType,
   LogoutResType,
+  RefreshTokenBodyType,
+  RefreshTokenResType,
   RegisterBodyType,
   RegisterResType
 } from '~/schemaValidations/auth.schema'
@@ -47,4 +49,15 @@ export const logoutController = async (
 ) => {
   await authService.logout(req.body)
   return res.json({ message: USERS_MESSAGES.LOGOUT_SUCCESS })
+}
+
+export const refreshTokenController = async (
+  req: Request<ParamsDictionary, any, RefreshTokenBodyType>,
+  res: Response<RefreshTokenResType>,
+  next: NextFunction
+) => {
+  const { refreshToken } = req.body
+  const { user_id, exp, verify } = req.decodedRefreshToken as TokenPayload
+  const result = await authService.refreshToken({ oldRefreshToken: refreshToken, user_id, verify, exp })
+  return res.json({ message: USERS_MESSAGES.REFRESH_TOKEN_SUCCESS, data: result })
 }
