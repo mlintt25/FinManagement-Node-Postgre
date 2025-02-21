@@ -28,6 +28,6 @@ export const registerController = async (
   res: Response<RegisterResType>,
   next: NextFunction
 ) => {
-  const result = await authService.register(req.body)
-  return res.json({ message: result })
+  await authService.register(req.body)
+  return res.json({ message: USERS_MESSAGES.REGISTER_SUCCESS })
 }

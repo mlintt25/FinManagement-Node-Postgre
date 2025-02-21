@@ -88,8 +88,8 @@ class AuthService {
 
   async register(body: RegisterBodyType) {
     // Get name from email (keindev@gmail.com -> keindev)
-    const name = body.email.split('@')[0]
-    const [hashedPassword] = await Promise.all([hashPassword(body.password)])
+    const name = body.email.split('@')[0].toLowerCase()
+    const hashedPassword = await hashPassword(body.password)
     await prisma.users.create({
       data: {
         name: name,
@@ -100,7 +100,7 @@ class AuthService {
       }
     })
     await sendWelcomeEmail(body.email, { name })
-    return USERS_MESSAGES.REGISTER_SUCCESS
+    return true
   }
 }
 

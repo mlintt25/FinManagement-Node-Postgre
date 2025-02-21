@@ -10,7 +10,7 @@ const usersRouter = Router()
  * @path /api/users/change-password
  * @method PUT
  * @body { oldPassword: string, newPassword: string, confirmNewPassword: string }
- * @returns {Object}
+ * @returns {Object} Response object with message.
  */
 usersRouter.patch(
   '/change-password',
