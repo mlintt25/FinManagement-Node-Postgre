@@ -9,5 +9,6 @@ export const USERS_MESSAGES = {
   LOGOUT_SUCCESS: 'Logout success',
   OLD_PASSWORD_IS_INCORRECT: 'Old password is incorrect',
   CHANGE_PASSWORD_SUCCESS: 'Change password success',
-  USED_REFRESH_TOKEN_OR_NOT_EXIST: 'Used refresh token or not exist'
+  USED_REFRESH_TOKEN_OR_NOT_EXIST: 'Used refresh token or not exist',
+  REFRESH_TOKEN_SUCCESS: 'Refresh token success'
 } as const

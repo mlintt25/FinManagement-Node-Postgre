@@ -1,5 +1,10 @@
 import { Router } from 'express'
-import { loginController, logoutController, registerController } from '~/controllers/auth.controller'
+import {
+  loginController,
+  logoutController,
+  refreshTokenController,
+  registerController
+} from '~/controllers/auth.controller'
 import {
   accessTokenValidator,
   loginValidator,
@@ -35,4 +40,13 @@ authRouter.post('/register', registerValidator, wrapRequestHandler(registerContr
  * @returns {Object} Response object with message.
  */
 authRouter.post('/logout', accessTokenValidator, refreshTokenValidator, wrapRequestHandler(logoutController))
+/**
+ * @description Refresh access token when token expire.
+ * @path /api/auth/refresh-token
+ * @method POST
+ * @body { refreshToken: string }
+ * @returns {Object} Response object with message and data.
+ */
+authRouter.post('/refresh-token', refreshTokenValidator, wrapRequestHandler(refreshTokenController))
+
 export default authRouter
