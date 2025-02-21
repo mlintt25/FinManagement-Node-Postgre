@@ -3,7 +3,7 @@ import envConfig from '~/configs'
 import { TokenType, UserVerifyStatus } from '~/constants/enums'
 import { USERS_MESSAGES } from '~/constants/messages'
 import prisma from '~/database'
-import { RegisterBodyType } from '~/schemaValidations/auth.schema'
+import { LogoutBodyType, RegisterBodyType } from '~/schemaValidations/auth.schema'
 import { sendWelcomeEmail } from '~/utils/email'
 import { hashPassword } from '~/utils/hash'
 import { signToken, verifyToken } from '~/utils/jwt'
@@ -100,6 +100,12 @@ class AuthService {
       }
     })
     await sendWelcomeEmail(body.email, { name })
+    return true
+  }
+
+  async logout(body: LogoutBodyType) {
+    const { refreshToken } = body
+    await prisma.refresh_tokens.delete({ where: { token: refreshToken } })
     return true
   }
 }

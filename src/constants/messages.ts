@@ -6,6 +6,8 @@ export const USERS_MESSAGES = {
   EMAIL_ALREADY_EXISTS: 'Email already exists',
   LOGIN_SUCCESS: 'Login success',
   REGISTER_SUCCESS: 'Register success',
+  LOGOUT_SUCCESS: 'Logout success',
   OLD_PASSWORD_IS_INCORRECT: 'Old password is incorrect',
-  CHANGE_PASSWORD_SUCCESS: 'Change password success'
+  CHANGE_PASSWORD_SUCCESS: 'Change password success',
+  USED_REFRESH_TOKEN_OR_NOT_EXIST: 'Used refresh token or not exist'
 } as const

@@ -4,7 +4,15 @@ import { USERS_MESSAGES } from '~/constants/messages'
 import { UserType } from '~/schemaValidations/users.schema'
 import authService from '~/services/auth.service'
 import { ParamsDictionary } from 'express-serve-static-core'
-import { LoginBodyType, LoginResType, RegisterBodyType, RegisterResType } from '~/schemaValidations/auth.schema'
+import {
+  LoginBodyType,
+  LoginResType,
+  LogoutBodyType,
+  LogoutResType,
+  RegisterBodyType,
+  RegisterResType
+} from '~/schemaValidations/auth.schema'
+import { TokenPayload } from '~/types/jwt.type'
 
 export const loginController = async (
   req: Request<ParamsDictionary, any, LoginBodyType>,
@@ -30,4 +38,13 @@ export const registerController = async (
 ) => {
   await authService.register(req.body)
   return res.json({ message: USERS_MESSAGES.REGISTER_SUCCESS })
+}
+
+export const logoutController = async (
+  req: Request<ParamsDictionary, any, LogoutBodyType>,
+  res: Response<LogoutResType>,
+  next: NextFunction
+) => {
+  await authService.logout(req.body)
+  return res.json({ message: USERS_MESSAGES.LOGOUT_SUCCESS })
 }
