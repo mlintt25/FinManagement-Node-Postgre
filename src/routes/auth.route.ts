@@ -7,7 +7,7 @@ const authRouter = Router()
 
 /**
  * @description Logs the user into their account.
- * @path /login
+ * @path /api/auth/login
  * @method POST
  * @body { email: string, password: string }
  * @returns {Object} Response object with message and data.
@@ -15,7 +15,7 @@ const authRouter = Router()
 authRouter.post('/login', loginValidator, wrapRequestHandler(loginController))
 /**
  * @description Register a new account.
- * @path /register
+ * @path /api/auth/register
  * @method POST
  * @body { email: string, password: string, confirmPassword: string }
  * @returns {Object} Response object with message.

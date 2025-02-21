@@ -6,6 +6,7 @@ import prisma from './database'
 import authRouter from './routes/auth.route'
 import { isPrismaClientInitializationError } from './utils/errors'
 import envConfig from './configs'
+import usersRouter from './routes/users.route'
 
 const prefix = '/api'
 const port = envConfig.PORT
@@ -15,6 +16,7 @@ const httpServer = createServer(app)
 app.use(cors())
 app.use(express.json())
 app.use(`${prefix}/auth`, authRouter)
+app.use(`${prefix}/users`, usersRouter)
 app.use(defaultErrorHandler)
 
 const startServer = async () => {

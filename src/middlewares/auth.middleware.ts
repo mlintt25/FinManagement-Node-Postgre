@@ -1,9 +1,32 @@
 import { NextFunction, Request, Response } from 'express'
+import envConfig from '~/configs'
 import { USERS_MESSAGES } from '~/constants/messages'
 import prisma from '~/database'
 import { LoginBody, RegisterBody } from '~/schemaValidations/auth.schema'
-import { AuthError, EntityError } from '~/utils/errors'
+import { AuthError, EntityError, ForbiddenError } from '~/utils/errors'
 import { verifyPassword } from '~/utils/hash'
+import { verifyToken } from '~/utils/jwt'
+
+export const accessTokenValidator = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const accessToken = req.headers.authorization?.split(' ')[1]
+
+    if (!accessToken) {
+      throw new ForbiddenError(USERS_MESSAGES.UNAUTHORIZED)
+    }
+
+    const decodedAccessToken = await verifyToken({
+      token: accessToken,
+      secretOrPublicKey: envConfig.JWT_SECRET_ACCESS_TOKEN
+    })
+
+    ;(req as Request).decodedAccessToken = decodedAccessToken
+
+    next()
+  } catch (error) {
+    next(error)
+  }
+}
 
 export const loginValidator = async (req: Request, res: Response, next: NextFunction) => {
   try {
