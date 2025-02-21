@@ -46,3 +46,18 @@ export const RegisterRes = z.object({
 })
 
 export type RegisterResType = z.TypeOf<typeof RegisterRes>
+
+export const RefreshTokenBody = z
+  .object({
+    refreshToken: z.string()
+  })
+  .strict()
+
+export type RefreshTokenBodyType = z.TypeOf<typeof RefreshTokenBody>
+export type LogoutBodyType = RefreshTokenBodyType
+
+export const LogoutRes = z.object({
+  message: z.string()
+})
+
+export type LogoutResType = z.TypeOf<typeof LogoutRes>

@@ -2,7 +2,7 @@ import { NextFunction, Request, Response } from 'express'
 import envConfig from '~/configs'
 import { USERS_MESSAGES } from '~/constants/messages'
 import prisma from '~/database'
-import { LoginBody, RegisterBody } from '~/schemaValidations/auth.schema'
+import { LoginBody, RefreshTokenBody, RegisterBody } from '~/schemaValidations/auth.schema'
 import { AuthError, EntityError, ForbiddenError } from '~/utils/errors'
 import { verifyPassword } from '~/utils/hash'
 import { verifyToken } from '~/utils/jwt'
@@ -21,6 +21,32 @@ export const accessTokenValidator = async (req: Request, res: Response, next: Ne
     })
 
     ;(req as Request).decodedAccessToken = decodedAccessToken
+
+    next()
+  } catch (error) {
+    next(error)
+  }
+}
+
+export const refreshTokenValidator = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const validatedData = RefreshTokenBody.parse(req.body)
+    const { refreshToken } = validatedData
+
+    const [decodedRefreshToken, userRefreshToken] = await Promise.all([
+      // 1. Decode refresh token
+      verifyToken({
+        token: refreshToken,
+        secretOrPublicKey: envConfig.JWT_SECRET_REFRESH_TOKEN
+      }),
+      // 2. Query refresh token of user from database
+      prisma.refresh_tokens.findFirst({ where: { token: refreshToken } })
+    ])
+
+    if (!userRefreshToken) {
+      throw new AuthError(USERS_MESSAGES.USED_REFRESH_TOKEN_OR_NOT_EXIST)
+    }
+    ;(req as Request).decodedRefreshToken = decodedRefreshToken
 
     next()
   } catch (error) {

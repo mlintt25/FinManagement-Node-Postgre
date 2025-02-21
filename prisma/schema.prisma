@@ -127,7 +127,7 @@ model budgets {
 model refresh_tokens {
   id         String   @id @default(uuid())
   user_id    String
-  token      String
+  token      String   @unique
   expires_at DateTime
   created_at DateTime @default(now())
   user       users    @relation(fields: [user_id], references: [id])

@@ -8,7 +8,8 @@ const usersRouter = Router()
 /**
  * @description Change password of acccount.
  * @path /api/users/change-password
- * @method PUT
+ * @method PATCH
+ * @header { Authorization: Bearer <access_token> }
  * @body { oldPassword: string, newPassword: string, confirmNewPassword: string }
  * @returns {Object} Response object with message.
  */

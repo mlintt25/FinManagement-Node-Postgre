@@ -1,5 +1,7 @@
 import { Request, Response, NextFunction } from 'express'
-import { omit } from 'lodash'
+import { JsonWebTokenError } from 'jsonwebtoken'
+import capitalize from 'lodash/capitalize'
+import omit from 'lodash/omit'
 import { ZodError } from 'zod'
 import HTTP_STATUS from '~/constants/httpStatus'
 import { ErrorWithStatus } from '~/utils/errors'
@@ -17,6 +19,9 @@ export const defaultErrorHandler = (err: any, req: Request, res: Response, next:
       return res
         .status(HTTP_STATUS.UNPROCESSABLE_ENTITY)
         .json({ message: 'Unprocessable entity...', errorInfo: errors })
+    }
+    if (err instanceof JsonWebTokenError) {
+      return res.status(HTTP_STATUS.UNAUTHORIZED).json({ message: capitalize(err.message) })
     }
     if (err instanceof ErrorWithStatus) {
       return res.status(err.status).json(omit(err, ['status']))
