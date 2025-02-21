@@ -4,8 +4,8 @@ import { TokenPayload } from './types/jwt.type'
 
 declare module 'express-serve-static-core' {
   interface Request {
-    decoded_authorization?: TokenPayload
-    decoded_refresh_token?: TokenPayload
+    decodedAccessToken?: TokenPayload
+    decodedRefreshToken?: TokenPayload
     user?: UserType
   }
 }
