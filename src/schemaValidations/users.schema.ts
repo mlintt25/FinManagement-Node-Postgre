@@ -9,7 +9,7 @@ export const UserSchema = z.object({
   avatar: z.string().nullable()
 })
 
-export type UserType = z.TypeOf<typeof UserSchema>
+export type UserType = z.infer<typeof UserSchema>
 
 export const ChangePasswordBody = z
   .object({
@@ -23,10 +23,10 @@ export const ChangePasswordBody = z
     path: ['confirmNewPassword']
   })
 
-export type ChangePasswordBodyType = z.TypeOf<typeof ChangePasswordBody>
+export type ChangePasswordBodyType = z.infer<typeof ChangePasswordBody>
 
 export const ChangePasswordRes = z.object({
   message: z.string()
 })
 
-export type ChangePasswordResType = z.TypeOf<typeof ChangePasswordRes>
+export type ChangePasswordResType = z.infer<typeof ChangePasswordRes>
