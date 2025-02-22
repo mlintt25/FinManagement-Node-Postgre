@@ -7,6 +7,7 @@ import authRouter from './routes/auth.route'
 import { isPrismaClientInitializationError } from './utils/errors'
 import envConfig from './configs'
 import usersRouter from './routes/users.route'
+import { PrismaErrorCode } from './constants/prisma-error'
 
 const prefix = '/api'
 const port = envConfig.PORT
@@ -25,7 +26,7 @@ const startServer = async () => {
     await prisma.$connect()
     console.log('Connected to the database')
   } catch (error) {
-    if (isPrismaClientInitializationError(error) && error.errorCode === 'P1000') {
+    if (isPrismaClientInitializationError(error) && error.errorCode === PrismaErrorCode.AuthenticationFailed) {
       console.error('Could not connect to the database. Please check the DATABASE_URL')
       process.exit(1)
     }
