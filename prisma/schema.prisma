@@ -8,7 +8,7 @@ datasource db {
 }
 
 model users {
-  id                    String           @id @default(uuid()) @map("id")
+  id                    String           @id @default(uuid())
   name                  String
   avatar                String?
   email                 String           @unique
@@ -59,8 +59,6 @@ model transaction_types {
   id                          String                        @id @default(uuid())
   icon                        String
   name                        String
-  type                        TransactionCategory
-  is_check                    Boolean                       @map("is_check")
   created_at                  DateTime                      @default(now())
   updated_at                  DateTime                      @updatedAt
   transaction_type_categories transaction_type_categories[]
@@ -143,11 +141,6 @@ enum VerifyStatus {
   Verified
   Unverified
   Banned
-}
-
-enum TransactionCategory {
-  Expense
-  Income
 }
 
 enum Role {
