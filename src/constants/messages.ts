@@ -12,3 +12,8 @@ export const USERS_MESSAGES = {
   USED_REFRESH_TOKEN_OR_NOT_EXIST: 'Used refresh token or not exist',
   REFRESH_TOKEN_SUCCESS: 'Refresh token success'
 } as const
+
+export const ADMINS_MESSAGES = {
+  ADD_TRANSACTION_TYPE_SUCCESS: 'Create transaction type success',
+  TRANSACTION_TYPE_ALREADY_EXISTS: 'Transaction type already exists'
+} as const
