@@ -11,7 +11,7 @@ export enum TokenType {
   EmailVerifyToken
 }
 
-export enum Role {
-  User = 'User', // Default
-  Admin = 'Admin'
+export enum TransactionType {
+  Expense = 'Expense',
+  Income = 'Income'
 }

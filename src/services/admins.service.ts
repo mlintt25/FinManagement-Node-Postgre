@@ -3,9 +3,9 @@ import { CreateTransactionTypeBodyType } from '~/schemaValidations/admins.schema
 
 class AdminsService {
   async createTransactionType(body: CreateTransactionTypeBodyType) {
-    const { icon, name } = body
+    const { icon, name, type } = body
     await prisma.transaction_types.create({
-      data: { icon, name }
+      data: { icon, name, type }
     })
     return true
   }
