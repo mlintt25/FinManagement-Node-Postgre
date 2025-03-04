@@ -15,5 +15,14 @@ export const USERS_MESSAGES = {
 
 export const ADMINS_MESSAGES = {
   ADD_TRANSACTION_TYPE_SUCCESS: 'Create transaction type success',
-  TRANSACTION_TYPE_ALREADY_EXISTS: 'Transaction type already exists'
+  TRANSACTION_TYPE_ALREADY_EXISTS: 'Transaction type already exists',
+  TRANSACTION_TYPE_NOT_FOUND: 'Transaction type not found',
+  TRANSACTION_TYPE_CATEGORY_NOT_FOUND: 'Transaction type category not found',
+  TRANSACTION_TYPE_CATEGORY_ALREADY_EXISTS: 'Transaction type category already exists',
+  ADD_TRANSACTION_TYPE_CATEGORY_SUCCESS: 'Create transaction type category success'
+} as const
+
+export const APPS_MESSAGES = {
+  GET_TRANSACTION_TYPE_CATEGORIES_SUCCESS: 'Get all transaction type category success',
+  ADD_TRANSACTION_TYPE_CATEGORY_SUCCESS: 'Create transaction type category success'
 } as const

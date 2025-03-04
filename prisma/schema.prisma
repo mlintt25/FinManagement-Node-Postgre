@@ -8,24 +8,25 @@ datasource db {
 }
 
 model users {
-  id                    String           @id @default(uuid())
-  name                  String
-  avatar                String?
-  email                 String           @unique
-  password              String
-  role                  Role             @default(User)
-  email_verify_token    String?
-  password_verify_token String?
-  phone                 String?
-  dob                   DateTime?
-  address               String?
-  gender                Gender?
-  job                   String?
-  verify                VerifyStatus
-  created_at            DateTime         @default(now())
-  updated_at            DateTime         @updatedAt
-  money_accounts        money_accounts[]
-  refresh_tokens        refresh_tokens[]
+  id                          String                        @id @default(uuid())
+  name                        String
+  avatar                      String?
+  email                       String                        @unique
+  password                    String
+  role                        Role                          @default(User)
+  email_verify_token          String?
+  password_verify_token       String?
+  phone                       String?
+  dob                         DateTime?
+  address                     String?
+  gender                      Gender?
+  job                         String?
+  verify                      VerifyStatus
+  created_at                  DateTime                      @default(now())
+  updated_at                  DateTime                      @updatedAt
+  money_accounts              money_accounts[]
+  refresh_tokens              refresh_tokens[]
+  transaction_type_categories transaction_type_categories[]
 }
 
 model money_accounts {
@@ -59,6 +60,7 @@ model transaction_types {
   id                          String                        @id @default(uuid())
   icon                        String
   name                        String
+  type                        TransactionType
   created_at                  DateTime                      @default(now())
   updated_at                  DateTime                      @updatedAt
   transaction_type_categories transaction_type_categories[]
@@ -66,6 +68,7 @@ model transaction_types {
 
 model transaction_type_categories {
   id                  String                        @id @default(uuid())
+  user_id             String?
   transaction_type_id String
   icon                String
   name                String
@@ -77,6 +80,7 @@ model transaction_type_categories {
   sub_categories      transaction_type_categories[] @relation("SubCategories")
   transaction_type    transaction_types             @relation(fields: [transaction_type_id], references: [id])
   transactions        transactions[]
+  user                users?                        @relation(fields: [user_id], references: [id])
 }
 
 model transactions {
@@ -146,4 +150,9 @@ enum VerifyStatus {
 enum Role {
   User
   Admin
+}
+
+enum TransactionType {
+  Expense
+  Income
 }
