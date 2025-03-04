@@ -6,6 +6,8 @@ import { TransactionTypeCategoryType } from '~/schemaValidations/apps.schema'
 class AppsService {
   async getAllTransactionTypeCategory(user_id: string) {
     const transactionTypeCategories = await prisma.transaction_type_categories.findMany({
+      // user_id = null is default category
+      // user_id = user_id is user created category
       where: {
         OR: [{ user_id: user_id }, { user_id: null }]
       },
@@ -14,21 +16,23 @@ class AppsService {
         transaction_type_id: true,
         icon: true,
         name: true,
-        parent_id: true
+        parent_id: true,
+        transaction_type: {
+          select: {
+            type: true
+          }
+        }
       }
-    })
-
-    const transactionExpenseType = await prisma.transaction_types.findFirst({
-      where: { type: TransactionType.Expense }
     })
 
     const categoryMap = new Map<string, any>()
     const finalExpenseCategories: TransactionTypeCategoryType[] = []
     const expenseCategories: Omit<TransactionTypeCategoryType, 'children'>[] = []
     const incomeCategories: Omit<TransactionTypeCategoryType, 'children'>[] = []
-
-    transactionTypeCategories.forEach((category) => {
-      if (category.transaction_type_id === transactionExpenseType?.id) {
+    // I don't want to show transaction_type in the response
+    // So, I'm destructuring it and using it separately
+    transactionTypeCategories.forEach(({ transaction_type, ...category }) => {
+      if (transaction_type.type === TransactionType.Expense) {
         expenseCategories.push(category)
       } else {
         incomeCategories.push(category)
