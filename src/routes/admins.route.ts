@@ -10,7 +10,7 @@ const adminsRouter = Router()
  * @path /api/admins/transaction-type
  * @method POST
  * @header { Authorization: Bearer <access_token> }
- * @body { icon: string, name: string }
+ * @body { icon: string, name: string, type: string (enum: Expense, Income) }
  * @returns {Object} Response object with message.
  */
 adminsRouter.post(
