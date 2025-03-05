@@ -1,3 +1,4 @@
+import { Decimal } from '@prisma/client/runtime/library'
 import z from 'zod'
 
 export const TransactionTypeCategorySchema = z.object({
@@ -57,3 +58,19 @@ export const CreateMoneyAccountRes = z.object({
 })
 
 export type CreateMoneyAccountResType = z.infer<typeof CreateMoneyAccountRes>
+
+export const GetUserMoneyAccountRes = z.object({
+  message: z.string(),
+  data: z.array(
+    z.object({
+      id: z.string(),
+      name: z.string(),
+      account_balance: z.custom<Decimal>(), // Kiểm tra kiểu Decimal
+      money_account_type: z.object({
+        icon: z.string()
+      })
+    })
+  )
+})
+
+export type GetUserMoneyAccountResType = z.infer<typeof GetUserMoneyAccountRes>

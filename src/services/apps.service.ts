@@ -68,6 +68,23 @@ class AppsService {
     })
     return true
   }
+
+  async getUserMoneyAccount(user_id: string) {
+    const result = await prisma.money_accounts.findMany({
+      where: { user_id },
+      select: {
+        id: true,
+        name: true,
+        account_balance: true,
+        money_account_type: {
+          select: {
+            icon: true
+          }
+        }
+      }
+    })
+    return result
+  }
 }
 
 const appsService = new AppsService()

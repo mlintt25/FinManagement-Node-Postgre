@@ -33,5 +33,6 @@ export const APPS_MESSAGES = {
   MONEY_ACCOUNT_ALREADY_EXISTS: 'Money account already exists',
   CREDIT_LIMIT_REQUIRED: 'Credit limit required',
   CREDIT_LIMIT_NOT_REQUIRED: 'Credit limit not required',
-  BANK_NOT_REQUIRED: 'Bank not required'
+  BANK_NOT_REQUIRED: 'Bank not required',
+  GET_USER_MONEY_ACCOUNT_SUCCESS: 'Get user money account success'
 } as const

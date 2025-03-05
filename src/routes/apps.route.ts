@@ -2,7 +2,8 @@ import { Router } from 'express'
 import {
   createMoneyAccountController,
   createTransactionTypeCategoryController,
-  getAllTransactionTypeCategoryController
+  getAllTransactionTypeCategoryController,
+  getUserMoneyAccountController
 } from '~/controllers/apps.controller'
 import { createMoneyAccountValidator, createTransactionTypeCategoryValidator } from '~/middlewares/apps.middleware'
 import { accessTokenValidator } from '~/middlewares/auth.middleware'
@@ -50,5 +51,13 @@ appsRouter.post(
   createMoneyAccountValidator,
   wrapRequestHandler(createMoneyAccountController)
 )
+/**
+ * @description Get user's money account.
+ * @path /api/apps/money-account
+ * @method GET
+ * @header { Authorization: Bearer <access_token> }
+ * @returns {Object} Response object with message and data.
+ */
+appsRouter.get('/money-account', accessTokenValidator, wrapRequestHandler(getUserMoneyAccountController))
 
 export default appsRouter
