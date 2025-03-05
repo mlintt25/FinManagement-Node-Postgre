@@ -2,6 +2,7 @@ import { Request, Response, NextFunction } from 'express'
 import { ADMINS_MESSAGES } from '~/constants/messages'
 import { ParamsDictionary } from 'express-serve-static-core'
 import {
+  AllMoneyAccountTypeResType,
   CreateMoneyAccountTypeBodyType,
   CreateMoneyAccountTypeResType,
   CreateTransactionTypeBodyType,
@@ -25,4 +26,13 @@ export const createMoneyAccountTypeController = async (
 ) => {
   await adminsService.createMoneyAccountType(req.body)
   return res.json({ message: ADMINS_MESSAGES.ADD_MONEY_ACCOUNT_TYPE_SUCCESS })
+}
+
+export const getAllMoneyAccountTypeController = async (
+  req: Request,
+  res: Response<AllMoneyAccountTypeResType>,
+  next: NextFunction
+) => {
+  const result = await adminsService.getMoneyAccountType()
+  return res.json({ message: ADMINS_MESSAGES.GET_MONEY_ACCOUNT_TYPES_SUCCESS, data: result })
 }
