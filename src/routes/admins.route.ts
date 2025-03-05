@@ -1,6 +1,6 @@
 import { Router } from 'express'
-import { createTransactionTypeController } from '~/controllers/admins.controller'
-import { createTransactionTypeValidator } from '~/middlewares/admins.middleware'
+import { createMoneyAccountTypeController, createTransactionTypeController } from '~/controllers/admins.controller'
+import { createMoneyAccountTypeValidator, createTransactionTypeValidator } from '~/middlewares/admins.middleware'
 import { accessTokenValidator } from '~/middlewares/auth.middleware'
 import { wrapRequestHandler } from '~/utils/handlers'
 
@@ -18,6 +18,20 @@ adminsRouter.post(
   accessTokenValidator,
   createTransactionTypeValidator,
   wrapRequestHandler(createTransactionTypeController)
+)
+/**
+ * @description Create new money account type.
+ * @path /api/admins/money-account-type
+ * @method POST
+ * @header { Authorization: Bearer <access_token> }
+ * @body { icon: string, name: string }
+ * @returns {Object} Response object with message.
+ */
+adminsRouter.post(
+  '/money-account-type',
+  accessTokenValidator,
+  createMoneyAccountTypeValidator,
+  wrapRequestHandler(createMoneyAccountTypeController)
 )
 
 export default adminsRouter

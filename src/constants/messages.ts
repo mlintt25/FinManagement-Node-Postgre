@@ -19,10 +19,19 @@ export const ADMINS_MESSAGES = {
   TRANSACTION_TYPE_NOT_FOUND: 'Transaction type not found',
   TRANSACTION_TYPE_CATEGORY_NOT_FOUND: 'Transaction type category not found',
   TRANSACTION_TYPE_CATEGORY_ALREADY_EXISTS: 'Transaction type category already exists',
-  ADD_TRANSACTION_TYPE_CATEGORY_SUCCESS: 'Create transaction type category success'
+  ADD_TRANSACTION_TYPE_CATEGORY_SUCCESS: 'Create transaction type category success',
+  MONEY_ACCOUNT_TYPE_ALREADY_EXISTS: 'Money account type already exists',
+  MONEY_ACCOUNT_TYPE_NOT_FOUND: 'Money account type not found',
+  ADD_MONEY_ACCOUNT_TYPE_SUCCESS: 'Create money account type success'
 } as const
 
 export const APPS_MESSAGES = {
   GET_TRANSACTION_TYPE_CATEGORIES_SUCCESS: 'Get all transaction type category success',
-  ADD_TRANSACTION_TYPE_CATEGORY_SUCCESS: 'Create transaction type category success'
+  ADD_TRANSACTION_TYPE_CATEGORY_SUCCESS: 'Create transaction type category success',
+  MONEY_ACCOUNT_TYPE_NOT_FOUND: 'Money account type not found',
+  ADD_MONEY_ACCOUNT_SUCCESS: 'Create money account success',
+  MONEY_ACCOUNT_ALREADY_EXISTS: 'Money account already exists',
+  CREDIT_LIMIT_REQUIRED: 'Credit limit required',
+  CREDIT_LIMIT_NOT_REQUIRED: 'Credit limit not required',
+  BANK_NOT_REQUIRED: 'Bank not required'
 } as const
