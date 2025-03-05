@@ -17,6 +17,17 @@ class AdminsService {
     })
     return true
   }
+
+  async getMoneyAccountType() {
+    const result = await prisma.money_account_types.findMany({
+      select: {
+        id: true,
+        icon: true,
+        name: true
+      }
+    })
+    return result
+  }
 }
 
 const adminsService = new AdminsService()
