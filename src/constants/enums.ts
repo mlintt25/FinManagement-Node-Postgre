@@ -15,3 +15,11 @@ export enum TransactionType {
   Expense = 'Expense',
   Income = 'Income'
 }
+
+export enum MoneyAccountType {
+  Cash = 'Cash',
+  Bank = 'Bank',
+  Invest = 'Invest',
+  Credit = 'Credit',
+  Another = 'Another'
+}

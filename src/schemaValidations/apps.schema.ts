@@ -20,3 +20,40 @@ export const AllTransactionTypeCategoriesRes = z.object({
 })
 
 export type AllTransactionTypeCategoriesResType = z.infer<typeof AllTransactionTypeCategoriesRes>
+
+export const CreateMoneyAccountBody = z
+  .object({
+    money_account_type_id: z.string().uuid(),
+    name: z.string().min(1),
+    account_balance: z.preprocess((val) => {
+      if (typeof val === 'string') {
+        const parsed = parseFloat(val)
+        return isNaN(parsed) ? undefined : parsed
+      }
+      return typeof val === 'number' ? val : undefined
+    }, z.number().nonnegative()),
+
+    save_to_report: z.boolean().optional(),
+
+    bank_type: z.number().int().nonnegative().optional(),
+
+    credit_limit: z.preprocess((val) => {
+      if (val === '') return null
+      if (typeof val === 'string') {
+        const parsed = parseFloat(val)
+        return isNaN(parsed) ? undefined : parsed
+      }
+      return typeof val === 'number' ? val : undefined
+    }, z.number().positive().optional().nullable()),
+
+    description: z.string().optional()
+  })
+  .strict()
+
+export type CreateMoneyAccountBodyType = z.infer<typeof CreateMoneyAccountBody>
+
+export const CreateMoneyAccountRes = z.object({
+  message: z.string()
+})
+
+export type CreateMoneyAccountResType = z.infer<typeof CreateMoneyAccountRes>
