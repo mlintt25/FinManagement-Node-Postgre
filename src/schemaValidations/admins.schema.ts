@@ -48,3 +48,16 @@ export const CreateMoneyAccountTypeRes = z.object({
 })
 
 export type CreateMoneyAccountTypeResType = z.infer<typeof CreateMoneyAccountTypeRes>
+
+export const AllMoneyAccountTypeRes = z.object({
+  message: z.string(),
+  data: z.array(
+    z.object({
+      id: z.string().uuid(),
+      icon: z.string(),
+      name: z.string()
+    })
+  )
+})
+
+export type AllMoneyAccountTypeResType = z.infer<typeof AllMoneyAccountTypeRes>
