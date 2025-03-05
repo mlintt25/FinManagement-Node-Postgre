@@ -33,3 +33,18 @@ export const CreateTransactionTypeCategoryRes = z.object({
 })
 
 export type CreateTransactionTypeCategoryResType = z.infer<typeof CreateTransactionTypeCategoryRes>
+
+export const CreateMoneyAccountTypeBody = z
+  .object({
+    icon: z.string().min(1),
+    name: z.string().min(1)
+  })
+  .strict()
+
+export type CreateMoneyAccountTypeBodyType = z.infer<typeof CreateMoneyAccountTypeBody>
+
+export const CreateMoneyAccountTypeRes = z.object({
+  message: z.string()
+})
+
+export type CreateMoneyAccountTypeResType = z.infer<typeof CreateMoneyAccountTypeRes>

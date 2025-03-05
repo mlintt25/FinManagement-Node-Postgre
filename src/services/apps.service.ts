@@ -1,7 +1,7 @@
 import { TransactionType } from '~/constants/enums'
 import prisma from '~/database'
 import { CreateTransactionTypeCategoryBodyType } from '~/schemaValidations/admins.schema'
-import { TransactionTypeCategoryType } from '~/schemaValidations/apps.schema'
+import { CreateMoneyAccountBodyType, TransactionTypeCategoryType } from '~/schemaValidations/apps.schema'
 
 class AppsService {
   async getAllTransactionTypeCategory(user_id: string) {
@@ -58,6 +58,13 @@ class AppsService {
     const { transaction_type_id, icon, name, parent_id } = body
     await prisma.transaction_type_categories.create({
       data: { transaction_type_id, icon, name, parent_id, user_id }
+    })
+    return true
+  }
+
+  async createMoneyAccount(user_id: string, body: CreateMoneyAccountBodyType) {
+    await prisma.money_accounts.create({
+      data: { ...body, user_id }
     })
     return true
   }

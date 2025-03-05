@@ -35,9 +35,10 @@ model money_accounts {
   user_id               String
   name                  String
   account_balance       Decimal             @default(0.00)
-  save_to_report        Boolean
+  save_to_report        Boolean             @default(true)
   bank_type             Int?
   credit_limit          Decimal?
+  description           String?
   created_at            DateTime            @default(now())
   updated_at            DateTime            @updatedAt
   budgets               budgets[]
@@ -51,6 +52,7 @@ model money_account_types {
   id             String           @id @default(uuid())
   icon           String
   name           String
+  type           MoneyAccountType @default(Another)
   created_at     DateTime         @default(now())
   updated_at     DateTime         @updatedAt
   money_accounts money_accounts[]
@@ -155,4 +157,12 @@ enum Role {
 enum TransactionType {
   Expense
   Income
+}
+
+enum MoneyAccountType {
+  Cash
+  Bank
+  Invest
+  Credit
+  Another
 }
