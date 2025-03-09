@@ -22,6 +22,31 @@ export const AllTransactionTypeCategoriesRes = z.object({
 
 export type AllTransactionTypeCategoriesResType = z.infer<typeof AllTransactionTypeCategoriesRes>
 
+export const CreateTransactionBody = z.object({
+  transaction_type_category_id: z.string().uuid(),
+  money_account_id: z.string().uuid(),
+  amount_of_money: z.preprocess((val) => {
+    if (typeof val === 'string') {
+      const parsed = parseFloat(val)
+      return isNaN(parsed) ? undefined : parsed
+    }
+    return typeof val === 'number' ? val : undefined
+  }, z.number().nonnegative()),
+  occur_date: z.string().datetime().optional(),
+  event_id: z.string().uuid().optional(),
+  description: z.string().optional(),
+  related_party: z.string().optional(),
+  reminder_date: z.string().datetime().optional()
+})
+
+export type CreateTransactionBodyType = z.infer<typeof CreateTransactionBody>
+
+export const CreateTransactionRes = z.object({
+  message: z.string()
+})
+
+export type CreateTransactionResType = z.infer<typeof CreateTransactionRes>
+
 export const CreateMoneyAccountBody = z
   .object({
     money_account_type_id: z.string().uuid(),
