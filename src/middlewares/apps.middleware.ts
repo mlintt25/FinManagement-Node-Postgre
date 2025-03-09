@@ -3,7 +3,7 @@ import { MoneyAccountType } from '~/constants/enums'
 import { ADMINS_MESSAGES, APPS_MESSAGES } from '~/constants/messages'
 import prisma from '~/database'
 import { CreateTransactionTypeCategoryBody } from '~/schemaValidations/admins.schema'
-import { CreateMoneyAccountBody } from '~/schemaValidations/apps.schema'
+import { CreateMoneyAccountBody, CreateTransactionBody } from '~/schemaValidations/apps.schema'
 import { EntityError } from '~/utils/errors'
 
 export const createTransactionTypeCategoryValidator = async (req: Request, res: Response, next: NextFunction) => {
@@ -30,6 +30,39 @@ export const createTransactionTypeCategoryValidator = async (req: Request, res: 
       })
       if (!parentTransactionTypeCategory) {
         throw new EntityError([{ message: ADMINS_MESSAGES.TRANSACTION_TYPE_CATEGORY_NOT_FOUND, field: 'parent_id' }])
+      }
+    }
+
+    next()
+  } catch (error) {
+    next(error)
+  }
+}
+
+export const createTransactionValidator = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const validatedData = CreateTransactionBody.parse(req.body)
+    const { money_account_id, transaction_type_category_id, event_id } = validatedData
+
+    const [moneyAccount, transactionTypeCategory] = await Promise.all([
+      prisma.money_accounts.findUnique({ where: { id: money_account_id } }),
+      prisma.transaction_type_categories.findUnique({ where: { id: transaction_type_category_id } })
+    ])
+
+    if (!moneyAccount) {
+      throw new EntityError([{ message: APPS_MESSAGES.MONEY_ACCOUNT_NOT_FOUND, field: 'money_account_id' }])
+    }
+
+    if (!transactionTypeCategory) {
+      throw new EntityError([
+        { message: APPS_MESSAGES.TRANSACTION_TYPE_CATEGORY_NOT_FOUND, field: 'transaction_type_category_id' }
+      ])
+    }
+
+    if (event_id) {
+      const event = await prisma.events.findUnique({ where: { id: event_id } })
+      if (!event) {
+        throw new EntityError([{ message: APPS_MESSAGES.EVENT_NOT_FOUND, field: 'event_id' }])
       }
     }
 

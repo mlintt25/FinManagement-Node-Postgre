@@ -1,7 +1,12 @@
+import { money_accounts, transaction_type_categories } from '@prisma/client'
 import { TransactionType } from '~/constants/enums'
 import prisma from '~/database'
 import { CreateTransactionTypeCategoryBodyType } from '~/schemaValidations/admins.schema'
-import { CreateMoneyAccountBodyType, TransactionTypeCategoryType } from '~/schemaValidations/apps.schema'
+import {
+  CreateMoneyAccountBodyType,
+  CreateTransactionBodyType,
+  TransactionTypeCategoryType
+} from '~/schemaValidations/apps.schema'
 
 class AppsService {
   async getAllTransactionTypeCategory(user_id: string) {
@@ -58,6 +63,39 @@ class AppsService {
     const { transaction_type_id, icon, name, parent_id } = body
     await prisma.transaction_type_categories.create({
       data: { transaction_type_id, icon, name, parent_id, user_id }
+    })
+    return true
+  }
+
+  async createTransaction(user_id: string, body: CreateTransactionBodyType) {
+    // Using $transaction to make sure that both the transactions and money_accounts are updated
+    await prisma.$transaction(async (tx) => {
+      // Create transaction
+      await tx.transactions.create({
+        data: { ...body, user_id }
+      })
+      // Check type of transaction type category (Expense or Income)
+      const transactionTypeCategory = (await tx.transaction_type_categories.findUnique({
+        where: { id: body.transaction_type_category_id },
+        select: {
+          transaction_type: {
+            select: {
+              type: true
+            }
+          }
+        }
+      })) as { transaction_type: { type: TransactionType } }
+      // Expense: Decrement
+      // Income: Increment
+      await tx.money_accounts.update({
+        where: { id: body.money_account_id },
+        data: {
+          account_balance:
+            transactionTypeCategory.transaction_type.type === TransactionType.Expense
+              ? { decrement: body.amount_of_money }
+              : { increment: body.amount_of_money }
+        }
+      })
     })
     return true
   }

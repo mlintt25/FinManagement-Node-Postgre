@@ -33,6 +33,6 @@ export const getAllMoneyAccountTypeController = async (
   res: Response<AllMoneyAccountTypeResType>,
   next: NextFunction
 ) => {
-  const result = await adminsService.getMoneyAccountType()
+  const result = await adminsService.getAllMoneyAccountType()
   return res.json({ message: ADMINS_MESSAGES.GET_MONEY_ACCOUNT_TYPES_SUCCESS, data: result })
 }

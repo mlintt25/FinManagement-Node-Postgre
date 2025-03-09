@@ -35,5 +35,9 @@ export const APPS_MESSAGES = {
   CREDIT_LIMIT_REQUIRED: 'Credit limit required',
   CREDIT_LIMIT_NOT_REQUIRED: 'Credit limit not required',
   BANK_NOT_REQUIRED: 'Bank not required',
-  GET_USER_MONEY_ACCOUNT_SUCCESS: 'Get user money account success'
+  GET_USER_MONEY_ACCOUNT_SUCCESS: 'Get user money account success',
+  MONEY_ACCOUNT_NOT_FOUND: 'Money account not found',
+  TRANSACTION_TYPE_CATEGORY_NOT_FOUND: 'Transaction type category not found',
+  EVENT_NOT_FOUND: 'Event not found',
+  ADD_TRANSACTION_SUCCESS: 'Create transaction success'
 } as const
