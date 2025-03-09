@@ -11,6 +11,8 @@ import {
   AllTransactionTypeCategoriesResType,
   CreateMoneyAccountBodyType,
   CreateMoneyAccountResType,
+  CreateTransactionBodyType,
+  CreateTransactionResType,
   GetUserMoneyAccountResType
 } from '~/schemaValidations/apps.schema'
 
@@ -32,6 +34,16 @@ export const createTransactionTypeCategoryController = async (
   const { user_id } = req.decodedAccessToken as TokenPayload
   await appsService.createTransactionTypeCategory(user_id, req.body)
   return res.json({ message: APPS_MESSAGES.ADD_TRANSACTION_TYPE_CATEGORY_SUCCESS })
+}
+
+export const createTransactionController = async (
+  req: Request<ParamsDictionary, any, CreateTransactionBodyType>,
+  res: Response<CreateTransactionResType>,
+  next: NextFunction
+) => {
+  const { user_id } = req.decodedAccessToken as TokenPayload
+  await appsService.createTransaction(user_id, req.body)
+  return res.json({ message: APPS_MESSAGES.ADD_TRANSACTION_SUCCESS })
 }
 
 export const createMoneyAccountController = async (

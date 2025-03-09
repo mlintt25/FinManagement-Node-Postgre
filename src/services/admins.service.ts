@@ -18,7 +18,7 @@ class AdminsService {
     return true
   }
 
-  async getMoneyAccountType() {
+  async getAllMoneyAccountType() {
     const result = await prisma.money_account_types.findMany({
       select: {
         id: true,

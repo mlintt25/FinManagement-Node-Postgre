@@ -1,11 +1,16 @@
 import { Router } from 'express'
 import {
   createMoneyAccountController,
+  createTransactionController,
   createTransactionTypeCategoryController,
   getAllTransactionTypeCategoryController,
   getUserMoneyAccountController
 } from '~/controllers/apps.controller'
-import { createMoneyAccountValidator, createTransactionTypeCategoryValidator } from '~/middlewares/apps.middleware'
+import {
+  createMoneyAccountValidator,
+  createTransactionTypeCategoryValidator,
+  createTransactionValidator
+} from '~/middlewares/apps.middleware'
 import { accessTokenValidator } from '~/middlewares/auth.middleware'
 import { wrapRequestHandler } from '~/utils/handlers'
 
@@ -35,6 +40,21 @@ appsRouter.post(
   accessTokenValidator,
   createTransactionTypeCategoryValidator,
   wrapRequestHandler(createTransactionTypeCategoryController)
+)
+/**
+ * @description Create new user's transaction.
+ * @path /api/apps/transaction
+ * @method POST
+ * @header { Authorization: Bearer <access_token> }
+ * @body { transaction_type_category_id: string, money_account_id: string, amount_of_money: number,
+ *  occur_date: date, event_id?: string, description?: string, related_party?: string, reminder_date?: date }
+ * @returns {Object} Response object with message.
+ */
+appsRouter.post(
+  '/transaction',
+  accessTokenValidator,
+  createTransactionValidator,
+  wrapRequestHandler(createTransactionController)
 )
 /**
  * @description Create new money account for user.

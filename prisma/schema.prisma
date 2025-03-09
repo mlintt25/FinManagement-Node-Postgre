@@ -27,6 +27,7 @@ model users {
   money_accounts              money_accounts[]
   refresh_tokens              refresh_tokens[]
   transaction_type_categories transaction_type_categories[]
+  transactions                transactions[]
 }
 
 model money_accounts {
@@ -87,6 +88,7 @@ model transaction_type_categories {
 
 model transactions {
   id                           String                      @id @default(uuid())
+  user_id                      String
   transaction_type_category_id String
   money_account_id             String
   event_id                     String?
@@ -98,6 +100,7 @@ model transactions {
   deleted_at                   DateTime?
   created_at                   DateTime                    @default(now())
   updated_at                   DateTime                    @updatedAt
+  user                         users                       @relation(fields: [user_id], references: [id])
   event                        events?                     @relation(fields: [event_id], references: [id])
   money_account                money_accounts              @relation(fields: [money_account_id], references: [id])
   transaction_type_category    transaction_type_categories @relation(fields: [transaction_type_category_id], references: [id])
