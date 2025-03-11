@@ -33,6 +33,7 @@ export const CreateTransactionBody = z.object({
     return typeof val === 'number' ? val : undefined
   }, z.number().nonnegative()),
   occur_date: z.string().datetime().optional(),
+  save_to_report: z.boolean().optional(),
   event_id: z.string().uuid().optional(),
   description: z.string().optional(),
   related_party: z.string().optional(),
