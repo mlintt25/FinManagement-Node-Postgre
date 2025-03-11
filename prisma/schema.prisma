@@ -97,6 +97,7 @@ model transactions {
   related_party                String?
   reminder_date                DateTime?
   occur_date                   DateTime                    @default(now())
+  save_to_report               Boolean                     @default(true)
   deleted_at                   DateTime?
   created_at                   DateTime                    @default(now())
   updated_at                   DateTime                    @updatedAt
