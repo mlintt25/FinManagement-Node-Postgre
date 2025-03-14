@@ -39,5 +39,9 @@ export const APPS_MESSAGES = {
   MONEY_ACCOUNT_NOT_FOUND: 'Money account not found',
   TRANSACTION_TYPE_CATEGORY_NOT_FOUND: 'Transaction type category not found',
   EVENT_NOT_FOUND: 'Event not found',
-  ADD_TRANSACTION_SUCCESS: 'Create transaction success'
+  ADD_TRANSACTION_SUCCESS: 'Create transaction success',
+  REMINDER_WHEN_DUE_NOT_REQUIRED_WHEN_NOT_CREDIT_CARD: 'Reminder when due not required when not credit card',
+  REMINDER_WHEN_DUE_REQUIRED: 'Reminder when due required',
+  PAYMENT_DUE_DATE_REQUIRED: 'Payment due date required',
+  REMINDER_TIME_REQUIRED: 'Reminder time required'
 } as const

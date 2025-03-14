@@ -75,8 +75,20 @@ export const createTransactionValidator = async (req: Request, res: Response, ne
 export const createMoneyAccountValidator = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const validatedData = CreateMoneyAccountBody.parse(req.body)
-    const { credit_limit, bank_type, money_account_type_id, name } = validatedData
-
+    const { credit_limit, bank_type, money_account_type_id, name, reminder_when_due, reminder_time, payment_due_date } =
+      validatedData
+    /**
+     * Handle cases:
+     * 1. Money account type exists
+     * 2. Money account already exists
+     * 3. isCredit -> Credit limit required
+     * 4. !isCredit -> Credit limit not required
+     * 5. !isBank && !isCredit && have bank_type -> Bank not required
+     * 6. !isCredit && have one of reminder_when_due, reminder_time, payment_due_date (is the option of reminder_when_due)
+     *   -> reminder_when_due not required
+     * 7. reminder_when_due === true -> payment_due_date required, reminder_time required
+     * 8. reminder_when_due === false -> payment_due_date not required, reminder_time not required
+     */
     const [moneyAccountType, isMoneyAccountExist] = await Promise.all([
       prisma.money_account_types.findUnique({ where: { id: money_account_type_id } }),
       prisma.money_accounts.findFirst({ where: { name } })
@@ -93,16 +105,36 @@ export const createMoneyAccountValidator = async (req: Request, res: Response, n
     const isCredit = moneyAccountType.type === MoneyAccountType.Credit
     const isBank = moneyAccountType.type === MoneyAccountType.Bank
 
-    if (isCredit && !credit_limit) {
-      throw new EntityError([{ message: APPS_MESSAGES.CREDIT_LIMIT_REQUIRED, field: 'credit_limit' }])
+    if ((isCredit && !credit_limit) || (!isCredit && credit_limit !== undefined)) {
+      throw new EntityError([
+        {
+          message: isCredit ? APPS_MESSAGES.CREDIT_LIMIT_REQUIRED : APPS_MESSAGES.CREDIT_LIMIT_NOT_REQUIRED,
+          field: 'credit_limit'
+        }
+      ])
     }
 
-    if (!isCredit && credit_limit !== undefined) {
-      throw new EntityError([{ message: APPS_MESSAGES.CREDIT_LIMIT_NOT_REQUIRED, field: 'credit_limit' }])
-    }
-
-    if (!isBank && bank_type) {
+    if (!isBank && !isCredit && bank_type) {
       throw new EntityError([{ message: APPS_MESSAGES.BANK_NOT_REQUIRED, field: 'bank_type' }])
+    }
+
+    if (!isCredit && (reminder_when_due || reminder_time || payment_due_date)) {
+      throw new EntityError([
+        { message: APPS_MESSAGES.REMINDER_WHEN_DUE_NOT_REQUIRED_WHEN_NOT_CREDIT_CARD, field: 'reminder_when_due' }
+      ])
+    }
+
+    if (reminder_when_due === true) {
+      if (!payment_due_date) {
+        throw new EntityError([{ message: APPS_MESSAGES.PAYMENT_DUE_DATE_REQUIRED, field: 'payment_due_date' }])
+      }
+      if (!reminder_time || reminder_time.length === 0) {
+        throw new EntityError([{ message: APPS_MESSAGES.REMINDER_TIME_REQUIRED, field: 'reminder_time' }])
+      }
+    } else {
+      if (payment_due_date || reminder_time) {
+        throw new EntityError([{ message: APPS_MESSAGES.REMINDER_WHEN_DUE_REQUIRED, field: 'reminder_when_due' }])
+      }
     }
 
     next()
