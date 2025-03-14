@@ -31,22 +31,34 @@ model users {
 }
 
 model money_accounts {
-  id                    String              @id @default(uuid())
+  id                    String                  @id @default(uuid())
   money_account_type_id String
   user_id               String
   name                  String
-  account_balance       Decimal             @default(0.00)
-  save_to_report        Boolean             @default(true)
+  account_balance       Decimal                 @default(0.00)
+  save_to_report        Boolean                 @default(true)
   bank_type             Int?
   credit_limit          Decimal?
   description           String?
-  created_at            DateTime            @default(now())
-  updated_at            DateTime            @updatedAt
+  reminder_when_due     Boolean?
+  created_at            DateTime                @default(now())
+  updated_at            DateTime                @updatedAt
   budgets               budgets[]
   events                events[]
-  money_account_type    money_account_types @relation(fields: [money_account_type_id], references: [id])
-  user                  users               @relation(fields: [user_id], references: [id])
+  money_account_type    money_account_types     @relation(fields: [money_account_type_id], references: [id])
+  user                  users                   @relation(fields: [user_id], references: [id])
   transactions          transactions[]
+  credit_card_reminders credit_card_reminders[]
+}
+
+model credit_card_reminders {
+  id               String         @id @default(uuid())
+  money_account_id String
+  payment_due_date Int
+  reminder_time    String
+  created_at       DateTime       @default(now())
+  updated_at       DateTime       @updatedAt
+  money_account    money_accounts @relation(fields: [money_account_id], references: [id])
 }
 
 model money_account_types {

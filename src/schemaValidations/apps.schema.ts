@@ -73,7 +73,15 @@ export const CreateMoneyAccountBody = z
       return typeof val === 'number' ? val : undefined
     }, z.number().positive().optional().nullable()),
 
-    description: z.string().optional()
+    description: z.string().optional(),
+    reminder_when_due: z.boolean().optional(),
+    payment_due_date: z
+      .union([z.string(), z.number()])
+      .transform((val) => (typeof val === 'string' ? Number(val) : val))
+      .pipe(z.number().int().min(1).max(31))
+      .optional(),
+
+    reminder_time: z.array(z.string()).optional()
   })
   .strict()
 
