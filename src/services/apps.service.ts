@@ -101,8 +101,19 @@ class AppsService {
   }
 
   async createMoneyAccount(user_id: string, body: CreateMoneyAccountBodyType) {
-    await prisma.money_accounts.create({
-      data: { ...body, user_id }
+    const { reminder_time, payment_due_date, ...money_account_body } = body
+    await prisma.$transaction(async (tx) => {
+      const newMoneyAccount = await tx.money_accounts.create({
+        data: { ...money_account_body, user_id }
+      })
+      if (!reminder_time || !payment_due_date) return
+      await tx.credit_card_reminders.createMany({
+        data: (reminder_time as string[]).map((time) => ({
+          money_account_id: newMoneyAccount.id,
+          reminder_time: time,
+          payment_due_date: payment_due_date as number
+        }))
+      })
     })
     return true
   }

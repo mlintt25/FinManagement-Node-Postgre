@@ -62,7 +62,8 @@ appsRouter.post(
  * @method POST
  * @header { Authorization: Bearer <access_token> }
  * @body { money_account_type_id: string, name: string, account_balance: number,
- *  save_to_report?: boolean, bank_type?: number, credit_limit?: number, description?: string }
+ *  save_to_report?: boolean, bank_type?: number, credit_limit?: number, description?: string,
+ *  reminder_when_due?: boolean, payment_due_date?: number, reminder_time?: string[] }
  * @returns {Object} Response object with message.
  */
 appsRouter.post(
