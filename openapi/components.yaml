@@ -1,0 +1,20 @@
+components:
+  schemas:
+    LoginBody:
+      type: object
+      properties:
+        email:
+          type: string
+          example: demo@gmail.com
+        password:
+          type: string
+          example: 123456
+    SuccessLoginRes:
+      type: object
+      properties:
+        accessToken:
+          type: string
+          example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiMTkyNWU5NjUtNTQ3Yi00ZjQxLWJhNTItMzcxZDY1MDZmMDdkIiwidG9rZW5fdHlwZSI6MCwidmVyaWZ5IjoiVW52ZXJpZmllZCIsImlhdCI6MTc0MTUwNzcxNSwiZXhwIjoxNzQxNTA5NTE1fQ.xYXbXt5g2uO5I-jm8Gc0nFIVzHi-h0-Cw1932bDek1Y
+        refreshToken:
+          type: string
+          example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiMTkyNWU5NjUtNTQ3Yi00ZjQxLWJhNTItMzcxZDY1MDZmMDdkIiwidG9rZW5fdHlwZSI6MSwidmVyaWZ5IjoiVW52ZXJpZmllZCIsImlhdCI6MTc0MTUwNzcxNSwiZXhwIjoxNzUwMTQ3NzE1fQ.Hb2D7Huy1cAigsPiMZr5Gsz6aQ7cOkANDYW1Ykc5Oc0
