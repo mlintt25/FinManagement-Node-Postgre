@@ -45,5 +45,6 @@ export const APPS_MESSAGES = {
   REMINDER_WHEN_DUE_REQUIRED: 'Reminder when due required',
   PAYMENT_DUE_DATE_REQUIRED: 'Payment due date required',
   REMINDER_TIME_REQUIRED: 'Reminder time required',
-  DELETE_USER_MONEY_ACCOUNT_BY_ID_SUCCESS: 'Delete user money account by id success'
+  DELETE_USER_MONEY_ACCOUNT_BY_ID_SUCCESS: 'Delete user money account by id success',
+  UPDATE_USER_MONEY_ACCOUNT_SUCCESS: 'Update user money account success'
 } as const
