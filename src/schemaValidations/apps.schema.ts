@@ -48,7 +48,7 @@ export const CreateTransactionRes = z.object({
 
 export type CreateTransactionResType = z.infer<typeof CreateTransactionRes>
 
-export const CreateMoneyAccountBody = z
+const MoneyAccountSchema = z
   .object({
     money_account_type_id: z.string().uuid(),
     name: z.string().min(1),
@@ -62,7 +62,7 @@ export const CreateMoneyAccountBody = z
 
     save_to_report: z.boolean().optional(),
 
-    bank_type: z.number().int().nonnegative().optional(),
+    bank_type: z.number().int().nonnegative().optional().nullable(),
 
     credit_limit: z.preprocess((val) => {
       if (val === '') return null
@@ -73,17 +73,20 @@ export const CreateMoneyAccountBody = z
       return typeof val === 'number' ? val : undefined
     }, z.number().positive().optional().nullable()),
 
-    description: z.string().optional(),
-    reminder_when_due: z.boolean().optional(),
+    description: z.string().optional().nullable(),
+    reminder_when_due: z.boolean().optional().nullable(),
     payment_due_date: z
       .union([z.string(), z.number()])
       .transform((val) => (typeof val === 'string' ? Number(val) : val))
       .pipe(z.number().int().min(1).max(31))
-      .optional(),
+      .optional()
+      .nullable(),
 
-    reminder_time: z.array(z.string()).optional()
+    reminder_time: z.array(z.string()).optional().nullable()
   })
   .strict()
+
+export const CreateMoneyAccountBody = MoneyAccountSchema
 
 export type CreateMoneyAccountBodyType = z.infer<typeof CreateMoneyAccountBody>
 
@@ -145,3 +148,15 @@ export const DeleteUserMoneyAccountByIdRes = z.object({
 })
 
 export type DeleteUserMoneyAccountByIdResType = z.infer<typeof DeleteUserMoneyAccountByIdRes>
+
+export const UpdateUserMoneyAccountBody = MoneyAccountSchema.extend({
+  id: z.string().uuid()
+})
+
+export type UpdateUserMoneyAccountBodyType = z.infer<typeof UpdateUserMoneyAccountBody>
+
+export const UpdateUserMoneyAccountRes = z.object({
+  message: z.string()
+})
+
+export type UpdateUserMoneyAccountResType = z.infer<typeof UpdateUserMoneyAccountRes>

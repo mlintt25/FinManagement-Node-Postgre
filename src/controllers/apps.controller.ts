@@ -16,7 +16,9 @@ import {
   DeleteUserMoneyAccountByIdResType,
   GetUserMoneyAccountByIdParamsType,
   GetUserMoneyAccountByIdResType,
-  GetUserMoneyAccountResType
+  GetUserMoneyAccountResType,
+  UpdateUserMoneyAccountBodyType,
+  UpdateUserMoneyAccountResType
 } from '~/schemaValidations/apps.schema'
 
 export const getAllTransactionTypeCategoryController = async (
@@ -87,4 +89,14 @@ export const deleteUserMoneyAccountByIdController = async (
   const { user_id } = req.decodedAccessToken as TokenPayload
   await appsService.deleteUserMoneyAccountById(req.params, user_id)
   return res.json({ message: APPS_MESSAGES.DELETE_USER_MONEY_ACCOUNT_BY_ID_SUCCESS })
+}
+
+export const updateUserMoneyAccountController = async (
+  req: Request<ParamsDictionary, any, UpdateUserMoneyAccountBodyType>,
+  res: Response<UpdateUserMoneyAccountResType>,
+  next: NextFunction
+) => {
+  const { user_id } = req.decodedAccessToken as TokenPayload
+  await appsService.updateUserMoneyAccount(user_id, req.body)
+  return res.json({ message: APPS_MESSAGES.UPDATE_USER_MONEY_ACCOUNT_SUCCESS })
 }

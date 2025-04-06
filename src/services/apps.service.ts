@@ -1,12 +1,13 @@
 import { money_accounts, transaction_type_categories } from '@prisma/client'
-import { TransactionType } from '~/constants/enums'
+import { MoneyAccountType, TransactionType } from '~/constants/enums'
 import prisma from '~/database'
 import { CreateTransactionTypeCategoryBodyType } from '~/schemaValidations/admins.schema'
 import {
   CreateMoneyAccountBodyType,
   CreateTransactionBodyType,
   GetUserMoneyAccountByIdParamsType,
-  TransactionTypeCategoryType
+  TransactionTypeCategoryType,
+  UpdateUserMoneyAccountBodyType
 } from '~/schemaValidations/apps.schema'
 
 class AppsService {
@@ -176,6 +177,76 @@ class AppsService {
         where: { id: params.id, user_id }
       })
     })
+    return true
+  }
+
+  async updateUserMoneyAccount(user_id: string, body: UpdateUserMoneyAccountBodyType) {
+    const { reminder_time, payment_due_date, ...money_account_body } = body
+    /**
+     * Logic:
+     * 1. Because only credit card can have reminders, so if the current money account is credit card
+     *  and the update money account is not credit card, delete all reminders of the current money account
+     * 2. If the update money account is not credit or bank, set bank_type to null
+     * 3. If the update money account is credit, create reminders for the new money account
+     *  -> Whether it's a change or a new addition, here we still delete and add again from the beginning
+     *  because of the logic characteristics according to database.
+     */
+    const [currentMoneyAccount, updateMoneyAccountType] = await Promise.all([
+      prisma.money_accounts.findUnique({
+        where: { id: body.id, user_id },
+        select: {
+          money_account_type_id: true,
+          money_account_type: {
+            select: {
+              type: true
+            }
+          }
+        }
+      }),
+      prisma.money_account_types.findUnique({
+        where: { id: body.money_account_type_id },
+        select: {
+          type: true
+        }
+      })
+    ])
+
+    const isCredit = currentMoneyAccount!.money_account_type.type === MoneyAccountType.Credit
+    const moneyAccountTypeChanged = currentMoneyAccount!.money_account_type_id !== body.money_account_type_id
+    const willBeCredit = updateMoneyAccountType!.type === MoneyAccountType.Credit
+
+    if (isCredit && moneyAccountTypeChanged) {
+      await prisma.credit_card_reminders.deleteMany({
+        where: { money_account_id: body.id }
+      })
+    }
+
+    if (
+      updateMoneyAccountType &&
+      ![MoneyAccountType.Credit, MoneyAccountType.Bank].includes(updateMoneyAccountType.type as MoneyAccountType)
+    ) {
+      money_account_body.bank_type = null
+    }
+
+    await prisma.money_accounts.update({
+      data: { ...money_account_body },
+      where: { id: body.id, user_id }
+    })
+
+    if (willBeCredit && Array.isArray(reminder_time) && typeof payment_due_date === 'number') {
+      await prisma.credit_card_reminders.deleteMany({ where: { money_account_id: body.id } })
+
+      const reminderData = reminder_time.map((time) => ({
+        money_account_id: body.id,
+        reminder_time: time,
+        payment_due_date
+      }))
+
+      if (reminderData.length > 0) {
+        await prisma.credit_card_reminders.createMany({ data: reminderData })
+      }
+    }
+
     return true
   }
 }
