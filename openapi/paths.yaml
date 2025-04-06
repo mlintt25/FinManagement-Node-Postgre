@@ -1,0 +1,63 @@
+tags:
+  - name: Authentication
+    description: Everything about your Authentication
+paths:
+  /auth/login:
+    post:
+      tags:
+        - Authentication
+      summary: Logs user into the system
+      description: Logs user into the system
+      operationId: login
+      requestBody:
+        description: Login information
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LoginBody'
+        required: true
+      responses:
+        '200':
+          description: Login success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Login success
+                  data:
+                    type: object
+                    $ref: '#/components/schemas/SuccessLoginRes'
+  /auth/logout:
+    post:
+      tags:
+        - Authentication
+      summary: Logs user out of the system
+      description: Logs user out of the system
+      operationId: logout
+      security:
+        - BearerAuth: []
+      requestBody:
+        description: Logout information
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                refreshToken:
+                  type: string
+                  example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiMTkyNWU5NjUtNTQ3Yi00ZjQxLWJhNTItMzcxZDY1MDZmMDdkIiwidG9rZW5fdHlwZSI6MSwidmVyaWZ5IjoiVW52ZXJpZmllZCIsImlhdCI6MTc0MTUwNzcxNSwiZXhwIjoxNzUwMTQ3NzE1fQ.Hb2D7Huy1cAigsPiMZr5Gsz6aQ7cOkANDYW1Ykc5Oc0
+        required: true
+      responses:
+        '200':
+          description: Logout success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Logout success
