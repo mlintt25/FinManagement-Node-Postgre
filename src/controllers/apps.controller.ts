@@ -13,6 +13,7 @@ import {
   CreateMoneyAccountResType,
   CreateTransactionBodyType,
   CreateTransactionResType,
+  DeleteUserMoneyAccountByIdResType,
   GetUserMoneyAccountByIdParamsType,
   GetUserMoneyAccountByIdResType,
   GetUserMoneyAccountResType
@@ -76,4 +77,14 @@ export const getUserMoneyAccountByIdController = async (
   const { user_id } = req.decodedAccessToken as TokenPayload
   const result = await appsService.getUserMoneyAccountById(req.params, user_id)
   return res.json({ message: APPS_MESSAGES.GET_USER_MONEY_ACCOUNT_BY_ID_SUCCESS, data: result })
+}
+
+export const deleteUserMoneyAccountByIdController = async (
+  req: Request<GetUserMoneyAccountByIdParamsType>,
+  res: Response<DeleteUserMoneyAccountByIdResType>,
+  next: NextFunction
+) => {
+  const { user_id } = req.decodedAccessToken as TokenPayload
+  await appsService.deleteUserMoneyAccountById(req.params, user_id)
+  return res.json({ message: APPS_MESSAGES.DELETE_USER_MONEY_ACCOUNT_BY_ID_SUCCESS })
 }
