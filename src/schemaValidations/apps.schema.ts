@@ -108,3 +108,34 @@ export const GetUserMoneyAccountRes = z.object({
 })
 
 export type GetUserMoneyAccountResType = z.infer<typeof GetUserMoneyAccountRes>
+
+export const GetUserMoneyAccountByIdParams = z.object({
+  id: z.string().uuid()
+})
+
+export type GetUserMoneyAccountByIdParamsType = z.infer<typeof GetUserMoneyAccountByIdParams>
+
+export const GetUserMoneyAccountByIdRes = z.object({
+  message: z.string(),
+  data: z.object({
+    id: z.string(),
+    name: z.string(),
+    account_balance: z.custom<Decimal>(), // Kiểu Decimal
+    money_account_type: z.object({
+      icon: z.string(),
+      name: z.string()
+    }),
+    credit_limit: z.custom<Decimal>().nullable(),
+    bank_type: z.number().nullable(),
+    description: z.string().nullable(),
+    reminder_when_due: z.boolean().nullable(),
+    credit_card_reminders: z.array(
+      z.object({
+        reminder_time: z.string(),
+        payment_due_date: z.number()
+      })
+    )
+  })
+})
+
+export type GetUserMoneyAccountByIdResType = z.infer<typeof GetUserMoneyAccountByIdRes>

@@ -5,6 +5,7 @@ import { CreateTransactionTypeCategoryBodyType } from '~/schemaValidations/admin
 import {
   CreateMoneyAccountBodyType,
   CreateTransactionBodyType,
+  GetUserMoneyAccountByIdParamsType,
   TransactionTypeCategoryType
 } from '~/schemaValidations/apps.schema'
 
@@ -128,6 +129,34 @@ class AppsService {
         money_account_type: {
           select: {
             icon: true
+          }
+        }
+      }
+    })
+    return result
+  }
+
+  async getUserMoneyAccountById(params: GetUserMoneyAccountByIdParamsType, user_id: string) {
+    const result = await prisma.money_accounts.findFirstOrThrow({
+      where: { id: params.id, user_id },
+      select: {
+        id: true,
+        name: true,
+        account_balance: true,
+        money_account_type: {
+          select: {
+            icon: true,
+            name: true
+          }
+        },
+        credit_limit: true,
+        bank_type: true,
+        description: true,
+        reminder_when_due: true,
+        credit_card_reminders: {
+          select: {
+            reminder_time: true,
+            payment_due_date: true
           }
         }
       }
