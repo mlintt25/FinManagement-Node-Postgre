@@ -139,3 +139,9 @@ export const GetUserMoneyAccountByIdRes = z.object({
 })
 
 export type GetUserMoneyAccountByIdResType = z.infer<typeof GetUserMoneyAccountByIdRes>
+
+export const DeleteUserMoneyAccountByIdRes = z.object({
+  message: z.string()
+})
+
+export type DeleteUserMoneyAccountByIdResType = z.infer<typeof DeleteUserMoneyAccountByIdRes>

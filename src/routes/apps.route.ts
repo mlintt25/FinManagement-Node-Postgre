@@ -5,7 +5,8 @@ import {
   createTransactionTypeCategoryController,
   getAllTransactionTypeCategoryController,
   getUserMoneyAccountController,
-  getUserMoneyAccountByIdController
+  getUserMoneyAccountByIdController,
+  deleteUserMoneyAccountByIdController
 } from '~/controllers/apps.controller'
 import {
   createMoneyAccountValidator,
@@ -94,6 +95,19 @@ appsRouter.get(
   accessTokenValidator,
   getUserMoneyAccountByIdValidator,
   wrapRequestHandler(getUserMoneyAccountByIdController)
+)
+/**
+ * @description Delete money account by id.
+ * @path /api/apps/money-account/:id
+ * @method DELETE
+ * @header { Authorization: Bearer <access_token> }
+ * @returns {Object} Response object with message.
+ */
+appsRouter.delete(
+  '/money-account/:id',
+  accessTokenValidator,
+  getUserMoneyAccountByIdValidator,
+  wrapRequestHandler(deleteUserMoneyAccountByIdController)
 )
 
 export default appsRouter
