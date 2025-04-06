@@ -4,12 +4,14 @@ import {
   createTransactionController,
   createTransactionTypeCategoryController,
   getAllTransactionTypeCategoryController,
-  getUserMoneyAccountController
+  getUserMoneyAccountController,
+  getUserMoneyAccountByIdController
 } from '~/controllers/apps.controller'
 import {
   createMoneyAccountValidator,
   createTransactionTypeCategoryValidator,
-  createTransactionValidator
+  createTransactionValidator,
+  getUserMoneyAccountByIdValidator
 } from '~/middlewares/apps.middleware'
 import { accessTokenValidator } from '~/middlewares/auth.middleware'
 import { wrapRequestHandler } from '~/utils/handlers'
@@ -80,5 +82,18 @@ appsRouter.post(
  * @returns {Object} Response object with message and data.
  */
 appsRouter.get('/money-account', accessTokenValidator, wrapRequestHandler(getUserMoneyAccountController))
+/**
+ * @description Get money account by id.
+ * @path /api/apps/money-account/:id
+ * @method GET
+ * @header { Authorization: Bearer <access_token> }
+ * @returns {Object} Response object with message and data.
+ */
+appsRouter.get(
+  '/money-account/:id',
+  accessTokenValidator,
+  getUserMoneyAccountByIdValidator,
+  wrapRequestHandler(getUserMoneyAccountByIdController)
+)
 
 export default appsRouter

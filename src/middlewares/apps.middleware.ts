@@ -3,7 +3,11 @@ import { MoneyAccountType } from '~/constants/enums'
 import { ADMINS_MESSAGES, APPS_MESSAGES } from '~/constants/messages'
 import prisma from '~/database'
 import { CreateTransactionTypeCategoryBody } from '~/schemaValidations/admins.schema'
-import { CreateMoneyAccountBody, CreateTransactionBody } from '~/schemaValidations/apps.schema'
+import {
+  CreateMoneyAccountBody,
+  CreateTransactionBody,
+  GetUserMoneyAccountByIdParams
+} from '~/schemaValidations/apps.schema'
 import { EntityError } from '~/utils/errors'
 
 export const createTransactionTypeCategoryValidator = async (req: Request, res: Response, next: NextFunction) => {
@@ -135,6 +139,22 @@ export const createMoneyAccountValidator = async (req: Request, res: Response, n
       if (payment_due_date || reminder_time) {
         throw new EntityError([{ message: APPS_MESSAGES.REMINDER_WHEN_DUE_REQUIRED, field: 'reminder_when_due' }])
       }
+    }
+
+    next()
+  } catch (error) {
+    next(error)
+  }
+}
+
+export const getUserMoneyAccountByIdValidator = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const validatedData = GetUserMoneyAccountByIdParams.parse(req.params)
+    const { id } = validatedData
+
+    const moneyAccount = await prisma.money_accounts.findUnique({ where: { id } })
+    if (!moneyAccount) {
+      throw new EntityError([{ message: APPS_MESSAGES.MONEY_ACCOUNT_NOT_FOUND, field: 'id' }])
     }
 
     next()

@@ -13,6 +13,8 @@ import {
   CreateMoneyAccountResType,
   CreateTransactionBodyType,
   CreateTransactionResType,
+  GetUserMoneyAccountByIdParamsType,
+  GetUserMoneyAccountByIdResType,
   GetUserMoneyAccountResType
 } from '~/schemaValidations/apps.schema'
 
@@ -64,4 +66,14 @@ export const getUserMoneyAccountController = async (
   const { user_id } = req.decodedAccessToken as TokenPayload
   const result = await appsService.getUserMoneyAccount(user_id)
   return res.json({ message: APPS_MESSAGES.GET_USER_MONEY_ACCOUNT_SUCCESS, data: result })
+}
+
+export const getUserMoneyAccountByIdController = async (
+  req: Request<GetUserMoneyAccountByIdParamsType>,
+  res: Response<GetUserMoneyAccountByIdResType>,
+  next: NextFunction
+) => {
+  const { user_id } = req.decodedAccessToken as TokenPayload
+  const result = await appsService.getUserMoneyAccountById(req.params, user_id)
+  return res.json({ message: APPS_MESSAGES.GET_USER_MONEY_ACCOUNT_BY_ID_SUCCESS, data: result })
 }
