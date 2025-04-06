@@ -6,13 +6,15 @@ import {
   getAllTransactionTypeCategoryController,
   getUserMoneyAccountController,
   getUserMoneyAccountByIdController,
-  deleteUserMoneyAccountByIdController
+  deleteUserMoneyAccountByIdController,
+  updateUserMoneyAccountController
 } from '~/controllers/apps.controller'
 import {
   createMoneyAccountValidator,
   createTransactionTypeCategoryValidator,
   createTransactionValidator,
-  getUserMoneyAccountByIdValidator
+  getUserMoneyAccountByIdValidator,
+  updateUserMoneyAccountValidator
 } from '~/middlewares/apps.middleware'
 import { accessTokenValidator } from '~/middlewares/auth.middleware'
 import { wrapRequestHandler } from '~/utils/handlers'
@@ -108,6 +110,22 @@ appsRouter.delete(
   accessTokenValidator,
   getUserMoneyAccountByIdValidator,
   wrapRequestHandler(deleteUserMoneyAccountByIdController)
+)
+/**
+ * @description Update money account by id.
+ * @path /api/apps/money-account
+ * @method PATCH
+ * @header { Authorization: Bearer <access_token> }
+ * @body { id: string, money_account_type_id: string, name: string, account_balance: number,
+ *  save_to_report?: boolean, bank_type?: number, credit_limit?: number, description?: string,
+ *  reminder_when_due?: boolean, payment_due_date?: number, reminder_time?: string[] }
+ * @returns {Object} Response object with message.
+ */
+appsRouter.patch(
+  '/money-account',
+  accessTokenValidator,
+  updateUserMoneyAccountValidator,
+  wrapRequestHandler(updateUserMoneyAccountController)
 )
 
 export default appsRouter
