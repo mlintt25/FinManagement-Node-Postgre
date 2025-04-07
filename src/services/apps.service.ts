@@ -1,4 +1,5 @@
 import { money_accounts, transaction_type_categories } from '@prisma/client'
+import { Decimal } from '@prisma/client/runtime/library'
 import { MoneyAccountType, TransactionType } from '~/constants/enums'
 import prisma from '~/database'
 import { CreateTransactionTypeCategoryBodyType } from '~/schemaValidations/admins.schema'
@@ -104,9 +105,11 @@ class AppsService {
 
   async createMoneyAccount(user_id: string, body: CreateMoneyAccountBodyType) {
     const { reminder_time, payment_due_date, ...money_account_body } = body
+
     await prisma.$transaction(async (tx) => {
+      // Initial balance is equal to account_balance
       const newMoneyAccount = await tx.money_accounts.create({
-        data: { ...money_account_body, user_id }
+        data: { ...money_account_body, account_balance: money_account_body.initial_balance, user_id }
       })
       if (!reminder_time || !payment_due_date) return
       await tx.credit_card_reminders.createMany({
@@ -143,7 +146,7 @@ class AppsService {
       select: {
         id: true,
         name: true,
-        account_balance: true,
+        initial_balance: true,
         money_account_type: {
           select: {
             icon: true,
@@ -186,8 +189,9 @@ class AppsService {
      * Logic:
      * 1. Because only credit card can have reminders, so if the current money account is credit card
      *  and the update money account is not credit card, delete all reminders of the current money account
-     * 2. If the update money account is not credit or bank, set bank_type to null
-     * 3. If the update money account is credit, create reminders for the new money account
+     * 2. If change initial balance, calculate the new account balance
+     * 3. If the update money account is not credit or bank, set bank_type to null
+     * 4. If the update money account is credit, create reminders for the new money account
      *  -> Whether it's a change or a new addition, here we still delete and add again from the beginning
      *  because of the logic characteristics according to database.
      */
@@ -196,6 +200,8 @@ class AppsService {
         where: { id: body.id, user_id },
         select: {
           money_account_type_id: true,
+          initial_balance: true,
+          account_balance: true,
           money_account_type: {
             select: {
               type: true
@@ -228,8 +234,16 @@ class AppsService {
       money_account_body.bank_type = null
     }
 
+    const currentInitialBalance = new Decimal(currentMoneyAccount!.initial_balance)
+    const updateInitialBalance = new Decimal(money_account_body.initial_balance)
+    const newInitialBalance = currentInitialBalance.toNumber() - updateInitialBalance.toNumber()
+    const newAccountBalance = currentMoneyAccount!.account_balance.toNumber() - newInitialBalance
+
     await prisma.money_accounts.update({
-      data: { ...money_account_body },
+      data: {
+        ...money_account_body,
+        account_balance: newAccountBalance
+      },
       where: { id: body.id, user_id }
     })
 

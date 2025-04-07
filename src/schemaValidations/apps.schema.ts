@@ -52,7 +52,8 @@ const MoneyAccountSchema = z
   .object({
     money_account_type_id: z.string().uuid(),
     name: z.string().min(1),
-    account_balance: z.preprocess((val) => {
+
+    initial_balance: z.preprocess((val) => {
       if (typeof val === 'string') {
         const parsed = parseFloat(val)
         return isNaN(parsed) ? undefined : parsed
@@ -102,7 +103,7 @@ export const GetUserMoneyAccountRes = z.object({
     z.object({
       id: z.string(),
       name: z.string(),
-      account_balance: z.custom<Decimal>(), // Kiểm tra kiểu Decimal
+      account_balance: z.custom<Decimal>(),
       money_account_type: z.object({
         icon: z.string()
       })
@@ -123,7 +124,7 @@ export const GetUserMoneyAccountByIdRes = z.object({
   data: z.object({
     id: z.string(),
     name: z.string(),
-    account_balance: z.custom<Decimal>(), // Kiểu Decimal
+    initial_balance: z.custom<Decimal>(),
     money_account_type: z.object({
       icon: z.string(),
       name: z.string()
