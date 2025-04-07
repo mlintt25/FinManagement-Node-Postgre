@@ -296,6 +296,14 @@ class AppsService {
     })
     return result
   }
+
+  async softDeleteUserTransactionById(params: GetUserTransactionByIdParamsType, user_id: string) {
+    await prisma.transactions.update({
+      where: { id: params.id, user_id },
+      data: { deleted_at: new Date() }
+    })
+    return true
+  }
 }
 
 const appsService = new AppsService()
