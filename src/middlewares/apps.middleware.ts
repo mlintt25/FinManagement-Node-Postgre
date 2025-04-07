@@ -1,3 +1,4 @@
+import { Decimal } from '@prisma/client/runtime/library'
 import { Request, Response, NextFunction } from 'express'
 import { MoneyAccountType } from '~/constants/enums'
 import { ADMINS_MESSAGES, APPS_MESSAGES } from '~/constants/messages'
