@@ -14,6 +14,7 @@ import {
   CreateTransactionBodyType,
   CreateTransactionResType,
   DeleteUserMoneyAccountByIdResType,
+  DeleteUserTransactionByIdResType,
   GetUserMoneyAccountByIdParamsType,
   GetUserMoneyAccountByIdResType,
   GetUserMoneyAccountResType,
@@ -111,4 +112,14 @@ export const getUserTransactionByIdController = async (
   const { user_id } = req.decodedAccessToken as TokenPayload
   const result = await appsService.getUserTransactionById(req.params, user_id)
   return res.json({ message: APPS_MESSAGES.GET_USER_TRANSACTION_BY_ID_SUCCESS, data: result })
+}
+
+export const deleteUserTransactionByIdController = async (
+  req: Request<GetUserTransactionByIdParamsType>,
+  res: Response<DeleteUserTransactionByIdResType>,
+  next: NextFunction
+) => {
+  const { user_id } = req.decodedAccessToken as TokenPayload
+  await appsService.softDeleteUserTransactionById(req.params, user_id)
+  return res.json({ message: APPS_MESSAGES.SOFT_DELETE_USER_TRANSACTION_BY_ID_SUCCESS })
 }

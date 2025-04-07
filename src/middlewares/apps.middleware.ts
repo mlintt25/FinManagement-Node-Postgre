@@ -261,8 +261,8 @@ export const getUserTransactionByIdValidator = async (req: Request, res: Respons
   try {
     const validatedData = GetUserTransactionByIdParams.parse(req.params)
     const { id } = validatedData
-
-    const transaction = await prisma.transactions.findUnique({ where: { id } })
+    // Only choose transactions that are not deleted (deleted_at is soft delete)
+    const transaction = await prisma.transactions.findUnique({ where: { id, deleted_at: null } })
     if (!transaction) {
       throw new EntityError([{ message: APPS_MESSAGES.TRANSACTION_NOT_FOUND, field: 'id' }])
     }
