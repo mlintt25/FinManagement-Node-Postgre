@@ -192,3 +192,9 @@ export const GetUserTransactionByIdRes = z.object({
 })
 
 export type GetUserTransactionByIdResType = z.infer<typeof GetUserTransactionByIdRes>
+
+export const DeleteUserTransactionByIdRes = z.object({
+  message: z.string()
+})
+
+export type DeleteUserTransactionByIdResType = z.infer<typeof DeleteUserTransactionByIdRes>
