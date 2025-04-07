@@ -7,6 +7,7 @@ import {
   CreateMoneyAccountBodyType,
   CreateTransactionBodyType,
   GetUserMoneyAccountByIdParamsType,
+  GetUserTransactionByIdParamsType,
   TransactionTypeCategoryType,
   UpdateUserMoneyAccountBodyType
 } from '~/schemaValidations/apps.schema'
@@ -262,6 +263,38 @@ class AppsService {
     }
 
     return true
+  }
+
+  async getUserTransactionById(params: GetUserTransactionByIdParamsType, user_id: string) {
+    const result = await prisma.transactions.findFirstOrThrow({
+      where: { id: params.id, user_id, deleted_at: null },
+      select: {
+        id: true,
+        amount_of_money: true,
+        transaction_type_category: {
+          select: {
+            icon: true,
+            name: true
+          }
+        },
+        money_account: {
+          select: {
+            money_account_type: {
+              select: {
+                icon: true,
+                name: true
+              }
+            }
+          }
+        },
+        occur_date: true,
+        description: true,
+        related_party: true,
+        reminder_date: true,
+        save_to_report: true
+      }
+    })
+    return result
   }
 }
 

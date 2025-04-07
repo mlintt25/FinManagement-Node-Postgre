@@ -7,14 +7,16 @@ import {
   getUserMoneyAccountController,
   getUserMoneyAccountByIdController,
   deleteUserMoneyAccountByIdController,
-  updateUserMoneyAccountController
+  updateUserMoneyAccountController,
+  getUserTransactionByIdController
 } from '~/controllers/apps.controller'
 import {
   createMoneyAccountValidator,
   createTransactionTypeCategoryValidator,
   createTransactionValidator,
   getUserMoneyAccountByIdValidator,
-  updateUserMoneyAccountValidator
+  updateUserMoneyAccountValidator,
+  getUserTransactionByIdValidator
 } from '~/middlewares/apps.middleware'
 import { accessTokenValidator } from '~/middlewares/auth.middleware'
 import { wrapRequestHandler } from '~/utils/handlers'
@@ -60,6 +62,19 @@ appsRouter.post(
   accessTokenValidator,
   createTransactionValidator,
   wrapRequestHandler(createTransactionController)
+)
+/**
+ * @description Get user's transaction by id.
+ * @path /api/apps/transaction/:id
+ * @method GET
+ * @header { Authorization: Bearer <access_token> }
+ * @returns {Object} Response object with message and data.
+ */
+appsRouter.get(
+  '/transaction/:id',
+  accessTokenValidator,
+  getUserTransactionByIdValidator,
+  wrapRequestHandler(getUserTransactionByIdController)
 )
 /**
  * @description Create new money account for user.
