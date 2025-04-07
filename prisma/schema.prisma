@@ -35,6 +35,7 @@ model money_accounts {
   money_account_type_id String
   user_id               String
   name                  String
+  initial_balance       Decimal                 @default(0.00)
   account_balance       Decimal                 @default(0.00)
   save_to_report        Boolean                 @default(true)
   bank_type             Int?
