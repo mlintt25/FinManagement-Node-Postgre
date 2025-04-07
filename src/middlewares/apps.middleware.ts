@@ -8,6 +8,7 @@ import {
   CreateMoneyAccountBody,
   CreateTransactionBody,
   GetUserMoneyAccountByIdParams,
+  GetUserTransactionByIdParams,
   UpdateUserMoneyAccountBody
 } from '~/schemaValidations/apps.schema'
 import { EntityError } from '~/utils/errors'
@@ -248,6 +249,22 @@ export const updateUserMoneyAccountValidator = async (req: Request, res: Respons
       if (payment_due_date || reminder_time) {
         throw new EntityError([{ message: APPS_MESSAGES.REMINDER_WHEN_DUE_REQUIRED, field: 'reminder_when_due' }])
       }
+    }
+
+    next()
+  } catch (error) {
+    next(error)
+  }
+}
+
+export const getUserTransactionByIdValidator = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const validatedData = GetUserTransactionByIdParams.parse(req.params)
+    const { id } = validatedData
+
+    const transaction = await prisma.transactions.findUnique({ where: { id } })
+    if (!transaction) {
+      throw new EntityError([{ message: APPS_MESSAGES.TRANSACTION_NOT_FOUND, field: 'id' }])
     }
 
     next()

@@ -161,3 +161,34 @@ export const UpdateUserMoneyAccountRes = z.object({
 })
 
 export type UpdateUserMoneyAccountResType = z.infer<typeof UpdateUserMoneyAccountRes>
+
+export const GetUserTransactionByIdParams = z.object({
+  id: z.string().uuid()
+})
+
+export type GetUserTransactionByIdParamsType = z.infer<typeof GetUserTransactionByIdParams>
+
+export const GetUserTransactionByIdRes = z.object({
+  message: z.string(),
+  data: z.object({
+    id: z.string(),
+    amount_of_money: z.custom<Decimal>(),
+    transaction_type_category: z.object({
+      icon: z.string(),
+      name: z.string()
+    }),
+    money_account: z.object({
+      money_account_type: z.object({
+        icon: z.string(),
+        name: z.string()
+      })
+    }),
+    occur_date: z.date(),
+    description: z.string().nullable(),
+    related_party: z.string().nullable(),
+    reminder_date: z.date().nullable(),
+    save_to_report: z.boolean()
+  })
+})
+
+export type GetUserTransactionByIdResType = z.infer<typeof GetUserTransactionByIdRes>
