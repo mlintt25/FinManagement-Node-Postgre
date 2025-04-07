@@ -17,6 +17,8 @@ import {
   GetUserMoneyAccountByIdParamsType,
   GetUserMoneyAccountByIdResType,
   GetUserMoneyAccountResType,
+  GetUserTransactionByIdParamsType,
+  GetUserTransactionByIdResType,
   UpdateUserMoneyAccountBodyType,
   UpdateUserMoneyAccountResType
 } from '~/schemaValidations/apps.schema'
@@ -99,4 +101,14 @@ export const updateUserMoneyAccountController = async (
   const { user_id } = req.decodedAccessToken as TokenPayload
   await appsService.updateUserMoneyAccount(user_id, req.body)
   return res.json({ message: APPS_MESSAGES.UPDATE_USER_MONEY_ACCOUNT_SUCCESS })
+}
+
+export const getUserTransactionByIdController = async (
+  req: Request<GetUserTransactionByIdParamsType>,
+  res: Response<GetUserTransactionByIdResType>,
+  next: NextFunction
+) => {
+  const { user_id } = req.decodedAccessToken as TokenPayload
+  const result = await appsService.getUserTransactionById(req.params, user_id)
+  return res.json({ message: APPS_MESSAGES.GET_USER_TRANSACTION_BY_ID_SUCCESS, data: result })
 }
