@@ -1,30 +1,22 @@
 import { Router } from 'express'
 import {
-  createMoneyAccountController,
   createTransactionController,
   createTransactionTypeCategoryController,
   getAllTransactionTypeCategoryController,
-  getUserMoneyAccountController,
-  getUserMoneyAccountByIdController,
-  deleteUserMoneyAccountByIdController,
-  updateUserMoneyAccountController,
   getUserTransactionByIdController,
   deleteUserTransactionByIdController,
   updateUserTransactionController
-} from '~/controllers/apps.controller'
+} from '~/controllers/transactions.controller'
 import {
-  createMoneyAccountValidator,
   createTransactionTypeCategoryValidator,
   createTransactionValidator,
-  getUserMoneyAccountByIdValidator,
-  updateUserMoneyAccountValidator,
   getUserTransactionByIdValidator,
   updateUserTransactionValidator
-} from '~/middlewares/apps.middleware'
+} from '~/middlewares/transactions.middleware'
 import { accessTokenValidator } from '~/middlewares/auth.middleware'
 import { wrapRequestHandler } from '~/utils/handlers'
 
-const appsRouter = Router()
+const transactionsRouter = Router()
 /**
  * @description Get all transaction type categories.
  * @path /api/apps/transaction-type-categories
@@ -32,7 +24,7 @@ const appsRouter = Router()
  * @header { Authorization: Bearer <access_token> }
  * @returns {Object} Response object with message and data.
  */
-appsRouter.get(
+transactionsRouter.get(
   '/transaction-type-categories',
   accessTokenValidator,
   wrapRequestHandler(getAllTransactionTypeCategoryController)
@@ -45,7 +37,7 @@ appsRouter.get(
  * @body { transaction_type_id: string, icon: string, name: string, parent_id?: string }
  * @returns {Object} Response object with message.
  */
-appsRouter.post(
+transactionsRouter.post(
   '/transaction-type-category',
   accessTokenValidator,
   createTransactionTypeCategoryValidator,
@@ -60,7 +52,7 @@ appsRouter.post(
  *  occur_date: date, event_id?: string, description?: string, related_party?: string, reminder_date?: date }
  * @returns {Object} Response object with message.
  */
-appsRouter.post(
+transactionsRouter.post(
   '/transaction',
   accessTokenValidator,
   createTransactionValidator,
@@ -73,7 +65,7 @@ appsRouter.post(
  * @header { Authorization: Bearer <access_token> }
  * @returns {Object} Response object with message and data.
  */
-appsRouter.get(
+transactionsRouter.get(
   '/transaction/:id',
   accessTokenValidator,
   getUserTransactionByIdValidator,
@@ -86,7 +78,7 @@ appsRouter.get(
  * @header { Authorization: Bearer <access_token> }
  * @returns {Object} Response object with message.
  */
-appsRouter.delete(
+transactionsRouter.delete(
   '/transaction/:id',
   accessTokenValidator,
   getUserTransactionByIdValidator,
@@ -101,77 +93,11 @@ appsRouter.delete(
  *  occur_date: date, event_id?: string, description?: string, related_party?: string, reminder_date?: date }
  * @returns {Object} Response object with message.
  */
-appsRouter.patch(
+transactionsRouter.patch(
   '/transaction',
   accessTokenValidator,
   updateUserTransactionValidator,
   wrapRequestHandler(updateUserTransactionController)
 )
-/**
- * @description Create new money account for user.
- * @path /api/apps/money-account
- * @method POST
- * @header { Authorization: Bearer <access_token> }
- * @body { money_account_type_id: string, name: string, initial_balance: number,
- *  save_to_report?: boolean, bank_type?: number, credit_limit?: number, description?: string,
- *  reminder_when_due?: boolean, payment_due_date?: number, reminder_time?: string[] }
- * @returns {Object} Response object with message.
- */
-appsRouter.post(
-  '/money-account',
-  accessTokenValidator,
-  createMoneyAccountValidator,
-  wrapRequestHandler(createMoneyAccountController)
-)
-/**
- * @description Get user's money account.
- * @path /api/apps/money-account
- * @method GET
- * @header { Authorization: Bearer <access_token> }
- * @returns {Object} Response object with message and data.
- */
-appsRouter.get('/money-account', accessTokenValidator, wrapRequestHandler(getUserMoneyAccountController))
-/**
- * @description Get money account by id.
- * @path /api/apps/money-account/:id
- * @method GET
- * @header { Authorization: Bearer <access_token> }
- * @returns {Object} Response object with message and data.
- */
-appsRouter.get(
-  '/money-account/:id',
-  accessTokenValidator,
-  getUserMoneyAccountByIdValidator,
-  wrapRequestHandler(getUserMoneyAccountByIdController)
-)
-/**
- * @description Delete money account by id.
- * @path /api/apps/money-account/:id
- * @method DELETE
- * @header { Authorization: Bearer <access_token> }
- * @returns {Object} Response object with message.
- */
-appsRouter.delete(
-  '/money-account/:id',
-  accessTokenValidator,
-  getUserMoneyAccountByIdValidator,
-  wrapRequestHandler(deleteUserMoneyAccountByIdController)
-)
-/**
- * @description Update money account by id.
- * @path /api/apps/money-account
- * @method PATCH
- * @header { Authorization: Bearer <access_token> }
- * @body { id: string, money_account_type_id: string, name: string, initial_balance: number,
- *  save_to_report?: boolean, bank_type?: number, credit_limit?: number, description?: string,
- *  reminder_when_due?: boolean, payment_due_date?: number, reminder_time?: string[] }
- * @returns {Object} Response object with message.
- */
-appsRouter.patch(
-  '/money-account',
-  accessTokenValidator,
-  updateUserMoneyAccountValidator,
-  wrapRequestHandler(updateUserMoneyAccountController)
-)
 
-export default appsRouter
+export default transactionsRouter

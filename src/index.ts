@@ -9,7 +9,8 @@ import envConfig from './configs'
 import usersRouter from './routes/users.route'
 import { PrismaErrorCode } from './constants/prisma-error'
 import adminsRouter from './routes/admins.route'
-import appsRouter from './routes/apps.route'
+import transactionsRouter from './routes/transactions.route'
+import moneyAccountsRouter from './routes/money-accounts.route'
 import swaggerUi from 'swagger-ui-express'
 import swaggerJsdoc from 'swagger-jsdoc'
 
@@ -73,7 +74,8 @@ app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(openapiSpecification))
 app.use(`${prefix}/auth`, authRouter)
 app.use(`${prefix}/users`, usersRouter)
 app.use(`${prefix}/admins`, adminsRouter)
-app.use(`${prefix}/apps`, appsRouter)
+app.use(`${prefix}/transactions`, transactionsRouter)
+app.use(`${prefix}/money-accounts`, moneyAccountsRouter)
 app.use(defaultErrorHandler)
 
 const startServer = async () => {
