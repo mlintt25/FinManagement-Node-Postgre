@@ -302,9 +302,51 @@ class AppsService {
   }
 
   async softDeleteUserTransactionById(params: GetUserTransactionByIdParamsType, user_id: string) {
-    await prisma.transactions.update({
-      where: { id: params.id, user_id },
-      data: { deleted_at: new Date() }
+    /**
+     * Logic:
+     * 1. Get transaction type (Expense or Income) of the transaction
+     * 2. Based on type, update (+) (-) account balance accordingly
+     */
+    await prisma.$transaction(async (tx) => {
+      const transaction = await tx.transactions.findUnique({
+        where: { id: params.id, user_id },
+        select: {
+          amount_of_money: true,
+          transaction_type_category: {
+            select: {
+              transaction_type: {
+                select: {
+                  type: true
+                }
+              }
+            }
+          },
+          money_account_id: true
+        }
+      })
+
+      const transactionType = transaction!.transaction_type_category.transaction_type.type
+
+      if (transactionType === TransactionType.Expense) {
+        await tx.money_accounts.update({
+          where: { id: transaction!.money_account_id },
+          data: {
+            account_balance: { increment: transaction!.amount_of_money }
+          }
+        })
+      } else {
+        await tx.money_accounts.update({
+          where: { id: transaction!.money_account_id },
+          data: {
+            account_balance: { decrement: transaction!.amount_of_money }
+          }
+        })
+      }
+
+      await tx.transactions.update({
+        where: { id: params.id, user_id },
+        data: { deleted_at: new Date() }
+      })
     })
     return true
   }
