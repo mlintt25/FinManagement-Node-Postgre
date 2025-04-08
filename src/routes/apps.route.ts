@@ -9,7 +9,8 @@ import {
   deleteUserMoneyAccountByIdController,
   updateUserMoneyAccountController,
   getUserTransactionByIdController,
-  deleteUserTransactionByIdController
+  deleteUserTransactionByIdController,
+  updateUserTransactionController
 } from '~/controllers/apps.controller'
 import {
   createMoneyAccountValidator,
@@ -17,7 +18,8 @@ import {
   createTransactionValidator,
   getUserMoneyAccountByIdValidator,
   updateUserMoneyAccountValidator,
-  getUserTransactionByIdValidator
+  getUserTransactionByIdValidator,
+  updateUserTransactionValidator
 } from '~/middlewares/apps.middleware'
 import { accessTokenValidator } from '~/middlewares/auth.middleware'
 import { wrapRequestHandler } from '~/utils/handlers'
@@ -89,6 +91,21 @@ appsRouter.delete(
   accessTokenValidator,
   getUserTransactionByIdValidator,
   wrapRequestHandler(deleteUserTransactionByIdController)
+)
+/**
+ * @description Update user's transaction by id.
+ * @path /api/apps/transaction
+ * @method PATCH
+ * @header { Authorization: Bearer <access_token> }
+ * @body { id: string, transaction_type_category_id: string, money_account_id: string, amount_of_money: number,
+ *  occur_date: date, event_id?: string, description?: string, related_party?: string, reminder_date?: date }
+ * @returns {Object} Response object with message.
+ */
+appsRouter.patch(
+  '/transaction',
+  accessTokenValidator,
+  updateUserTransactionValidator,
+  wrapRequestHandler(updateUserTransactionController)
 )
 /**
  * @description Create new money account for user.

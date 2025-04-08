@@ -49,6 +49,6 @@ export const APPS_MESSAGES = {
   UPDATE_USER_MONEY_ACCOUNT_SUCCESS: 'Update user money account success',
   TRANSACTION_NOT_FOUND: 'Transaction not found',
   GET_USER_TRANSACTION_BY_ID_SUCCESS: 'Get user transaction by id success',
-  SOFT_DELETE_USER_TRANSACTION_BY_ID_SUCCESS:
-    'Your transaction has been temporarily deleted successfully, you can still restore it within the next 30 days'
+  SOFT_DELETE_USER_TRANSACTION_BY_ID_SUCCESS: 'Deleted successfully, you can still restore it within 10 days',
+  UPDATE_TRANSACTION_SUCCESS: 'Update transaction success'
 } as const
