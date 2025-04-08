@@ -172,6 +172,9 @@ class AppsService {
   async deleteUserMoneyAccountById(params: GetUserMoneyAccountByIdParamsType, user_id: string) {
     // Use transaction to make sure that both the transactions and money_accounts are updated
     await prisma.$transaction(async (prisma) => {
+      await prisma.transactions.deleteMany({
+        where: { money_account_id: params.id, user_id }
+      })
       // Delete all reminders of money_account
       await prisma.credit_card_reminders.deleteMany({
         where: { money_account_id: params.id }
