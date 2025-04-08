@@ -9,7 +9,8 @@ import {
   GetUserMoneyAccountByIdParamsType,
   GetUserTransactionByIdParamsType,
   TransactionTypeCategoryType,
-  UpdateUserMoneyAccountBodyType
+  UpdateUserMoneyAccountBodyType,
+  UpdateUserTransactionBodyType
 } from '~/schemaValidations/apps.schema'
 
 class AppsService {
@@ -305,6 +306,141 @@ class AppsService {
       where: { id: params.id, user_id },
       data: { deleted_at: new Date() }
     })
+    return true
+  }
+
+  async updateUserTransaction(user_id: string, body: UpdateUserTransactionBodyType) {
+    /**
+     * Logic:
+     * 1. Get current transaction and new (update) transaction type
+     * 2. Check type (Expense or Income) of 1.
+     * 3. If type Expense <=> Income
+     *  - Expense:
+     *      Increment: currentAmountOfMoney in current(old)Transaction
+     *      Increment: updateAmountOfMoney in new(update)Transaction
+     * - Income:
+     *      Decrement: currentAmountOfMoney in current(old)Transaction
+     *      Decrement: updateAmountOfMoney in new(update)Transaction
+     * 4. If type Income -> Income or Expense -> Expense (same type)
+     *  - Expense:
+     *      Increment: currentAmountOfMoney in current(old)Transaction
+     *      Decrement: updateAmountOfMoney in new(update)Transaction
+     * - Income:
+     *     Decrement: currentAmountOfMoney in current(old)Transaction
+     *     Increment: updateAmountOfMoney in new(update)Transaction
+     * => Be money_account may change
+     *    Must (+) (-) current(old), new(update) amount to old money_account, new money_account balance
+     */
+    await prisma.$transaction(async (tx) => {
+      const [currentTransaction, updateTransactionType] = await Promise.all([
+        tx.transactions.findUnique({
+          where: { id: body.id, user_id },
+          select: {
+            amount_of_money: true,
+            transaction_type_category: {
+              select: {
+                transaction_type: {
+                  select: {
+                    type: true
+                  }
+                }
+              }
+            },
+            money_account_id: true,
+            money_account: {
+              select: {
+                account_balance: true
+              }
+            }
+          }
+        }),
+        tx.transaction_type_categories.findUnique({
+          where: { id: body.transaction_type_category_id },
+          select: {
+            transaction_type: {
+              select: {
+                type: true
+              }
+            }
+          }
+        })
+      ])
+
+      const currentAmountOfMoney = currentTransaction!.amount_of_money.toNumber()
+      const updateAmountOfMoney = body.amount_of_money
+      const currentTransactionType = currentTransaction!.transaction_type_category.transaction_type.type
+      const changedTransactionType =
+        currentTransaction!.transaction_type_category.transaction_type.type !==
+        updateTransactionType!.transaction_type.type
+
+      if (changedTransactionType) {
+        if (currentTransactionType === TransactionType.Expense) {
+          await Promise.all([
+            tx.money_accounts.update({
+              where: { id: currentTransaction!.money_account_id },
+              data: { account_balance: { increment: currentAmountOfMoney } }
+            }),
+            tx.money_accounts.update({
+              where: { id: body.money_account_id },
+              data: { account_balance: { increment: updateAmountOfMoney } }
+            })
+          ])
+        } else {
+          await Promise.all([
+            tx.money_accounts.update({
+              where: { id: currentTransaction!.money_account_id },
+              data: {
+                account_balance: { decrement: currentAmountOfMoney }
+              }
+            }),
+            tx.money_accounts.update({
+              where: { id: body.money_account_id },
+              data: {
+                account_balance: { decrement: updateAmountOfMoney }
+              }
+            })
+          ])
+        }
+      } else {
+        if (currentTransactionType === TransactionType.Expense) {
+          await Promise.all([
+            tx.money_accounts.update({
+              where: { id: currentTransaction!.money_account_id },
+              data: {
+                account_balance: { increment: currentAmountOfMoney }
+              }
+            }),
+            tx.money_accounts.update({
+              where: { id: body.money_account_id },
+              data: {
+                account_balance: { decrement: updateAmountOfMoney }
+              }
+            })
+          ])
+        } else {
+          await Promise.all([
+            tx.money_accounts.update({
+              where: { id: currentTransaction!.money_account_id },
+              data: {
+                account_balance: { decrement: currentAmountOfMoney }
+              }
+            }),
+            tx.money_accounts.update({
+              where: { id: body.money_account_id },
+              data: {
+                account_balance: { increment: updateAmountOfMoney }
+              }
+            })
+          ])
+        }
+      }
+
+      await prisma.transactions.update({
+        where: { id: body.id, user_id },
+        data: { ...body }
+      })
+    })
+
     return true
   }
 }

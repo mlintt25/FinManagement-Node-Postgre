@@ -9,7 +9,8 @@ import {
   CreateTransactionBody,
   GetUserMoneyAccountByIdParams,
   GetUserTransactionByIdParams,
-  UpdateUserMoneyAccountBody
+  UpdateUserMoneyAccountBody,
+  UpdateUserTransactionBody
 } from '~/schemaValidations/apps.schema'
 import { EntityError } from '~/utils/errors'
 
@@ -265,6 +266,44 @@ export const getUserTransactionByIdValidator = async (req: Request, res: Respons
     const transaction = await prisma.transactions.findUnique({ where: { id, deleted_at: null } })
     if (!transaction) {
       throw new EntityError([{ message: APPS_MESSAGES.TRANSACTION_NOT_FOUND, field: 'id' }])
+    }
+
+    next()
+  } catch (error) {
+    next(error)
+  }
+}
+
+export const updateUserTransactionValidator = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const validatedData = UpdateUserTransactionBody.parse(req.body)
+    const { id, money_account_id, transaction_type_category_id, event_id } = validatedData
+
+    const [transaction, moneyAccount, transactionTypeCategory] = await Promise.all([
+      prisma.transactions.findUnique({ where: { id } }),
+      prisma.money_accounts.findUnique({ where: { id: money_account_id } }),
+      prisma.transaction_type_categories.findUnique({ where: { id: transaction_type_category_id } })
+    ])
+
+    if (!transaction) {
+      throw new EntityError([{ message: APPS_MESSAGES.TRANSACTION_NOT_FOUND, field: 'id' }])
+    }
+
+    if (!moneyAccount) {
+      throw new EntityError([{ message: APPS_MESSAGES.MONEY_ACCOUNT_NOT_FOUND, field: 'money_account_id' }])
+    }
+
+    if (!transactionTypeCategory) {
+      throw new EntityError([
+        { message: APPS_MESSAGES.TRANSACTION_TYPE_CATEGORY_NOT_FOUND, field: 'transaction_type_category_id' }
+      ])
+    }
+
+    if (event_id) {
+      const event = await prisma.events.findUnique({ where: { id: event_id } })
+      if (!event) {
+        throw new EntityError([{ message: APPS_MESSAGES.EVENT_NOT_FOUND, field: 'event_id' }])
+      }
     }
 
     next()

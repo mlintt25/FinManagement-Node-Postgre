@@ -21,7 +21,9 @@ import {
   GetUserTransactionByIdParamsType,
   GetUserTransactionByIdResType,
   UpdateUserMoneyAccountBodyType,
-  UpdateUserMoneyAccountResType
+  UpdateUserMoneyAccountResType,
+  UpdateUserTransactionBodyType,
+  UpdateUserTransactionResType
 } from '~/schemaValidations/apps.schema'
 
 export const getAllTransactionTypeCategoryController = async (
@@ -122,4 +124,14 @@ export const deleteUserTransactionByIdController = async (
   const { user_id } = req.decodedAccessToken as TokenPayload
   await appsService.softDeleteUserTransactionById(req.params, user_id)
   return res.json({ message: APPS_MESSAGES.SOFT_DELETE_USER_TRANSACTION_BY_ID_SUCCESS })
+}
+
+export const updateUserTransactionController = async (
+  req: Request<ParamsDictionary, any, UpdateUserTransactionBodyType>,
+  res: Response<UpdateUserTransactionResType>,
+  next: NextFunction
+) => {
+  const { user_id } = req.decodedAccessToken as TokenPayload
+  await appsService.updateUserTransaction(user_id, req.body)
+  return res.json({ message: APPS_MESSAGES.UPDATE_TRANSACTION_SUCCESS })
 }
