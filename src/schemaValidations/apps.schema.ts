@@ -22,7 +22,7 @@ export const AllTransactionTypeCategoriesRes = z.object({
 
 export type AllTransactionTypeCategoriesResType = z.infer<typeof AllTransactionTypeCategoriesRes>
 
-export const CreateTransactionBody = z.object({
+const TransactionSchema = z.object({
   transaction_type_category_id: z.string().uuid(),
   money_account_id: z.string().uuid(),
   amount_of_money: z.preprocess((val) => {
@@ -34,11 +34,13 @@ export const CreateTransactionBody = z.object({
   }, z.number().nonnegative()),
   occur_date: z.string().datetime().optional(),
   save_to_report: z.boolean().optional(),
-  event_id: z.string().uuid().optional(),
-  description: z.string().optional(),
-  related_party: z.string().optional(),
-  reminder_date: z.string().datetime().optional()
+  event_id: z.string().uuid().optional().nullable(),
+  description: z.string().optional().nullable(),
+  related_party: z.string().optional().nullable(),
+  reminder_date: z.string().datetime().optional().nullable()
 })
+
+export const CreateTransactionBody = TransactionSchema
 
 export type CreateTransactionBodyType = z.infer<typeof CreateTransactionBody>
 
@@ -198,3 +200,15 @@ export const DeleteUserTransactionByIdRes = z.object({
 })
 
 export type DeleteUserTransactionByIdResType = z.infer<typeof DeleteUserTransactionByIdRes>
+
+export const UpdateUserTransactionBody = TransactionSchema.extend({
+  id: z.string().uuid()
+})
+
+export type UpdateUserTransactionBodyType = z.infer<typeof UpdateUserTransactionBody>
+
+export const UpdateUserTransactionRes = z.object({
+  message: z.string()
+})
+
+export type UpdateUserTransactionResType = z.infer<typeof UpdateUserTransactionRes>
