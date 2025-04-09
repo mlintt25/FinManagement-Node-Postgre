@@ -79,6 +79,7 @@ export const GetUserMoneyAccountByIdRes = z.object({
     name: z.string(),
     initial_balance: z.custom<Decimal>(),
     money_account_type: z.object({
+      id: z.string(),
       icon: z.string(),
       name: z.string()
     }),
