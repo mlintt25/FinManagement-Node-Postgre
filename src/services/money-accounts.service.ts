@@ -54,6 +54,7 @@ class MoneyAccountsService {
         initial_balance: true,
         money_account_type: {
           select: {
+            id: true,
             icon: true,
             name: true
           }
