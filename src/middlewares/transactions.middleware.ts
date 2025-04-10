@@ -5,9 +5,12 @@ import { CreateTransactionTypeCategoryBody } from '~/schemaValidations/admins.sc
 import {
   CreateTransactionBody,
   GetUserTransactionByIdParams,
+  GetUserTransactionByTimeQuery,
   UpdateUserTransactionBody
 } from '~/schemaValidations/transactions.schema'
 import { EntityError } from '~/utils/errors'
+import { parse, isMatch } from 'date-fns'
+import { convertDateFormat } from '~/utils/utils'
 
 export const createTransactionTypeCategoryValidator = async (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -83,6 +86,31 @@ export const getUserTransactionByIdValidator = async (req: Request, res: Respons
     const transaction = await prisma.transactions.findUnique({ where: { id, deleted_at: null } })
     if (!transaction) {
       throw new EntityError([{ message: APPS_MESSAGES.TRANSACTION_NOT_FOUND, field: 'id' }])
+    }
+
+    next()
+  } catch (error) {
+    next(error)
+  }
+}
+
+export const getUserTransactionByTimeValidator = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const validatedData = GetUserTransactionByTimeQuery.parse(req.query)
+    const { from, to } = validatedData
+    // Always convert date format to YYYY-MM-DD
+    const dateFormat = 'yyyy-mm-dd'
+    const isDateFormat = isMatch(from, dateFormat)
+
+    if (!isDateFormat) {
+      req.query.from = convertDateFormat(from)
+      req.query.to = convertDateFormat(to)
+    }
+
+    const fromDate = new Date(req.query.from as string)
+    const toDate = new Date(req.query.to as string)
+    if (fromDate > toDate) {
+      throw new EntityError([{ message: APPS_MESSAGES.INVALID_DATE_RANGE, field: 'from' }])
     }
 
     next()
