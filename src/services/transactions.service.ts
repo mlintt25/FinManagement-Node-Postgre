@@ -1,9 +1,12 @@
+import { Decimal } from '@prisma/client/runtime/library'
 import { TransactionType } from '~/constants/enums'
 import prisma from '~/database'
 import { CreateTransactionTypeCategoryBodyType } from '~/schemaValidations/admins.schema'
 import {
   CreateTransactionBodyType,
   GetUserTransactionByIdParamsType,
+  GetUserTransactionByTimeQueryType,
+  GetUserTransactionByTimeResType,
   TransactionTypeCategoryType,
   UpdateUserTransactionBodyType
 } from '~/schemaValidations/transactions.schema'
@@ -130,6 +133,89 @@ class TransactionsService {
       }
     })
     return result
+  }
+
+  async getUserTransactionByTime(query: GetUserTransactionByTimeQueryType, user_id: string) {
+    const fromDate = new Date(query.from)
+    const toDate = new Date(query.to)
+    toDate.setHours(23, 59, 59, 999)
+
+    const transactions = await prisma.transactions.findMany({
+      where: {
+        user_id,
+        occur_date: { gte: fromDate, lte: toDate },
+        deleted_at: null
+      },
+      select: {
+        id: true,
+        amount_of_money: true,
+        transaction_type_category: {
+          select: {
+            icon: true,
+            name: true,
+            transaction_type: {
+              select: {
+                type: true
+              }
+            }
+          }
+        },
+        money_account: {
+          select: {
+            name: true,
+            money_account_type: {
+              select: {
+                icon: true,
+                name: true
+              }
+            }
+          }
+        },
+        description: true,
+        occur_date: true,
+        save_to_report: true
+      },
+      orderBy: { occur_date: 'desc' }
+    })
+
+    /**
+     * Convert data to format:
+     * {
+     *  'date': {
+     *    transactions: [],
+     *    total_expense: 0,
+     *    total_income: 0
+     *  }
+     * }
+     */
+    const groupedByTransactions = transactions.reduce(
+      (
+        acc: Record<string, { transactions: (typeof transaction)[]; total_expense: Decimal; total_income: Decimal }>,
+        transaction
+      ) => {
+        const date = transaction.occur_date.toISOString().split('T')[0]
+        const transactionType = transaction.transaction_type_category.transaction_type.type
+
+        if (!acc[date]) {
+          acc[date] = {
+            transactions: [],
+            total_expense: new Decimal(0),
+            total_income: new Decimal(0)
+          }
+        }
+        acc[date].transactions.push(transaction)
+
+        if (transactionType === TransactionType.Expense) {
+          acc[date].total_expense = acc[date].total_expense.plus(transaction.amount_of_money)
+        } else {
+          acc[date].total_income = acc[date].total_income.plus(transaction.amount_of_money)
+        }
+        return acc
+      },
+      {}
+    )
+
+    return groupedByTransactions
   }
 
   async softDeleteUserTransactionById(params: GetUserTransactionByIdParamsType, user_id: string) {
