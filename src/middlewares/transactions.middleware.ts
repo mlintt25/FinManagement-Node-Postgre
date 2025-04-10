@@ -98,19 +98,26 @@ export const getUserTransactionByTimeValidator = async (req: Request, res: Respo
   try {
     const validatedData = GetUserTransactionByTimeQuery.parse(req.query)
     const { from, to } = validatedData
-    // Always convert date format to YYYY-MM-DD
-    const dateFormat = 'yyyy-mm-dd'
-    const isDateFormat = isMatch(from, dateFormat)
 
-    if (!isDateFormat) {
-      req.query.from = convertDateFormat(from)
-      req.query.to = convertDateFormat(to)
+    if ((from && !to) || (!from && to)) {
+      throw new EntityError([{ message: APPS_MESSAGES.MUST_NOT_EMPTY_BOTH_FROM_DATE_AND_TO_DATE, field: 'from' }])
     }
 
-    const fromDate = new Date(req.query.from as string)
-    const toDate = new Date(req.query.to as string)
-    if (fromDate > toDate) {
-      throw new EntityError([{ message: APPS_MESSAGES.INVALID_DATE_RANGE, field: 'from' }])
+    if (from && to) {
+      // Always convert date format to YYYY-MM-DD
+      const dateFormat = 'yyyy-mm-dd'
+      const isDateFormat = isMatch(from, dateFormat)
+
+      if (!isDateFormat) {
+        req.query.from = convertDateFormat(from)
+        req.query.to = convertDateFormat(to)
+      }
+
+      const fromDate = new Date(req.query.from as string)
+      const toDate = new Date(req.query.to as string)
+      if (fromDate > toDate) {
+        throw new EntityError([{ message: APPS_MESSAGES.INVALID_DATE_RANGE, field: 'from' }])
+      }
     }
 
     next()

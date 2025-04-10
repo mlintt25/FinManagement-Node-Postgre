@@ -52,5 +52,6 @@ export const APPS_MESSAGES = {
   GET_USER_TRANSACTION_BY_TIME_SUCCESS: 'Get user transaction by time success',
   SOFT_DELETE_USER_TRANSACTION_BY_ID_SUCCESS: 'Deleted successfully, you can still restore it within 10 days',
   UPDATE_TRANSACTION_SUCCESS: 'Update transaction success',
-  INVALID_DATE_RANGE: 'From date must be less than to date'
+  INVALID_DATE_RANGE: 'From date must be less than to date',
+  MUST_NOT_EMPTY_BOTH_FROM_DATE_AND_TO_DATE: 'From date and to date must not be empty'
 } as const
