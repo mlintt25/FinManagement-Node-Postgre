@@ -81,6 +81,51 @@ export const GetUserTransactionByIdRes = z.object({
 
 export type GetUserTransactionByIdResType = z.infer<typeof GetUserTransactionByIdRes>
 
+const dateRegex = /^(?:\d{4}-\d{2}-\d{2}|\d{2}-\d{2}-\d{4})$/
+
+export const GetUserTransactionByTimeQuery = z.object({
+  from: z.string().regex(dateRegex, 'Invalid date format, only accept YYYY-MM-DD or DD-MM-YYYY format'),
+  to: z.string().regex(dateRegex, 'Invalid date format, only accept YYYY-MM-DD or DD-MM-YYYY format')
+})
+
+export type GetUserTransactionByTimeQueryType = z.infer<typeof GetUserTransactionByTimeQuery>
+
+export const GetUserTransactionByTimeRes = z.object({
+  message: z.string(),
+  data: z.record(
+    z.string(),
+    z.object({
+      transactions: z.array(
+        z.object({
+          id: z.string(),
+          amount_of_money: z.custom<Decimal>(),
+          transaction_type_category: z.object({
+            icon: z.string(),
+            name: z.string(),
+            transaction_type: z.object({
+              type: z.string()
+            })
+          }),
+          money_account: z.object({
+            name: z.string(),
+            money_account_type: z.object({
+              icon: z.string(),
+              name: z.string()
+            })
+          }),
+          description: z.string().nullable(),
+          occur_date: z.date(),
+          save_to_report: z.boolean()
+        })
+      ),
+      total_expense: z.custom<Decimal>(),
+      total_income: z.custom<Decimal>()
+    })
+  )
+})
+
+export type GetUserTransactionByTimeResType = z.infer<typeof GetUserTransactionByTimeRes>
+
 export const DeleteUserTransactionByIdRes = z.object({
   message: z.string()
 })

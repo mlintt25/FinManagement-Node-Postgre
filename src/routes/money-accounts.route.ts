@@ -44,6 +44,7 @@ moneyAccountsRouter.get('/money-account', accessTokenValidator, wrapRequestHandl
  * @path /api/money-accounts/money-account/:id
  * @method GET
  * @header { Authorization: Bearer <access_token> }
+ * @params { id: string }
  * @returns {Object} Response object with message and data.
  */
 moneyAccountsRouter.get(
@@ -57,6 +58,7 @@ moneyAccountsRouter.get(
  * @path /api/money-accounts/money-account/:id
  * @method DELETE
  * @header { Authorization: Bearer <access_token> }
+ * @params { id: string }
  * @returns {Object} Response object with message.
  */
 moneyAccountsRouter.delete(

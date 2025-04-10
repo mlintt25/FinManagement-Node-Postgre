@@ -5,13 +5,15 @@ import {
   getAllTransactionTypeCategoryController,
   getUserTransactionByIdController,
   deleteUserTransactionByIdController,
-  updateUserTransactionController
+  updateUserTransactionController,
+  getUserTransactionByTimeController
 } from '~/controllers/transactions.controller'
 import {
   createTransactionTypeCategoryValidator,
   createTransactionValidator,
   getUserTransactionByIdValidator,
-  updateUserTransactionValidator
+  updateUserTransactionValidator,
+  getUserTransactionByTimeValidator
 } from '~/middlewares/transactions.middleware'
 import { accessTokenValidator } from '~/middlewares/auth.middleware'
 import { wrapRequestHandler } from '~/utils/handlers'
@@ -63,6 +65,7 @@ transactionsRouter.post(
  * @path /api/transactions/transaction/:id
  * @method GET
  * @header { Authorization: Bearer <access_token> }
+ * @params { id: string }
  * @returns {Object} Response object with message and data.
  */
 transactionsRouter.get(
@@ -72,10 +75,25 @@ transactionsRouter.get(
   wrapRequestHandler(getUserTransactionByIdController)
 )
 /**
+ * @description Get user's transaction by time.
+ * @path /api/transactions/transaction?from=<date>&to=<date>
+ * @method GET
+ * @header { Authorization: Bearer <access_token> }
+ * @query { from: date, to: date }
+ * @returns {Object} Response object with message and data.
+ */
+transactionsRouter.get(
+  '/transaction',
+  accessTokenValidator,
+  getUserTransactionByTimeValidator,
+  wrapRequestHandler(getUserTransactionByTimeController)
+)
+/**
  * @description Delete user's transaction by id.
  * @path /api/transactions/transaction/:id
  * @method DELETE
  * @header { Authorization: Bearer <access_token> }
+ * @params { id: string }
  * @returns {Object} Response object with message.
  */
 transactionsRouter.delete(

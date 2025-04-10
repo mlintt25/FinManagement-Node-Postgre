@@ -13,6 +13,8 @@ import {
   DeleteUserTransactionByIdResType,
   GetUserTransactionByIdParamsType,
   GetUserTransactionByIdResType,
+  GetUserTransactionByTimeQueryType,
+  GetUserTransactionByTimeResType,
   UpdateUserTransactionBodyType,
   UpdateUserTransactionResType
 } from '~/schemaValidations/transactions.schema'
@@ -56,6 +58,16 @@ export const getUserTransactionByIdController = async (
   const { user_id } = req.decodedAccessToken as TokenPayload
   const result = await transactionsService.getUserTransactionById(req.params, user_id)
   return res.json({ message: APPS_MESSAGES.GET_USER_TRANSACTION_BY_ID_SUCCESS, data: result })
+}
+
+export const getUserTransactionByTimeController = async (
+  req: Request<ParamsDictionary, any, any, GetUserTransactionByTimeQueryType>,
+  res: Response<GetUserTransactionByTimeResType>,
+  next: NextFunction
+) => {
+  const { user_id } = req.decodedAccessToken as TokenPayload
+  const result = await transactionsService.getUserTransactionByTime(req.query, user_id)
+  return res.json({ message: APPS_MESSAGES.GET_USER_TRANSACTION_BY_TIME_SUCCESS, data: result })
 }
 
 export const deleteUserTransactionByIdController = async (
