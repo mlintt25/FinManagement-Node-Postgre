@@ -76,6 +76,7 @@ transactionsRouter.get(
 )
 /**
  * @description Get user's transaction by time.
+ * @path /api/transactions/transaction
  * @path /api/transactions/transaction?from=<date>&to=<date>
  * @method GET
  * @header { Authorization: Bearer <access_token> }

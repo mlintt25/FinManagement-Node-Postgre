@@ -136,16 +136,29 @@ class TransactionsService {
   }
 
   async getUserTransactionByTime(query: GetUserTransactionByTimeQueryType, user_id: string) {
-    const fromDate = new Date(query.from)
-    const toDate = new Date(query.to)
-    toDate.setHours(23, 59, 59, 999)
+    let fromDate: Date | undefined
+    let toDate: Date | undefined
+
+    if (query.from && query.to) {
+      fromDate = new Date(query.from)
+      toDate = new Date(query.to)
+      toDate.setHours(23, 59, 59, 999)
+    }
+
+    const whereCondition: any = {
+      user_id,
+      deleted_at: null
+    }
+
+    if (fromDate && toDate) {
+      whereCondition.occur_date = {
+        gte: fromDate,
+        lte: toDate
+      }
+    }
 
     const transactions = await prisma.transactions.findMany({
-      where: {
-        user_id,
-        occur_date: { gte: fromDate, lte: toDate },
-        deleted_at: null
-      },
+      where: whereCondition,
       select: {
         id: true,
         amount_of_money: true,
@@ -163,6 +176,8 @@ class TransactionsService {
         money_account: {
           select: {
             name: true,
+            account_balance: true,
+            credit_limit: true,
             money_account_type: {
               select: {
                 icon: true,
@@ -181,13 +196,19 @@ class TransactionsService {
     /**
      * Convert data to format:
      * {
-     *  'date': {
-     *    transactions: [],
-     *    total_expense: 0,
-     *    total_income: 0
-     *  }
+     *  transactions_by_date: {
+     *    'date': {
+     *      transactions: [transaction1, transaction2, ...],
+     *      total_expense: ...,
+     *      total_income: ...
+     *    }
+     *  },
+     *  total_all_expense: ...,
+     *  total_all_income: ...
      * }
      */
+    let total_all_expense = new Decimal(0)
+    let total_all_income = new Decimal(0)
     const groupedByTransactions = transactions.reduce(
       (
         acc: Record<string, { transactions: (typeof transaction)[]; total_expense: Decimal; total_income: Decimal }>,
@@ -207,15 +228,21 @@ class TransactionsService {
 
         if (transactionType === TransactionType.Expense) {
           acc[date].total_expense = acc[date].total_expense.plus(transaction.amount_of_money)
+          total_all_expense = total_all_expense.plus(transaction.amount_of_money)
         } else {
           acc[date].total_income = acc[date].total_income.plus(transaction.amount_of_money)
+          total_all_income = total_all_income.plus(transaction.amount_of_money)
         }
         return acc
       },
       {}
     )
 
-    return groupedByTransactions
+    return {
+      transactions_by_date: groupedByTransactions,
+      total_all_expense: total_all_expense,
+      total_all_income: total_all_income
+    }
   }
 
   async softDeleteUserTransactionById(params: GetUserTransactionByIdParamsType, user_id: string) {
