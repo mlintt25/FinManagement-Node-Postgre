@@ -85,7 +85,8 @@ const dateRegex = /^(?:\d{4}-\d{2}-\d{2}|\d{2}-\d{2}-\d{4})$/
 
 export const GetUserTransactionByTimeQuery = z.object({
   from: z.string().regex(dateRegex, 'Invalid date format, only accept YYYY-MM-DD or DD-MM-YYYY format').optional(),
-  to: z.string().regex(dateRegex, 'Invalid date format, only accept YYYY-MM-DD or DD-MM-YYYY format').optional()
+  to: z.string().regex(dateRegex, 'Invalid date format, only accept YYYY-MM-DD or DD-MM-YYYY format').optional(),
+  money_account_id: z.string().uuid().optional()
 })
 
 export type GetUserTransactionByTimeQueryType = z.infer<typeof GetUserTransactionByTimeQuery>
@@ -124,7 +125,8 @@ export const GetUserTransactionByTimeRes = z.object({
       })
     ),
     total_all_expense: z.custom<Decimal>(),
-    total_all_income: z.custom<Decimal>()
+    total_all_income: z.custom<Decimal>(),
+    current_account_balance: z.custom<Decimal>()
   })
 })
 

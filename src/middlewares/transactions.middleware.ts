@@ -97,10 +97,17 @@ export const getUserTransactionByIdValidator = async (req: Request, res: Respons
 export const getUserTransactionByTimeValidator = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const validatedData = GetUserTransactionByTimeQuery.parse(req.query)
-    const { from, to } = validatedData
+    const { from, to, money_account_id } = validatedData
 
     if ((from && !to) || (!from && to)) {
       throw new EntityError([{ message: APPS_MESSAGES.MUST_NOT_EMPTY_BOTH_FROM_DATE_AND_TO_DATE, field: 'from' }])
+    }
+
+    if (money_account_id) {
+      const moneyAccount = await prisma.money_accounts.findUnique({ where: { id: money_account_id } })
+      if (!moneyAccount) {
+        throw new EntityError([{ message: APPS_MESSAGES.MONEY_ACCOUNT_NOT_FOUND, field: 'money_account_id' }])
+      }
     }
 
     if (from && to) {

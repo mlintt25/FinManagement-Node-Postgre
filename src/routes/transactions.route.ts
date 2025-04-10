@@ -77,7 +77,7 @@ transactionsRouter.get(
 /**
  * @description Get user's transaction by time.
  * @path /api/transactions/transaction
- * @path /api/transactions/transaction?from=<date>&to=<date>
+ * @path /api/transactions/transaction?from=<date>&to=<date>&money_account_id=<string>
  * @method GET
  * @header { Authorization: Bearer <access_token> }
  * @query { from: date, to: date }
