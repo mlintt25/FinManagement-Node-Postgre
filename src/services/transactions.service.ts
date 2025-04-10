@@ -136,6 +136,8 @@ class TransactionsService {
   }
 
   async getUserTransactionByTime(query: GetUserTransactionByTimeQueryType, user_id: string) {
+    // Handle query params: from, to, money_account_id
+    // Check valid each query parameter
     let fromDate: Date | undefined
     let toDate: Date | undefined
 
@@ -157,6 +159,26 @@ class TransactionsService {
       }
     }
 
+    let currentAccountBalance = new Decimal(0)
+    let moneyAccountCreditLimit: Decimal | undefined = undefined
+    let availableAccoutBalance: Decimal | undefined = undefined
+    if (query.money_account_id) {
+      // Set condition to find money_account_id
+      whereCondition.money_account_id = query.money_account_id
+      // Calulate parameters
+      const moneyAccount = (await prisma.money_accounts.findUnique({
+        where: { id: query.money_account_id },
+        select: { account_balance: true, credit_limit: true }
+      })) as { account_balance: Decimal; credit_limit: Decimal | null }
+
+      if (moneyAccount.credit_limit) {
+        moneyAccountCreditLimit = moneyAccount.credit_limit
+        availableAccoutBalance = moneyAccount.account_balance.plus(moneyAccountCreditLimit)
+      }
+
+      currentAccountBalance = moneyAccount.account_balance
+    }
+
     const transactions = await prisma.transactions.findMany({
       where: whereCondition,
       select: {
@@ -176,8 +198,6 @@ class TransactionsService {
         money_account: {
           select: {
             name: true,
-            account_balance: true,
-            credit_limit: true,
             money_account_type: {
               select: {
                 icon: true,
@@ -192,7 +212,6 @@ class TransactionsService {
       },
       orderBy: { occur_date: 'desc' }
     })
-
     /**
      * Convert data to format:
      * {
@@ -204,7 +223,10 @@ class TransactionsService {
      *    }
      *  },
      *  total_all_expense: ...,
-     *  total_all_income: ...
+     *  total_all_income: ...,
+     *  current_account_balance: ...,
+     *  money_account_credit_limit: ...,
+     *  available_account_balance: ...
      * }
      */
     let total_all_expense = new Decimal(0)
@@ -237,11 +259,13 @@ class TransactionsService {
       },
       {}
     )
-
     return {
       transactions_by_date: groupedByTransactions,
       total_all_expense: total_all_expense,
-      total_all_income: total_all_income
+      total_all_income: total_all_income,
+      current_account_balance: currentAccountBalance,
+      money_account_credit_limit: moneyAccountCreditLimit,
+      available_account_balance: availableAccoutBalance
     }
   }
 
