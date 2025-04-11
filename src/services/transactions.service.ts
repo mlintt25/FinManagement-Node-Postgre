@@ -186,6 +186,7 @@ class TransactionsService {
         amount_of_money: true,
         transaction_type_category: {
           select: {
+            id: true,
             icon: true,
             name: true,
             transaction_type: {
@@ -197,6 +198,8 @@ class TransactionsService {
         },
         money_account: {
           select: {
+            id: true,
+            account_balance: true,
             name: true,
             money_account_type: {
               select: {
@@ -208,7 +211,10 @@ class TransactionsService {
         },
         description: true,
         occur_date: true,
-        save_to_report: true
+        save_to_report: true,
+        related_party: true,
+        reminder_date: true,
+        event_id: true
       },
       orderBy: { occur_date: 'desc' }
     })

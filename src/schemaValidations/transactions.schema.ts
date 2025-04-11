@@ -102,6 +102,7 @@ export const GetUserTransactionByTimeRes = z.object({
             id: z.string(),
             amount_of_money: z.custom<Decimal>(),
             transaction_type_category: z.object({
+              id: z.string(),
               icon: z.string(),
               name: z.string(),
               transaction_type: z.object({
@@ -109,6 +110,8 @@ export const GetUserTransactionByTimeRes = z.object({
               })
             }),
             money_account: z.object({
+              id: z.string(),
+              account_balance: z.custom<Decimal>(),
               name: z.string(),
               money_account_type: z.object({
                 icon: z.string(),
@@ -117,7 +120,10 @@ export const GetUserTransactionByTimeRes = z.object({
             }),
             description: z.string().nullable(),
             occur_date: z.date(),
-            save_to_report: z.boolean()
+            save_to_report: z.boolean(),
+            related_party: z.string().nullable(),
+            reminder_date: z.date().nullable(),
+            event_id: z.string().uuid().nullable()
           })
         ),
         total_expense: z.custom<Decimal>(),
