@@ -1,3 +1,8 @@
+export enum Role {
+  User = 'User',
+  Admin = 'Admin'
+}
+
 export enum UserVerifyStatus {
   Unverified = 'Unverified',
   Verified = 'Verified',

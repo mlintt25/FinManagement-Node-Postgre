@@ -1,7 +1,5 @@
-import { Role } from '@prisma/client'
 import envConfig from '~/configs'
-import { TokenType, UserVerifyStatus } from '~/constants/enums'
-import { USERS_MESSAGES } from '~/constants/messages'
+import { Role, TokenType, UserVerifyStatus } from '~/constants/enums'
 import prisma from '~/database'
 import { LogoutBodyType, RegisterBodyType } from '~/schemaValidations/auth.schema'
 import { sendWelcomeEmail } from '~/utils/email'
