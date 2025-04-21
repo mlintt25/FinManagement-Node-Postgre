@@ -1,4 +1,4 @@
-import { Prisma } from '@prisma/client'
+import { PrismaClientInitializationError, PrismaClientKnownRequestError } from '@prisma/client/runtime/library'
 import HTTP_STATUS from '~/constants/httpStatus'
 
 export class ErrorWithStatus {
@@ -31,10 +31,10 @@ export class ForbiddenError extends ErrorWithStatus {
   }
 }
 
-export function isPrismaClientKnownRequestError(error: unknown): error is Prisma.PrismaClientKnownRequestError {
-  return error instanceof Prisma.PrismaClientKnownRequestError
+export function isPrismaClientKnownRequestError(error: unknown): error is PrismaClientKnownRequestError {
+  return error instanceof PrismaClientKnownRequestError
 }
 
-export function isPrismaClientInitializationError(error: unknown): error is Prisma.PrismaClientInitializationError {
-  return error instanceof Prisma.PrismaClientInitializationError
+export function isPrismaClientInitializationError(error: unknown): error is PrismaClientInitializationError {
+  return error instanceof PrismaClientInitializationError
 }

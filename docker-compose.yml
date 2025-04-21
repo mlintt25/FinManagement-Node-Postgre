@@ -1,0 +1,44 @@
+version: '3.9'
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    container_name: fin-man-app
+    ports:
+      - '4000:4000'
+    env_file:
+      - .env
+    volumes:
+      - .:/app
+      - /app/node_modules
+    command: >
+      sh -c "npx prisma migrate deploy &&
+             npm run start"
+    depends_on:
+      - postgres
+    networks:
+      - fin-network
+
+  postgres:
+    image: postgres:16
+    container_name: fin-man-postgres
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: 123456
+      POSTGRES_DB: personal_finance_management
+    ports:
+      - '5432:5432'
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    networks:
+      - fin-network
+
+volumes:
+  pgdata:
+
+networks:
+  fin-network:
+    driver: bridge
