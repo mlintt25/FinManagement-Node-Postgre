@@ -1,9 +1,11 @@
+import { isMatch } from 'date-fns'
 import { Request, Response, NextFunction } from 'express'
 import { APPS_MESSAGES } from '~/constants/messages'
 import prisma from '~/database'
 import { CreateBudgetBody, GetUserBudgetByIdParams } from '~/schemaValidations/budgets.schema'
 import { TokenPayload } from '~/types/jwt.type'
 import { EntityError } from '~/utils/errors'
+import { convertDateFormat } from '~/utils/utils'
 
 export const createBudgetValidator = async (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -12,15 +14,32 @@ export const createBudgetValidator = async (req: Request, res: Response, next: N
     const { user_id } = req.decodedAccessToken as TokenPayload
     /**
      * Handle cases:
-     * 1. Start date must be less than end date
-     * 2. If budget name exists for that user, the start date and end date
+     * 1. Check format yyyy-mm-dd or dd-mm-yyyy
+     * 2. If dd-mm-yyyy -> convert to yyyy-mm-dd nad set end_date to 23:59:59
+     * 3. Start date must be less than end date
+     * 4. If budget name exists for that user, the start date and end date
      *  must not overlap with the existing budget
-     * 3. Money account ID(s) must exist in the database
-     * 4. Transaction type category ID(s) must exist in the database
+     * 5. Money account ID(s) must exist in the database
+     * 6. Transaction type category ID(s) must exist in the database
      */
-    const startDateObj = new Date(start_date)
-    const endDateObj = new Date(end_date)
-    if (startDateObj > endDateObj) {
+    const dateFormat = 'yyyy-mm-dd'
+    const isStartDateFormat = isMatch(start_date, dateFormat)
+    const isEndDateFormat = isMatch(end_date, dateFormat)
+    let convertStartDate = start_date
+    let convertEndDate = end_date
+
+    if (!isStartDateFormat) {
+      convertStartDate = convertDateFormat(start_date)
+    }
+    if (!isEndDateFormat) {
+      convertEndDate = convertDateFormat(end_date)
+    }
+
+    const fromDate = new Date(convertStartDate)
+    const toDate = new Date(convertEndDate)
+    toDate.setUTCHours(23, 59, 59, 999)
+
+    if (fromDate > toDate) {
       throw new EntityError([{ message: APPS_MESSAGES.INVALID_DATE_RANGE, field: 'start_date' }])
     }
 
@@ -30,10 +49,10 @@ export const createBudgetValidator = async (req: Request, res: Response, next: N
           name,
           user_id,
           start_date: {
-            lte: end_date
+            lte: toDate
           },
           end_date: {
-            gte: start_date
+            gte: fromDate
           }
         }
       }),
@@ -71,6 +90,9 @@ export const createBudgetValidator = async (req: Request, res: Response, next: N
         { message: APPS_MESSAGES.INVALID_TRANSACTION_TYPE_ID, field: 'transaction_type_categories' }
       ])
     }
+    // Reassign value to date into req.body after formatting
+    req.body.start_date = fromDate
+    req.body.end_date = toDate
 
     next()
   } catch (error) {
