@@ -53,5 +53,10 @@ export const APPS_MESSAGES = {
   SOFT_DELETE_USER_TRANSACTION_BY_ID_SUCCESS: 'Deleted successfully, you can still restore it within 10 days',
   UPDATE_TRANSACTION_SUCCESS: 'Update transaction success',
   INVALID_DATE_RANGE: 'From date must be less than to date',
-  MUST_NOT_EMPTY_BOTH_FROM_DATE_AND_TO_DATE: 'From date and to date must not be empty'
+  MUST_NOT_EMPTY_BOTH_FROM_DATE_AND_TO_DATE: 'From date and to date must not be empty',
+  ADD_BUDGET_SUCCESS: 'Create budget success',
+  BUDGET_DATE_OVERLAP: 'Overlapping dates with budgets of the same name',
+  BUDGET_NOT_FOUND: 'Budget not found',
+  INVALID_MONEY_ACCOUNT_ID: 'Invalid money account ID(s)',
+  INVALID_TRANSACTION_TYPE_ID: 'Invalid transaction type ID(s)'
 } as const

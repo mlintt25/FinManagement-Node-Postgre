@@ -105,6 +105,7 @@ export const GetUserTransactionByTimeRes = z.object({
               id: z.string(),
               icon: z.string(),
               name: z.string(),
+              parent_id: z.string().uuid().nullable(),
               transaction_type: z.object({
                 type: z.string()
               })
