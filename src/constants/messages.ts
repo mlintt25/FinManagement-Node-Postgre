@@ -58,5 +58,7 @@ export const APPS_MESSAGES = {
   BUDGET_DATE_OVERLAP: 'Overlapping dates with budgets of the same name',
   BUDGET_NOT_FOUND: 'Budget not found',
   INVALID_MONEY_ACCOUNT_ID: 'Invalid money account ID(s)',
-  INVALID_TRANSACTION_TYPE_ID: 'Invalid transaction type ID(s)'
+  INVALID_TRANSACTION_TYPE_ID: 'Invalid transaction type ID(s)',
+  GET_USER_BUDGET_BY_ID_SUCCESS: 'Get user budget by id success',
+  GET_USER_BUDGET_SUCCESS: 'Get user budget success'
 } as const

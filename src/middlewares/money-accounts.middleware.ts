@@ -86,8 +86,9 @@ export const getUserMoneyAccountByIdValidator = async (req: Request, res: Respon
   try {
     const validatedData = GetUserMoneyAccountByIdParams.parse(req.params)
     const { id } = validatedData
+    const { user_id } = req.decodedAccessToken as TokenPayload
 
-    const moneyAccount = await prisma.money_accounts.findUnique({ where: { id } })
+    const moneyAccount = await prisma.money_accounts.findUnique({ where: { id, user_id } })
     if (!moneyAccount) {
       throw new EntityError([{ message: APPS_MESSAGES.MONEY_ACCOUNT_NOT_FOUND, field: 'id' }])
     }
