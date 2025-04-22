@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from 'express'
 import { APPS_MESSAGES } from '~/constants/messages'
 import prisma from '~/database'
-import { CreateBudgetBody } from '~/schemaValidations/budgets.schema'
+import { CreateBudgetBody, GetUserBudgetByIdParams } from '~/schemaValidations/budgets.schema'
 import { TokenPayload } from '~/types/jwt.type'
 import { EntityError } from '~/utils/errors'
 
@@ -70,6 +70,23 @@ export const createBudgetValidator = async (req: Request, res: Response, next: N
       throw new EntityError([
         { message: APPS_MESSAGES.INVALID_TRANSACTION_TYPE_ID, field: 'transaction_type_categories' }
       ])
+    }
+
+    next()
+  } catch (error) {
+    next(error)
+  }
+}
+
+export const getUserBudgetByIdValidator = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const validatedData = GetUserBudgetByIdParams.parse(req.params)
+    const { id } = validatedData
+    const { user_id } = req.decodedAccessToken as TokenPayload
+
+    const budget = await prisma.budgets.findUnique({ where: { id, user_id } })
+    if (!budget) {
+      throw new EntityError([{ message: APPS_MESSAGES.BUDGET_NOT_FOUND, field: 'id' }])
     }
 
     next()
