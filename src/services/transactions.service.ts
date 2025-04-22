@@ -6,7 +6,6 @@ import {
   CreateTransactionBodyType,
   GetUserTransactionByIdParamsType,
   GetUserTransactionByTimeQueryType,
-  GetUserTransactionByTimeResType,
   TransactionTypeCategoryType,
   UpdateUserTransactionBodyType
 } from '~/schemaValidations/transactions.schema'
@@ -189,6 +188,7 @@ class TransactionsService {
             id: true,
             icon: true,
             name: true,
+            parent_id: true,
             transaction_type: {
               select: {
                 type: true

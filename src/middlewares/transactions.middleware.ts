@@ -9,7 +9,7 @@ import {
   UpdateUserTransactionBody
 } from '~/schemaValidations/transactions.schema'
 import { EntityError } from '~/utils/errors'
-import { parse, isMatch } from 'date-fns'
+import { isMatch } from 'date-fns'
 import { convertDateFormat } from '~/utils/utils'
 
 export const createTransactionTypeCategoryValidator = async (req: Request, res: Response, next: NextFunction) => {
