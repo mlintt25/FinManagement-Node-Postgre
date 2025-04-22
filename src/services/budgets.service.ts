@@ -82,8 +82,10 @@ class BudgetsService {
         const expectedTotalExpenses = actualExpensesPerDay * remainingDays + totalExpenses
 
         return {
-          ...budget,
-          transactions: transactionsInBudget,
+          budget: {
+            ...budget,
+            transactions: transactionsInBudget
+          },
           total_expenses: totalExpenses,
           remaining_budget_amount: remainingBudgetAmount,
           actual_expenses: actualExpensesPerDay,
