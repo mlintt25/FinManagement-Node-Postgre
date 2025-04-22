@@ -8,12 +8,14 @@ import {
   UpdateUserMoneyAccountBody
 } from '~/schemaValidations/money-accounts.schema'
 import { EntityError } from '~/utils/errors'
+import { TokenPayload } from '~/types/jwt.type'
 
 export const createMoneyAccountValidator = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const validatedData = CreateMoneyAccountBody.parse(req.body)
     const { credit_limit, bank_type, money_account_type_id, name, reminder_when_due, reminder_time, payment_due_date } =
       validatedData
+    const { user_id } = req.decodedAccessToken as TokenPayload
     /**
      * Handle cases:
      * 1. Money account type exists
@@ -28,7 +30,7 @@ export const createMoneyAccountValidator = async (req: Request, res: Response, n
      */
     const [moneyAccountType, isMoneyAccountExist] = await Promise.all([
       prisma.money_account_types.findUnique({ where: { id: money_account_type_id } }),
-      prisma.money_accounts.findFirst({ where: { name } })
+      prisma.money_accounts.findFirst({ where: { name, user_id } })
     ])
 
     if (!moneyAccountType) {
@@ -132,7 +134,8 @@ export const updateUserMoneyAccountValidator = async (req: Request, res: Respons
           name: {
             equals: name,
             mode: 'insensitive'
-          }
+          },
+          user_id: moneyAccount.user_id
         }
       })
       if (isMoneyAccountExist) {
