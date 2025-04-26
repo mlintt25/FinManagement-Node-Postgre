@@ -135,3 +135,15 @@ export const GetUserBudgetByIdRes = z.object({
 })
 
 export type GetUserBudgetByIdResType = z.infer<typeof GetUserBudgetByIdRes>
+
+export const UpdateUserBudgetBody = BudgetSchema.extend({
+  id: z.string().uuid()
+})
+
+export type UpdateUserBudgetBodyType = z.infer<typeof UpdateUserBudgetBody>
+
+export const UpdateUserBudgetRes = z.object({
+  message: z.string()
+})
+
+export type UpdateUserBudgetResType = z.infer<typeof UpdateUserBudgetRes>
