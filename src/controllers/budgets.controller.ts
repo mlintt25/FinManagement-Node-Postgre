@@ -4,6 +4,7 @@ import { APPS_MESSAGES } from '~/constants/messages'
 import {
   CreateBudgetBodyType,
   CreateBudgetResType,
+  DeleteUserBudgetByIdResType,
   GetUserBudgetByIdParamsType,
   GetUserBudgetByIdResType,
   GetUserBudgetResType,
@@ -41,6 +42,16 @@ export const getUserBudgetByIdController = async (
   const { user_id } = req.decodedAccessToken as TokenPayload
   const result = await budgetsService.getUserBudgetById(req.params, user_id)
   return res.json({ message: APPS_MESSAGES.GET_USER_BUDGET_BY_ID_SUCCESS, data: result })
+}
+
+export const deleteUserBudgetByIdController = async (
+  req: Request<GetUserBudgetByIdParamsType>,
+  res: Response<DeleteUserBudgetByIdResType>,
+  next: NextFunction
+) => {
+  const { user_id } = req.decodedAccessToken as TokenPayload
+  await budgetsService.deleteUserBudgetById(req.params, user_id)
+  return res.json({ message: APPS_MESSAGES.DELETE_USER_BUDGET_BY_ID_SUCCESS })
 }
 
 export const updateUserBudgetController = async (
