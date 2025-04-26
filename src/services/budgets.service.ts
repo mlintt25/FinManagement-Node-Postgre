@@ -191,6 +191,13 @@ class BudgetsService {
     }
   }
 
+  async deleteUserBudgetById(body: GetUserBudgetByIdParamsType, user_id: string) {
+    await prisma.budgets.delete({
+      where: { id: body.id, user_id }
+    })
+    return true
+  }
+
   async updateUserBudget(user_id: string, body: UpdateUserBudgetBodyType) {
     await prisma.budgets.update({
       data: {

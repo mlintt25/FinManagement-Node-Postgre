@@ -1,6 +1,7 @@
 import { Router } from 'express'
 import {
   createBudgetController,
+  deleteUserBudgetByIdController,
   getUserBudgetByIdController,
   getUserBudgetController,
   updateUserBudgetController
@@ -45,6 +46,20 @@ budgetsRouter.get(
   accessTokenValidator,
   getUserBudgetByIdValidator,
   wrapRequestHandler(getUserBudgetByIdController)
+)
+/**
+ * @description Delete user budget by id.
+ * @path /api/budgets/budget/:id
+ * @method DELETE
+ * @header { Authorization: Bearer <access_token> }
+ * @params { id: string }
+ * @returns {Object} Response object with message.
+ */
+budgetsRouter.delete(
+  '/budget/:id',
+  accessTokenValidator,
+  getUserBudgetByIdValidator,
+  wrapRequestHandler(deleteUserBudgetByIdController)
 )
 /**
  * @description Update user budget by id.
