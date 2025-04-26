@@ -19,10 +19,10 @@ export type CreateTransactionTypeResType = z.infer<typeof CreateTransactionTypeR
 
 export const CreateTransactionTypeCategoryBody = z
   .object({
-    transaction_type_id: z.string().uuid().min(1, { message: 'Transaction type id is required' }),
+    transaction_type_id: z.string().uuid(),
     icon: z.string().min(1),
     name: z.string().min(1),
-    parent_id: z.string().uuid().optional()
+    parent_id: z.string().uuid().optional().nullable()
   })
   .strict()
 

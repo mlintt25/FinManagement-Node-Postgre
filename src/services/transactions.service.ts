@@ -1,5 +1,5 @@
 import { Decimal } from '@prisma/client/runtime/library'
-import { TransactionType } from '~/constants/enums'
+import { Role, TransactionType } from '~/constants/enums'
 import prisma from '~/database'
 import { CreateTransactionTypeCategoryBodyType } from '~/schemaValidations/admins.schema'
 import {
@@ -62,9 +62,18 @@ class TransactionsService {
   }
 
   async createTransactionTypeCategory(user_id: string, body: CreateTransactionTypeCategoryBodyType) {
-    const { transaction_type_id, icon, name, parent_id } = body
+    const user = await prisma.users.findUnique({
+      where: { id: user_id },
+      select: { role: true }
+    })
+
+    const createData = {
+      ...body,
+      user_id: user!.role === Role.Admin ? null : user_id
+    }
+
     await prisma.transaction_type_categories.create({
-      data: { transaction_type_id, icon, name, parent_id, user_id }
+      data: createData
     })
     return true
   }
