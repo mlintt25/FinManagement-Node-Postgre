@@ -1,5 +1,9 @@
 import prisma from '~/database'
-import { CreateBudgetBodyType, GetUserBudgetByIdParamsType } from '~/schemaValidations/budgets.schema'
+import {
+  CreateBudgetBodyType,
+  GetUserBudgetByIdParamsType,
+  UpdateUserBudgetBodyType
+} from '~/schemaValidations/budgets.schema'
 
 class BudgetsService {
   async createBudget(user_id: string, body: CreateBudgetBodyType) {
@@ -185,6 +189,28 @@ class BudgetsService {
       should_expenses: shouldExpensesPerDay,
       expected_expenses: expectedTotalExpenses
     }
+  }
+
+  async updateUserBudget(user_id: string, body: UpdateUserBudgetBodyType) {
+    await prisma.budgets.update({
+      data: {
+        money_accounts: {
+          connect: body.money_accounts.map((id) => ({ id }))
+        },
+        transaction_type_categories: {
+          connect: body.transaction_type_categories.map((id) => ({ id }))
+        },
+        name: body.name,
+        amount_of_money: body.amount_of_money,
+        start_date: body.start_date,
+        end_date: body.end_date
+      },
+      where: {
+        id: body.id,
+        user_id
+      }
+    })
+    return true
   }
 }
 

@@ -6,7 +6,9 @@ import {
   CreateBudgetResType,
   GetUserBudgetByIdParamsType,
   GetUserBudgetByIdResType,
-  GetUserBudgetResType
+  GetUserBudgetResType,
+  UpdateUserBudgetBodyType,
+  UpdateUserBudgetResType
 } from '~/schemaValidations/budgets.schema'
 import budgetsService from '~/services/budgets.service'
 import { TokenPayload } from '~/types/jwt.type'
@@ -39,4 +41,14 @@ export const getUserBudgetByIdController = async (
   const { user_id } = req.decodedAccessToken as TokenPayload
   const result = await budgetsService.getUserBudgetById(req.params, user_id)
   return res.json({ message: APPS_MESSAGES.GET_USER_BUDGET_BY_ID_SUCCESS, data: result })
+}
+
+export const updateUserBudgetController = async (
+  req: Request<ParamsDictionary, any, UpdateUserBudgetBodyType>,
+  res: Response<UpdateUserBudgetResType>,
+  next: NextFunction
+) => {
+  const { user_id } = req.decodedAccessToken as TokenPayload
+  await budgetsService.updateUserBudget(user_id, req.body)
+  return res.json({ message: APPS_MESSAGES.UPDATE_BUDGET_SUCCESS })
 }
