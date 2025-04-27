@@ -5,12 +5,30 @@ import {
   CreateEventBodyType,
   CreateEventResType,
   DeleteEventByIdResType,
+  GetAllEventResType,
   GetEventByIdParamsType,
+  GetEventByIdResType,
   UpdateEventBodyType,
   UpdateEventResType
 } from '~/schemaValidations/events.schema'
 import { TokenPayload } from '~/types/jwt.type'
 import eventsService from '~/services/events.service'
+
+export const getAllEventController = async (req: Request, res: Response<GetAllEventResType>, next: NextFunction) => {
+  const { user_id } = req.decodedAccessToken as TokenPayload
+  const result = await eventsService.getAllEvent(user_id)
+  return res.json({ message: APPS_MESSAGES.ADD_EVENT_SUCCESS, data: result })
+}
+
+export const getEventByIdController = async (
+  req: Request<GetEventByIdParamsType>,
+  res: Response<GetEventByIdResType>,
+  next: NextFunction
+) => {
+  const { user_id } = req.decodedAccessToken as TokenPayload
+  const result = await eventsService.getEventById(user_id, req.params)
+  return res.json({ message: APPS_MESSAGES.ADD_EVENT_SUCCESS, data: result })
+}
 
 export const createEventController = async (
   req: Request<ParamsDictionary, any, CreateEventBodyType>,

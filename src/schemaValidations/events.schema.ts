@@ -7,6 +7,33 @@ const EventSchema = z.object({
   money_accounts: z.array(z.string().uuid()).nonempty({ message: 'Money account id is required' })
 })
 
+const EventByIdSchema = z.object({
+  id: z.string().uuid(),
+  icon: z.string(),
+  name: z.string(),
+  end_date: z.date().nullable(),
+  money_accounts: z.array(
+    z.object({
+      id: z.string().uuid(),
+      name: z.string()
+    })
+  )
+})
+
+export const GetAllEventRes = z.object({
+  message: z.string(),
+  data: z.array(EventByIdSchema)
+})
+
+export type GetAllEventResType = z.infer<typeof GetAllEventRes>
+
+export const GetEventByIdRes = z.object({
+  message: z.string(),
+  data: EventByIdSchema
+})
+
+export type GetEventByIdResType = z.infer<typeof GetEventByIdRes>
+
 export const CreateEventBody = EventSchema
 
 export type CreateEventBodyType = z.infer<typeof CreateEventBody>
