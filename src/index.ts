@@ -14,6 +14,7 @@ import moneyAccountsRouter from './routes/money-accounts.route'
 import swaggerUi from 'swagger-ui-express'
 import swaggerJsdoc from 'swagger-jsdoc'
 import budgetsRouter from './routes/budgets.route'
+import eventsRouter from './routes/events.route'
 
 const options: swaggerJsdoc.Options = {
   definition: {
@@ -78,6 +79,7 @@ app.use(`${prefix}/admins`, adminsRouter)
 app.use(`${prefix}/transactions`, transactionsRouter)
 app.use(`${prefix}/money-accounts`, moneyAccountsRouter)
 app.use(`${prefix}/budgets`, budgetsRouter)
+app.use(`${prefix}/events`, eventsRouter)
 app.use(defaultErrorHandler)
 
 const startServer = async () => {

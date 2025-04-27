@@ -4,8 +4,10 @@ import z from 'zod'
 const dateRegex = /^(?:\d{4}-\d{2}-\d{2}|\d{2}-\d{2}-\d{4})$/
 
 const BudgetSchema = z.object({
-  money_accounts: z.array(z.string().uuid()).nonempty(),
-  transaction_type_categories: z.array(z.string().uuid()).nonempty(),
+  money_accounts: z.array(z.string().uuid()).nonempty({ message: 'Money account id is required' }),
+  transaction_type_categories: z
+    .array(z.string().uuid())
+    .nonempty({ message: 'Transaction type category id is required' }),
   name: z.string().min(1),
   amount_of_money: z.preprocess((val) => {
     if (typeof val === 'string') {
