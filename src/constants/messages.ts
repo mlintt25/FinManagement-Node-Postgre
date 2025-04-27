@@ -29,6 +29,7 @@ export const ADMINS_MESSAGES = {
 export const APPS_MESSAGES = {
   GET_TRANSACTION_TYPE_CATEGORIES_SUCCESS: 'Get all transaction type category success',
   ADD_TRANSACTION_TYPE_CATEGORY_SUCCESS: 'Create transaction type category success',
+  UPDATE_TRANSACTION_TYPE_CATEGORY_SUCCESS: 'Update transaction type category success',
   MONEY_ACCOUNT_TYPE_NOT_FOUND: 'Money account type not found',
   ADD_MONEY_ACCOUNT_SUCCESS: 'Create money account success',
   MONEY_ACCOUNT_ALREADY_EXISTS: 'Money account already exists',

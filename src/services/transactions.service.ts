@@ -1,7 +1,10 @@
 import { Decimal } from '@prisma/client/runtime/library'
 import { Role, TransactionType } from '~/constants/enums'
 import prisma from '~/database'
-import { CreateTransactionTypeCategoryBodyType } from '~/schemaValidations/admins.schema'
+import {
+  CreateTransactionTypeCategoryBodyType,
+  UpdateTransactionTypeCategoryBodyType
+} from '~/schemaValidations/admins.schema'
 import {
   CreateTransactionBodyType,
   GetUserTransactionByIdParamsType,
@@ -74,6 +77,15 @@ class TransactionsService {
 
     await prisma.transaction_type_categories.create({
       data: createData
+    })
+    return true
+  }
+
+  async updateTransactionTypeCategory(body: UpdateTransactionTypeCategoryBodyType) {
+    const { id, icon, name, transaction_type_id, parent_id } = body
+    await prisma.transaction_type_categories.update({
+      data: { icon, name, transaction_type_id, parent_id },
+      where: { id }
     })
     return true
   }
