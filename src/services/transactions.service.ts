@@ -3,6 +3,7 @@ import { Role, TransactionType } from '~/constants/enums'
 import prisma from '~/database'
 import {
   CreateTransactionTypeCategoryBodyType,
+  GetTransactionTypeCategoryByIdParamsType,
   UpdateTransactionTypeCategoryBodyType
 } from '~/schemaValidations/admins.schema'
 import {
@@ -86,6 +87,13 @@ class TransactionsService {
     await prisma.transaction_type_categories.update({
       data: { icon, name, transaction_type_id, parent_id },
       where: { id }
+    })
+    return true
+  }
+
+  async deleteTransactionTypeCategoryById(params: GetTransactionTypeCategoryByIdParamsType, user_id: string) {
+    await prisma.transaction_type_categories.delete({
+      where: { id: params.id }
     })
     return true
   }

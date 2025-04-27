@@ -48,6 +48,18 @@ export const UpdateTransactionTypeCategoryRes = z.object({
 
 export type UpdateTransactionTypeCategoryResType = z.infer<typeof UpdateTransactionTypeCategoryRes>
 
+export const GetTransactionTypeCategoryByIdParams = z.object({
+  id: z.string().uuid()
+})
+
+export type GetTransactionTypeCategoryByIdParamsType = z.infer<typeof GetTransactionTypeCategoryByIdParams>
+
+export const DeleteTransactionTypeCategoryRes = z.object({
+  message: z.string()
+})
+
+export type DeleteTransactionTypeCategoryResType = z.infer<typeof DeleteTransactionTypeCategoryRes>
+
 export const CreateMoneyAccountTypeBody = z
   .object({
     icon: z.string().min(1),
