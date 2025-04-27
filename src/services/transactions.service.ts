@@ -25,6 +25,7 @@ class TransactionsService {
       select: {
         id: true,
         transaction_type_id: true,
+        user_id: true,
         icon: true,
         name: true,
         parent_id: true,
