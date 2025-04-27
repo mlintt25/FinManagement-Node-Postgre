@@ -5,6 +5,8 @@ import { TokenPayload } from '~/types/jwt.type'
 import {
   CreateTransactionTypeCategoryBodyType,
   CreateTransactionTypeCategoryResType,
+  DeleteTransactionTypeCategoryResType,
+  GetTransactionTypeCategoryByIdParamsType,
   UpdateTransactionTypeCategoryBodyType,
   UpdateTransactionTypeCategoryResType
 } from '~/schemaValidations/admins.schema'
@@ -49,6 +51,16 @@ export const updateTransactionTypeCategoryController = async (
 ) => {
   await transactionsService.updateTransactionTypeCategory(req.body)
   return res.json({ message: APPS_MESSAGES.UPDATE_TRANSACTION_TYPE_CATEGORY_SUCCESS })
+}
+
+export const deleteTransactionTypeCategoryByIdController = async (
+  req: Request<GetTransactionTypeCategoryByIdParamsType>,
+  res: Response<DeleteTransactionTypeCategoryResType>,
+  next: NextFunction
+) => {
+  const { user_id } = req.decodedAccessToken as TokenPayload
+  await transactionsService.deleteTransactionTypeCategoryById(req.params, user_id)
+  return res.json({ message: APPS_MESSAGES.DELETE_TRANSACTION_TYPE_CATEGORY_BY_ID_SUCCESS })
 }
 
 export const createTransactionController = async (

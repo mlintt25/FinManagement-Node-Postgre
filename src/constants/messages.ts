@@ -30,6 +30,8 @@ export const APPS_MESSAGES = {
   GET_TRANSACTION_TYPE_CATEGORIES_SUCCESS: 'Get all transaction type category success',
   ADD_TRANSACTION_TYPE_CATEGORY_SUCCESS: 'Create transaction type category success',
   UPDATE_TRANSACTION_TYPE_CATEGORY_SUCCESS: 'Update transaction type category success',
+  NOT_AUTHORIZED_TO_PERFORM_THIS_ACTION: 'Not authorized to perform this action',
+  DELETE_TRANSACTION_TYPE_CATEGORY_BY_ID_SUCCESS: 'Delete transaction type category by id success',
   MONEY_ACCOUNT_TYPE_NOT_FOUND: 'Money account type not found',
   ADD_MONEY_ACCOUNT_SUCCESS: 'Create money account success',
   MONEY_ACCOUNT_ALREADY_EXISTS: 'Money account already exists',

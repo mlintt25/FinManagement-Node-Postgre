@@ -7,7 +7,8 @@ import {
   deleteUserTransactionByIdController,
   updateUserTransactionController,
   getUserTransactionByTimeController,
-  updateTransactionTypeCategoryController
+  updateTransactionTypeCategoryController,
+  deleteTransactionTypeCategoryByIdController
 } from '~/controllers/transactions.controller'
 import {
   createTransactionTypeCategoryValidator,
@@ -15,7 +16,8 @@ import {
   getUserTransactionByIdValidator,
   updateUserTransactionValidator,
   getUserTransactionByTimeValidator,
-  updateTransactionTypeCategoryValidator
+  updateTransactionTypeCategoryValidator,
+  getTransactionTypeCategoryByIdValidator
 } from '~/middlewares/transactions.middleware'
 import { accessTokenValidator } from '~/middlewares/auth.middleware'
 import { wrapRequestHandler } from '~/utils/handlers'
@@ -50,7 +52,7 @@ transactionsRouter.post(
 /**
  * @description Update user transaction type category by id.
  * @path /api/transactions/transaction-type-category
- * @method POST
+ * @method PATCH
  * @header { Authorization: Bearer <access_token> }
  * @body { id: string, transaction_type_id: string, icon: string, name: string, parent_id?: string }
  * @returns {Object} Response object with message.
@@ -60,6 +62,20 @@ transactionsRouter.patch(
   accessTokenValidator,
   updateTransactionTypeCategoryValidator,
   wrapRequestHandler(updateTransactionTypeCategoryController)
+)
+/**
+ * @description Delete user transaction type category by id.
+ * @path /api/transactions/transaction-type-category/:id
+ * @method DELETE
+ * @header { Authorization: Bearer <access_token> }
+ * @params { id: string }
+ * @returns {Object} Response object with message.
+ */
+transactionsRouter.delete(
+  '/transaction-type-category/:id',
+  accessTokenValidator,
+  getTransactionTypeCategoryByIdValidator,
+  wrapRequestHandler(deleteTransactionTypeCategoryByIdController)
 )
 /**
  * @description Create new user's transaction.

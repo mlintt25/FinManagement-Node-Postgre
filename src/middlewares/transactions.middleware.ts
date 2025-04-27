@@ -1,16 +1,22 @@
 import { Request, Response, NextFunction } from 'express'
 import { ADMINS_MESSAGES, APPS_MESSAGES } from '~/constants/messages'
 import prisma from '~/database'
-import { CreateTransactionTypeCategoryBody, UpdateTransactionTypeCategoryBody } from '~/schemaValidations/admins.schema'
+import {
+  CreateTransactionTypeCategoryBody,
+  GetTransactionTypeCategoryByIdParams,
+  UpdateTransactionTypeCategoryBody
+} from '~/schemaValidations/admins.schema'
 import {
   CreateTransactionBody,
   GetUserTransactionByIdParams,
   GetUserTransactionByTimeQuery,
   UpdateUserTransactionBody
 } from '~/schemaValidations/transactions.schema'
-import { EntityError } from '~/utils/errors'
+import { EntityError, ForbiddenError } from '~/utils/errors'
 import { isMatch } from 'date-fns'
 import { convertDateFormat } from '~/utils/utils'
+import { TokenPayload } from '~/types/jwt.type'
+import { Role } from '~/constants/enums'
 
 export const createTransactionTypeCategoryValidator = async (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -110,6 +116,32 @@ export const createTransactionValidator = async (req: Request, res: Response, ne
       if (!event) {
         throw new EntityError([{ message: APPS_MESSAGES.EVENT_NOT_FOUND, field: 'event_id' }])
       }
+    }
+
+    next()
+  } catch (error) {
+    next(error)
+  }
+}
+
+export const getTransactionTypeCategoryByIdValidator = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const validatedData = GetTransactionTypeCategoryByIdParams.parse(req.params)
+    const { id } = validatedData
+    const { user_id } = req.decodedAccessToken as TokenPayload
+
+    const transactionTypeCategory = await prisma.transaction_type_categories.findUnique({ where: { id } })
+    if (!transactionTypeCategory) {
+      throw new EntityError([{ message: APPS_MESSAGES.TRANSACTION_TYPE_CATEGORY_NOT_FOUND, field: 'id' }])
+    }
+
+    const user = await prisma.users.findUnique({
+      where: { id: user_id },
+      select: { id: true, role: true }
+    })
+
+    if (user!.role === Role.User && transactionTypeCategory.user_id !== user!.id) {
+      throw new ForbiddenError(APPS_MESSAGES.NOT_AUTHORIZED_TO_PERFORM_THIS_ACTION)
     }
 
     next()
