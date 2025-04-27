@@ -4,6 +4,8 @@ import { ParamsDictionary } from 'express-serve-static-core'
 import {
   CreateEventBodyType,
   CreateEventResType,
+  DeleteEventByIdResType,
+  GetEventByIdParamsType,
   UpdateEventBodyType,
   UpdateEventResType
 } from '~/schemaValidations/events.schema'
@@ -28,4 +30,14 @@ export const updateEventController = async (
   const { user_id } = req.decodedAccessToken as TokenPayload
   await eventsService.updateEventById(user_id, req.body)
   return res.json({ message: APPS_MESSAGES.UPDATE_EVENT_BY_ID_SUCCESS })
+}
+
+export const deleteEventByIdController = async (
+  req: Request<GetEventByIdParamsType>,
+  res: Response<DeleteEventByIdResType>,
+  next: NextFunction
+) => {
+  const { user_id } = req.decodedAccessToken as TokenPayload
+  await eventsService.deleteEventById(user_id, req.params)
+  return res.json({ message: APPS_MESSAGES.DELETE_EVENT_BY_ID_SUCCESS })
 }

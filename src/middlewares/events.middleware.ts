@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from 'express'
 import { APPS_MESSAGES } from '~/constants/messages'
 import prisma from '~/database'
-import { CreateEventBody, UpdateEventBody } from '~/schemaValidations/events.schema'
+import { CreateEventBody, GetEventByIdParams, UpdateEventBody } from '~/schemaValidations/events.schema'
 import { TokenPayload } from '~/types/jwt.type'
 import { EntityError } from '~/utils/errors'
 
@@ -83,6 +83,29 @@ export const updateEventValidator = async (req: Request, res: Response, next: Ne
       if (eventExist) {
         throw new EntityError([{ message: APPS_MESSAGES.EVENT_NAME_EXIST, field: 'name' }])
       }
+    }
+
+    next()
+  } catch (error) {
+    next(error)
+  }
+}
+
+export const getEventByIdValidator = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const validatedData = GetEventByIdParams.parse(req.params)
+    const { id } = validatedData
+    const { user_id } = req.decodedAccessToken as TokenPayload
+
+    const event = await prisma.events.findFirst({
+      where: {
+        id,
+        user_id
+      }
+    })
+
+    if (!event) {
+      throw new EntityError([{ message: APPS_MESSAGES.EVENT_NOT_FOUND, field: 'id' }])
     }
 
     next()

@@ -202,10 +202,10 @@ class BudgetsService {
     await prisma.budgets.update({
       data: {
         money_accounts: {
-          connect: body.money_accounts.map((id) => ({ id }))
+          set: body.money_accounts.map((id) => ({ id }))
         },
         transaction_type_categories: {
-          connect: body.transaction_type_categories.map((id) => ({ id }))
+          set: body.transaction_type_categories.map((id) => ({ id }))
         },
         name: body.name,
         amount_of_money: body.amount_of_money,
