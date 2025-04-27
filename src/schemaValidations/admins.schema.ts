@@ -17,7 +17,7 @@ export const CreateTransactionTypeRes = z.object({
 
 export type CreateTransactionTypeResType = z.infer<typeof CreateTransactionTypeRes>
 
-export const CreateTransactionTypeCategoryBody = z
+const TransactionTypeCategorySchema = z
   .object({
     transaction_type_id: z.string().uuid(),
     icon: z.string().min(1),
@@ -26,6 +26,8 @@ export const CreateTransactionTypeCategoryBody = z
   })
   .strict()
 
+export const CreateTransactionTypeCategoryBody = TransactionTypeCategorySchema
+
 export type CreateTransactionTypeCategoryBodyType = z.infer<typeof CreateTransactionTypeCategoryBody>
 
 export const CreateTransactionTypeCategoryRes = z.object({
@@ -33,6 +35,18 @@ export const CreateTransactionTypeCategoryRes = z.object({
 })
 
 export type CreateTransactionTypeCategoryResType = z.infer<typeof CreateTransactionTypeCategoryRes>
+
+export const UpdateTransactionTypeCategoryBody = TransactionTypeCategorySchema.extend({
+  id: z.string().uuid()
+})
+
+export type UpdateTransactionTypeCategoryBodyType = z.infer<typeof UpdateTransactionTypeCategoryBody>
+
+export const UpdateTransactionTypeCategoryRes = z.object({
+  message: z.string()
+})
+
+export type UpdateTransactionTypeCategoryResType = z.infer<typeof UpdateTransactionTypeCategoryRes>
 
 export const CreateMoneyAccountTypeBody = z
   .object({

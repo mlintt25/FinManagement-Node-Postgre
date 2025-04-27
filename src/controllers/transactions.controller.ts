@@ -4,7 +4,9 @@ import { APPS_MESSAGES } from '~/constants/messages'
 import { TokenPayload } from '~/types/jwt.type'
 import {
   CreateTransactionTypeCategoryBodyType,
-  CreateTransactionTypeCategoryResType
+  CreateTransactionTypeCategoryResType,
+  UpdateTransactionTypeCategoryBodyType,
+  UpdateTransactionTypeCategoryResType
 } from '~/schemaValidations/admins.schema'
 import {
   AllTransactionTypeCategoriesResType,
@@ -38,6 +40,15 @@ export const createTransactionTypeCategoryController = async (
   const { user_id } = req.decodedAccessToken as TokenPayload
   await transactionsService.createTransactionTypeCategory(user_id, req.body)
   return res.json({ message: APPS_MESSAGES.ADD_TRANSACTION_TYPE_CATEGORY_SUCCESS })
+}
+
+export const updateTransactionTypeCategoryController = async (
+  req: Request<ParamsDictionary, any, UpdateTransactionTypeCategoryBodyType>,
+  res: Response<UpdateTransactionTypeCategoryResType>,
+  next: NextFunction
+) => {
+  await transactionsService.updateTransactionTypeCategory(req.body)
+  return res.json({ message: APPS_MESSAGES.UPDATE_TRANSACTION_TYPE_CATEGORY_SUCCESS })
 }
 
 export const createTransactionController = async (
