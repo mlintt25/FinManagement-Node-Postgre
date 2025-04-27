@@ -16,3 +16,15 @@ export const CreateEventRes = z.object({
 })
 
 export type CreateEventResType = z.infer<typeof CreateEventRes>
+
+export const UpdateEventBody = EventSchema.extend({
+  id: z.string().uuid()
+})
+
+export type UpdateEventBodyType = z.infer<typeof UpdateEventBody>
+
+export const UpdateEventRes = z.object({
+  message: z.string()
+})
+
+export type UpdateEventResType = z.infer<typeof UpdateEventRes>

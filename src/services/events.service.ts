@@ -1,5 +1,5 @@
 import prisma from '~/database'
-import { CreateEventBodyType } from '~/schemaValidations/events.schema'
+import { CreateEventBodyType, UpdateEventBodyType } from '~/schemaValidations/events.schema'
 
 class EventsService {
   async createEvent(user_id: string, body: CreateEventBodyType) {
@@ -13,6 +13,26 @@ class EventsService {
         money_accounts: {
           connect: money_accounts.map((id) => ({ id }))
         }
+      }
+    })
+    return true
+  }
+
+  async updateEventById(user_id: string, body: UpdateEventBodyType) {
+    const { id, icon, name, end_date, money_accounts } = body
+    await prisma.events.update({
+      data: {
+        icon,
+        name,
+        end_date,
+        user_id,
+        money_accounts: {
+          set: money_accounts.map((id) => ({ id }))
+        }
+      },
+      where: {
+        id,
+        user_id
       }
     })
     return true
