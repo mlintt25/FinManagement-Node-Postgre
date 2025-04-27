@@ -67,5 +67,6 @@ export const APPS_MESSAGES = {
   UPDATE_BUDGET_SUCCESS: 'Update budget success',
   DELETE_USER_BUDGET_BY_ID_SUCCESS: 'Delete user budget by id success',
   EVENT_NAME_EXIST: 'Event name already exists',
-  ADD_EVENT_SUCCESS: 'Create event success'
+  ADD_EVENT_SUCCESS: 'Create event success',
+  UPDATE_EVENT_BY_ID_SUCCESS: 'Update event by id success'
 } as const
