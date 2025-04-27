@@ -28,3 +28,15 @@ export const UpdateEventRes = z.object({
 })
 
 export type UpdateEventResType = z.infer<typeof UpdateEventRes>
+
+export const GetEventByIdParams = z.object({
+  id: z.string().uuid()
+})
+
+export type GetEventByIdParamsType = z.infer<typeof GetEventByIdParams>
+
+export const DeleteEventByIdRes = z.object({
+  message: z.string()
+})
+
+export type DeleteEventByIdResType = z.infer<typeof DeleteEventByIdRes>

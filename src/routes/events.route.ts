@@ -1,7 +1,11 @@
 import { Router } from 'express'
-import { createEventController, updateEventController } from '~/controllers/events.controller'
+import {
+  createEventController,
+  deleteEventByIdController,
+  updateEventController
+} from '~/controllers/events.controller'
 import { accessTokenValidator } from '~/middlewares/auth.middleware'
-import { createEventValidator, updateEventValidator } from '~/middlewares/events.middleware'
+import { createEventValidator, getEventByIdValidator, updateEventValidator } from '~/middlewares/events.middleware'
 import { wrapRequestHandler } from '~/utils/handlers'
 
 const eventsRouter = Router()
@@ -23,4 +27,19 @@ eventsRouter.post('/event', accessTokenValidator, createEventValidator, wrapRequ
  * @returns {Object} Response object with message.
  */
 eventsRouter.patch('/event', accessTokenValidator, updateEventValidator, wrapRequestHandler(updateEventController))
+/**
+ * @description Delete event by id.
+ * @path /api/events/event/:id
+ * @method DELETE
+ * @header { Authorization: Bearer <access_token> }
+ * @params { id: string }
+ * @returns {Object} Response object with message.
+ */
+eventsRouter.delete(
+  '/event/:id',
+  accessTokenValidator,
+  getEventByIdValidator,
+  wrapRequestHandler(deleteEventByIdController)
+)
+
 export default eventsRouter

@@ -1,5 +1,5 @@
 import prisma from '~/database'
-import { CreateEventBodyType, UpdateEventBodyType } from '~/schemaValidations/events.schema'
+import { CreateEventBodyType, GetEventByIdParamsType, UpdateEventBodyType } from '~/schemaValidations/events.schema'
 
 class EventsService {
   async createEvent(user_id: string, body: CreateEventBodyType) {
@@ -32,6 +32,16 @@ class EventsService {
       },
       where: {
         id,
+        user_id
+      }
+    })
+    return true
+  }
+
+  async deleteEventById(user_id: string, params: GetEventByIdParamsType) {
+    await prisma.events.delete({
+      where: {
+        id: params.id,
         user_id
       }
     })
