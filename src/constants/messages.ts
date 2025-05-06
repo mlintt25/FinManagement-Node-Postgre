@@ -12,7 +12,9 @@ export const USERS_MESSAGES = {
   USED_REFRESH_TOKEN_OR_NOT_EXIST: 'Used refresh token or not exist',
   REFRESH_TOKEN_SUCCESS: 'Refresh token success',
   ADD_USER_PERSONALIZATION_SUCCESS: 'Create user personalization success',
-  USER_PERSONALIZATION_EXISTS: 'User personalization already exists'
+  USER_PERSONALIZATION_EXISTS: 'User personalization already exists',
+  USER_PERSONALIZATION_NOT_FOUND: 'User personalization not found',
+  UPDATE_USER_PERSONALIZATION_SUCCESS: 'Update user personalization success'
 } as const
 
 export const ADMINS_MESSAGES = {

@@ -1,7 +1,15 @@
 import { Router } from 'express'
-import { changePasswordController, createUserPersonalizationController } from '~/controllers/users.controller'
+import {
+  changePasswordController,
+  createUserPersonalizationController,
+  updateUserPersonalizationController
+} from '~/controllers/users.controller'
 import { accessTokenValidator } from '~/middlewares/auth.middleware'
-import { changePasswordValidator, createUserPersonalizationValidator } from '~/middlewares/users.middleware'
+import {
+  changePasswordValidator,
+  createUserPersonalizationValidator,
+  updateUserPersonalizationValidator
+} from '~/middlewares/users.middleware'
 import { wrapRequestHandler } from '~/utils/handlers'
 
 const usersRouter = Router()
@@ -32,6 +40,20 @@ usersRouter.post(
   accessTokenValidator,
   createUserPersonalizationValidator,
   wrapRequestHandler(createUserPersonalizationController)
+)
+/**
+ * @description Update user personalization.
+ * @path /api/users/personalization
+ * @method PATCH
+ * @header { Authorization: Bearer <access_token> }
+ * @body { id: string, occupation: string, monthly_income: number, financial_goals: string[] }
+ * @returns {Object} Response object with message.
+ */
+usersRouter.patch(
+  '/personalization',
+  accessTokenValidator,
+  updateUserPersonalizationValidator,
+  wrapRequestHandler(updateUserPersonalizationController)
 )
 
 export default usersRouter
