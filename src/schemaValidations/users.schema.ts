@@ -31,19 +31,19 @@ export const ChangePasswordRes = z.object({
 
 export type ChangePasswordResType = z.infer<typeof ChangePasswordRes>
 
-export const CreateUserPersonalizationBody = z
-  .object({
-    occupation: z.string(),
-    monthly_income: z.preprocess((val) => {
-      if (typeof val === 'string') {
-        const parsed = parseFloat(val)
-        return isNaN(parsed) ? undefined : parsed
-      }
-      return typeof val === 'number' ? val : undefined
-    }, z.number().nonnegative()),
-    financial_goals: z.array(z.string())
-  })
-  .strict()
+const UserPersonalizationSchema = z.object({
+  occupation: z.string(),
+  monthly_income: z.preprocess((val) => {
+    if (typeof val === 'string') {
+      const parsed = parseFloat(val)
+      return isNaN(parsed) ? undefined : parsed
+    }
+    return typeof val === 'number' ? val : undefined
+  }, z.number().nonnegative()),
+  financial_goals: z.array(z.string())
+})
+
+export const CreateUserPersonalizationBody = UserPersonalizationSchema
 
 export type CreateUserPersonalizationBodyType = z.infer<typeof CreateUserPersonalizationBody>
 
@@ -52,3 +52,15 @@ export const CreateUserPersonalizationRes = z.object({
 })
 
 export type CreateUserPersonalizationResType = z.infer<typeof CreateUserPersonalizationRes>
+
+export const UpdateUserPersonalizationBody = UserPersonalizationSchema.extend({
+  id: z.string().uuid()
+})
+
+export type UpdateUserPersonalizationBodyType = z.infer<typeof UpdateUserPersonalizationBody>
+
+export const UpdateUserPersonalizationRes = z.object({
+  message: z.string()
+})
+
+export type UpdateUserPersonalizationResType = z.infer<typeof UpdateUserPersonalizationRes>

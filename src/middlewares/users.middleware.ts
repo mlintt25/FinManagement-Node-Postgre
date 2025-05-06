@@ -2,9 +2,13 @@ import { Request, Response, NextFunction } from 'express'
 import HTTP_STATUS from '~/constants/httpStatus'
 import { USERS_MESSAGES } from '~/constants/messages'
 import prisma from '~/database'
-import { ChangePasswordBody, CreateUserPersonalizationBody } from '~/schemaValidations/users.schema'
+import {
+  ChangePasswordBody,
+  CreateUserPersonalizationBody,
+  UpdateUserPersonalizationBody
+} from '~/schemaValidations/users.schema'
 import { TokenPayload } from '~/types/jwt.type'
-import { ErrorWithStatus } from '~/utils/errors'
+import { EntityError, ErrorWithStatus } from '~/utils/errors'
 import { verifyPassword } from '~/utils/hash'
 
 export const changePasswordValidator = async (req: Request, res: Response, next: NextFunction) => {
@@ -46,6 +50,27 @@ export const createUserPersonalizationValidator = async (req: Request, res: Resp
         message: USERS_MESSAGES.USER_PERSONALIZATION_EXISTS,
         status: HTTP_STATUS.CONFLICT
       })
+    }
+
+    next()
+  } catch (error) {
+    next(error)
+  }
+}
+
+export const updateUserPersonalizationValidator = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const validatedData = UpdateUserPersonalizationBody.parse(req.body)
+    const { id } = validatedData
+    const { user_id } = req.decodedAccessToken as TokenPayload
+
+    const userPersonalization = await prisma.user_personalizations.findUnique({
+      where: { id, user_id },
+      select: { id: true }
+    })
+
+    if (!userPersonalization) {
+      throw new EntityError([{ message: USERS_MESSAGES.USER_PERSONALIZATION_NOT_FOUND, field: 'id' }])
     }
 
     next()
