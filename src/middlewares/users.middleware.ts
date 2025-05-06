@@ -35,6 +35,28 @@ export const changePasswordValidator = async (req: Request, res: Response, next:
   }
 }
 
+export const getUserPersonalizationValidator = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const { user_id } = req.decodedAccessToken as TokenPayload
+
+    const userPersonalization = await prisma.user_personalizations.findUnique({
+      where: { user_id },
+      select: { id: true }
+    })
+
+    if (!userPersonalization) {
+      throw new ErrorWithStatus({
+        message: USERS_MESSAGES.USER_HAS_NO_PERSONALIZATION_YET,
+        status: HTTP_STATUS.NOT_FOUND
+      })
+    }
+
+    next()
+  } catch (error) {
+    next(error)
+  }
+}
+
 export const createUserPersonalizationValidator = async (req: Request, res: Response, next: NextFunction) => {
   try {
     CreateUserPersonalizationBody.parse(req.body)

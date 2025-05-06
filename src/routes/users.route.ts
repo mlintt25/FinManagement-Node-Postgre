@@ -2,13 +2,15 @@ import { Router } from 'express'
 import {
   changePasswordController,
   createUserPersonalizationController,
-  updateUserPersonalizationController
+  updateUserPersonalizationController,
+  getUserPersonalizationController
 } from '~/controllers/users.controller'
 import { accessTokenValidator } from '~/middlewares/auth.middleware'
 import {
   changePasswordValidator,
   createUserPersonalizationValidator,
-  updateUserPersonalizationValidator
+  updateUserPersonalizationValidator,
+  getUserPersonalizationValidator
 } from '~/middlewares/users.middleware'
 import { wrapRequestHandler } from '~/utils/handlers'
 
@@ -26,6 +28,19 @@ usersRouter.patch(
   accessTokenValidator,
   changePasswordValidator,
   wrapRequestHandler(changePasswordController)
+)
+/**
+ * @description Get user personalization by user id.
+ * @path /api/users/personalization
+ * @method GET
+ * @header { Authorization: Bearer <access_token> }
+ * @returns {Object} Response object with message and data.
+ */
+usersRouter.get(
+  '/personalization',
+  accessTokenValidator,
+  getUserPersonalizationValidator,
+  wrapRequestHandler(getUserPersonalizationController)
 )
 /**
  * @description Create new user personalization.

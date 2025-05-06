@@ -14,7 +14,9 @@ export const USERS_MESSAGES = {
   ADD_USER_PERSONALIZATION_SUCCESS: 'Create user personalization success',
   USER_PERSONALIZATION_EXISTS: 'User personalization already exists',
   USER_PERSONALIZATION_NOT_FOUND: 'User personalization not found',
-  UPDATE_USER_PERSONALIZATION_SUCCESS: 'Update user personalization success'
+  UPDATE_USER_PERSONALIZATION_SUCCESS: 'Update user personalization success',
+  GET_USER_PERSONALIZATION_SUCCESS: 'Get user personalization success',
+  USER_HAS_NO_PERSONALIZATION_YET: 'This user has no personalization yet'
 } as const
 
 export const ADMINS_MESSAGES = {
