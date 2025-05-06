@@ -1,5 +1,5 @@
 import prisma from '~/database'
-import { ChangePasswordBodyType } from '~/schemaValidations/users.schema'
+import { ChangePasswordBodyType, CreateUserPersonalizationBodyType } from '~/schemaValidations/users.schema'
 import { hashPassword } from '~/utils/hash'
 
 class UsersService {
@@ -12,6 +12,16 @@ class UsersService {
       data: { password: hashedPassword }
     })
 
+    return true
+  }
+
+  async createUserPersonalization(user_id: string, body: CreateUserPersonalizationBodyType) {
+    await prisma.user_personalizations.create({
+      data: {
+        user_id,
+        ...body
+      }
+    })
     return true
   }
 }

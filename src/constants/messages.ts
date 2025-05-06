@@ -10,7 +10,9 @@ export const USERS_MESSAGES = {
   OLD_PASSWORD_IS_INCORRECT: 'Old password is incorrect',
   CHANGE_PASSWORD_SUCCESS: 'Change password success',
   USED_REFRESH_TOKEN_OR_NOT_EXIST: 'Used refresh token or not exist',
-  REFRESH_TOKEN_SUCCESS: 'Refresh token success'
+  REFRESH_TOKEN_SUCCESS: 'Refresh token success',
+  ADD_USER_PERSONALIZATION_SUCCESS: 'Create user personalization success',
+  USER_PERSONALIZATION_EXISTS: 'User personalization already exists'
 } as const
 
 export const ADMINS_MESSAGES = {

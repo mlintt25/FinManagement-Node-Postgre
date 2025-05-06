@@ -30,6 +30,18 @@ model users {
   transactions                transactions[]
   budgets                     budgets[]
   events                      events[]
+  user_personalizations       user_personalizations[]
+}
+
+model user_personalizations {
+  id              String   @id @default(uuid())
+  user_id         String   @unique
+  occupation      String
+  monthly_income  Decimal  @default(0.00)
+  financial_goals String[]
+  created_at      DateTime @default(now())
+  updated_at      DateTime @updatedAt
+  user            users    @relation(fields: [user_id], references: [id], onDelete: Cascade)
 }
 
 model money_accounts {
