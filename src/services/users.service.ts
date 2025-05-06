@@ -19,6 +19,19 @@ class UsersService {
     return true
   }
 
+  async getUserPersonalization(user_id: string) {
+    const userPersonalization = await prisma.user_personalizations.findFirstOrThrow({
+      where: { user_id },
+      select: {
+        id: true,
+        occupation: true,
+        monthly_income: true,
+        financial_goals: true
+      }
+    })
+    return userPersonalization
+  }
+
   async createUserPersonalization(user_id: string, body: CreateUserPersonalizationBodyType) {
     await prisma.user_personalizations.create({
       data: {

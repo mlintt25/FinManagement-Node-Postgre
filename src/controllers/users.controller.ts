@@ -8,6 +8,7 @@ import {
   ChangePasswordResType,
   CreateUserPersonalizationBodyType,
   CreateUserPersonalizationResType,
+  GetUserPersonalizationResType,
   UpdateUserPersonalizationBodyType,
   UpdateUserPersonalizationResType
 } from '~/schemaValidations/users.schema'
@@ -20,6 +21,16 @@ export const changePasswordController = async (
   const { user_id } = req.decodedAccessToken as TokenPayload
   await usersService.changePassword(user_id, req.body)
   return res.json({ message: USERS_MESSAGES.CHANGE_PASSWORD_SUCCESS })
+}
+
+export const getUserPersonalizationController = async (
+  req: Request,
+  res: Response<GetUserPersonalizationResType>,
+  next: NextFunction
+) => {
+  const { user_id } = req.decodedAccessToken as TokenPayload
+  const result = await usersService.getUserPersonalization(user_id)
+  return res.json({ message: USERS_MESSAGES.GET_USER_PERSONALIZATION_SUCCESS, data: result })
 }
 
 export const createUserPersonalizationController = async (

@@ -1,3 +1,4 @@
+import { Decimal } from '@prisma/client/runtime/library'
 import z from 'zod'
 
 export const UserSchema = z.object({
@@ -42,6 +43,18 @@ const UserPersonalizationSchema = z.object({
   }, z.number().nonnegative()),
   financial_goals: z.array(z.string())
 })
+
+export const GetUserPersonalizationRes = z.object({
+  message: z.string(),
+  data: z.object({
+    id: z.string(),
+    occupation: z.string(),
+    monthly_income: z.custom<Decimal>(),
+    financial_goals: z.array(z.string())
+  })
+})
+
+export type GetUserPersonalizationResType = z.infer<typeof GetUserPersonalizationRes>
 
 export const CreateUserPersonalizationBody = UserPersonalizationSchema
 
