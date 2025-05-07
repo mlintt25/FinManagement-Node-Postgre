@@ -17,7 +17,8 @@ export const USERS_MESSAGES = {
   UPDATE_USER_PERSONALIZATION_SUCCESS: 'Update user personalization success',
   GET_USER_PERSONALIZATION_SUCCESS: 'Get user personalization success',
   USER_HAS_NO_PERSONALIZATION_YET: 'This user has no personalization yet',
-  GET_USER_PERSONALIZATION_STATUS_SUCCESS: 'Get user personalization status success'
+  GET_USER_PERSONALIZATION_STATUS_SUCCESS: 'Get user personalization status success',
+  GET_USER_PERSONALIZATION_DATA_TO_CHATBOT_SUCCESS: 'Get user personalization data to request chatbot success'
 } as const
 
 export const ADMINS_MESSAGES = {

@@ -62,6 +62,38 @@ export const GetUserPersonalizationStatusRes = z.object({
 })
 
 export type GetUserPersonalizationStatusResType = z.infer<typeof GetUserPersonalizationStatusRes>
+/**
+ * 
+ *   "data": {
+        "monthly_income": "2222",
+        "total_amount_expense_of_month": "38",
+        "expense_transactions_of_month": [
+            {
+                "amount_of_money": "12",
+                "name": "Giáo dục"
+            },
+            {
+                "amount_of_money": "26",
+                "name": "Bảo dưỡng xe"
+            }
+        ]
+    }
+ */
+export const GetUserPersonalizationToChatbotRes = z.object({
+  message: z.string(),
+  data: z.object({
+    monthly_income: z.custom<Decimal>(),
+    total_amount_expense_of_month: z.custom<Decimal>(),
+    expense_transactions_of_month: z.array(
+      z.object({
+        amount_of_money: z.custom<Decimal>(),
+        name: z.string()
+      })
+    )
+  })
+})
+
+export type GetUserPersonalizationToChatbotResType = z.infer<typeof GetUserPersonalizationToChatbotRes>
 
 export const CreateUserPersonalizationBody = UserPersonalizationSchema
 

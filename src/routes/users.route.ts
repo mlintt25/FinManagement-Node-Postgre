@@ -4,7 +4,8 @@ import {
   createUserPersonalizationController,
   updateUserPersonalizationController,
   getUserPersonalizationController,
-  getUserPersonalizationStatusController
+  getUserPersonalizationStatusController,
+  getUserPersonalizationToChatbotController
 } from '~/controllers/users.controller'
 import { accessTokenValidator } from '~/middlewares/auth.middleware'
 import {
@@ -54,6 +55,19 @@ usersRouter.get(
   '/personalization/status',
   accessTokenValidator,
   wrapRequestHandler(getUserPersonalizationStatusController)
+)
+/**
+ * @description Get user personalization data to request chatbot by user id.
+ * @path /api/users/personalization/data-chatbot
+ * @method GET
+ * @header { Authorization: Bearer <access_token> }
+ * @returns {Object} Response object with message and data.
+ */
+usersRouter.get(
+  '/personalization/data-chatbot',
+  accessTokenValidator,
+  getUserPersonalizationValidator,
+  wrapRequestHandler(getUserPersonalizationToChatbotController)
 )
 /**
  * @description Create new user personalization.

@@ -10,6 +10,7 @@ import {
   CreateUserPersonalizationResType,
   GetUserPersonalizationResType,
   GetUserPersonalizationStatusResType,
+  GetUserPersonalizationToChatbotResType,
   UpdateUserPersonalizationBodyType,
   UpdateUserPersonalizationResType
 } from '~/schemaValidations/users.schema'
@@ -42,6 +43,16 @@ export const getUserPersonalizationStatusController = async (
   const { user_id } = req.decodedAccessToken as TokenPayload
   const result = await usersService.getUserPersonalizationStatus(user_id)
   return res.json({ message: USERS_MESSAGES.GET_USER_PERSONALIZATION_STATUS_SUCCESS, data: result })
+}
+
+export const getUserPersonalizationToChatbotController = async (
+  req: Request,
+  res: Response<GetUserPersonalizationToChatbotResType>,
+  next: NextFunction
+) => {
+  const { user_id } = req.decodedAccessToken as TokenPayload
+  const result = await usersService.getUserPersonalizationToChatbot(user_id)
+  return res.json({ message: USERS_MESSAGES.GET_USER_PERSONALIZATION_DATA_TO_CHATBOT_SUCCESS, data: result })
 }
 
 export const createUserPersonalizationController = async (
