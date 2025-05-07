@@ -9,6 +9,7 @@ import {
   CreateUserPersonalizationBodyType,
   CreateUserPersonalizationResType,
   GetUserPersonalizationResType,
+  GetUserPersonalizationStatusResType,
   UpdateUserPersonalizationBodyType,
   UpdateUserPersonalizationResType
 } from '~/schemaValidations/users.schema'
@@ -31,6 +32,16 @@ export const getUserPersonalizationController = async (
   const { user_id } = req.decodedAccessToken as TokenPayload
   const result = await usersService.getUserPersonalization(user_id)
   return res.json({ message: USERS_MESSAGES.GET_USER_PERSONALIZATION_SUCCESS, data: result })
+}
+
+export const getUserPersonalizationStatusController = async (
+  req: Request,
+  res: Response<GetUserPersonalizationStatusResType>,
+  next: NextFunction
+) => {
+  const { user_id } = req.decodedAccessToken as TokenPayload
+  const result = await usersService.getUserPersonalizationStatus(user_id)
+  return res.json({ message: USERS_MESSAGES.GET_USER_PERSONALIZATION_STATUS_SUCCESS, data: result })
 }
 
 export const createUserPersonalizationController = async (

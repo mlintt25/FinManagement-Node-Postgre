@@ -56,6 +56,13 @@ export const GetUserPersonalizationRes = z.object({
 
 export type GetUserPersonalizationResType = z.infer<typeof GetUserPersonalizationRes>
 
+export const GetUserPersonalizationStatusRes = z.object({
+  message: z.string(),
+  data: z.boolean()
+})
+
+export type GetUserPersonalizationStatusResType = z.infer<typeof GetUserPersonalizationStatusRes>
+
 export const CreateUserPersonalizationBody = UserPersonalizationSchema
 
 export type CreateUserPersonalizationBodyType = z.infer<typeof CreateUserPersonalizationBody>
