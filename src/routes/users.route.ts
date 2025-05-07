@@ -3,7 +3,8 @@ import {
   changePasswordController,
   createUserPersonalizationController,
   updateUserPersonalizationController,
-  getUserPersonalizationController
+  getUserPersonalizationController,
+  getUserPersonalizationStatusController
 } from '~/controllers/users.controller'
 import { accessTokenValidator } from '~/middlewares/auth.middleware'
 import {
@@ -41,6 +42,18 @@ usersRouter.get(
   accessTokenValidator,
   getUserPersonalizationValidator,
   wrapRequestHandler(getUserPersonalizationController)
+)
+/**
+ * @description Get user personalization status by user id.
+ * @path /api/users/personalization/status
+ * @method GET
+ * @header { Authorization: Bearer <access_token> }
+ * @returns {Object} Response object with message and data.
+ */
+usersRouter.get(
+  '/personalization/status',
+  accessTokenValidator,
+  wrapRequestHandler(getUserPersonalizationStatusController)
 )
 /**
  * @description Create new user personalization.
