@@ -3,7 +3,8 @@ import {
   loginController,
   logoutController,
   refreshTokenController,
-  registerController
+  registerController,
+  loginWithGoogleController
 } from '~/controllers/auth.controller'
 import {
   accessTokenValidator,
@@ -14,7 +15,6 @@ import {
 import { wrapRequestHandler } from '~/utils/handlers'
 
 const authRouter = Router()
-
 /**
  * @description Logs the user into their account.
  * @path /api/auth/login
@@ -23,6 +23,13 @@ const authRouter = Router()
  * @returns {Object} Response object with message and data.
  */
 authRouter.post('/login', loginValidator, wrapRequestHandler(loginController))
+/**
+ * @description Login with Google OAuth.
+ * @path /api/auth/google
+ * @method GET
+ * @returns {Object} Response object with message and data.
+ */
+authRouter.get('/google', wrapRequestHandler(loginWithGoogleController))
 /**
  * @description Register a new account.
  * @path /api/auth/register

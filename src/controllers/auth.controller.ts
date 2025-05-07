@@ -15,6 +15,7 @@ import {
   RegisterResType
 } from '~/schemaValidations/auth.schema'
 import { TokenPayload } from '~/types/jwt.type'
+import envConfig from '~/configs'
 
 export const loginController = async (
   req: Request<ParamsDictionary, any, LoginBodyType>,
@@ -31,6 +32,13 @@ export const loginController = async (
       user: user
     }
   })
+}
+
+export const loginWithGoogleController = async (req: Request, res: Response, next: NextFunction) => {
+  const { code } = req.query
+  const result = await authService.loginWithGoogle(code as string)
+  const urlRedirect = `${envConfig.CLIENT_REDIRECT_CALLBACK}?access_token=${result.access_token}&refresh_token=${result.refresh_token}&new_user=${result.newUser}&verify=${result.verify}`
+  return res.redirect(urlRedirect)
 }
 
 export const registerController = async (
