@@ -1,3 +1,4 @@
+import { Decimal } from '@prisma/client/runtime/library'
 import prisma from '~/database'
 import {
   ChangePasswordBodyType,
@@ -48,6 +49,67 @@ class UsersService {
     }
 
     return true
+  }
+
+  async getUserPersonalizationToChatbot(user_id: string) {
+    const userMonthlyIncome = await prisma.user_personalizations.findFirst({
+      where: { user_id },
+      select: { monthly_income: true }
+    })
+    // Get start and end of month
+    const now = new Date()
+    const startOfMonth = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), 1, 0, 0, 0, 0))
+    const endOfMonth = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth() + 1, 0, 23, 59, 59, 999))
+
+    const totalAmountExpenseOfMonth = await prisma.transactions.aggregate({
+      where: {
+        user_id,
+        occur_date: {
+          gte: startOfMonth,
+          lte: endOfMonth
+        },
+        transaction_type_category: {
+          transaction_type: {
+            type: 'Expense'
+          }
+        }
+      },
+      _sum: {
+        amount_of_money: true
+      }
+    })
+
+    const expenseTransactionsOfMonth = await prisma.transactions.findMany({
+      where: {
+        user_id,
+        occur_date: {
+          gte: startOfMonth,
+          lte: endOfMonth
+        },
+        transaction_type_category: {
+          transaction_type: {
+            type: 'Expense'
+          }
+        }
+      },
+      select: {
+        amount_of_money: true,
+        transaction_type_category: {
+          select: {
+            name: true
+          }
+        }
+      }
+    })
+
+    return {
+      monthly_income: userMonthlyIncome!.monthly_income,
+      total_amount_expense_of_month: totalAmountExpenseOfMonth._sum.amount_of_money ?? new Decimal(0),
+      expense_transactions_of_month: expenseTransactionsOfMonth.map((transaction) => ({
+        amount_of_money: transaction.amount_of_money,
+        name: transaction.transaction_type_category.name
+      }))
+    }
   }
 
   async createUserPersonalization(user_id: string, body: CreateUserPersonalizationBodyType) {
