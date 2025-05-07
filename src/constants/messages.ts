@@ -2,6 +2,7 @@ export const USERS_MESSAGES = {
   VALIDATION_ERROR: 'Validation error',
   UNAUTHORIZED: 'Unauthorized',
   USER_NOT_FOUND: 'User not found',
+  GMAIL_NOT_VERIFIED: 'Gmail not verified',
   EMAIL_OR_PASSWORD_IS_INCORRECT: 'Email or password is incorrect',
   EMAIL_ALREADY_EXISTS: 'Email already exists',
   LOGIN_SUCCESS: 'Login success',

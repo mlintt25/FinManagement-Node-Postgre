@@ -33,7 +33,11 @@ export const configSchema = z.object({
     .transform((val) => (val.trim() === '' ? 'src/templates' : val)) // Handle empty string case
     .default('src/templates'),
   EMAIL_USER: z.string(),
-  EMAIL_APP_PASSWORD: z.string()
+  EMAIL_APP_PASSWORD: z.string(),
+  GOOGLE_CLIENT_ID: z.string(),
+  GOOGLE_CLIENT_SECRET: z.string(),
+  GOOGLE_REDIRECT_URI: z.string(),
+  CLIENT_REDIRECT_CALLBACK: z.string()
 })
 
 const configServer = configSchema.safeParse(process.env)
