@@ -4,13 +4,17 @@ import {
   logoutController,
   refreshTokenController,
   registerController,
-  loginWithGoogleController
+  loginWithGoogleController,
+  verifyEmailController,
+  sendVerifyEmailController
 } from '~/controllers/auth.controller'
 import {
   accessTokenValidator,
+  emailVerifyTokenValidator,
   loginValidator,
   refreshTokenValidator,
-  registerValidator
+  registerValidator,
+  unverifiedUserValidator
 } from '~/middlewares/auth.middleware'
 import { wrapRequestHandler } from '~/utils/handlers'
 
@@ -55,5 +59,26 @@ authRouter.post('/logout', accessTokenValidator, refreshTokenValidator, wrapRequ
  * @returns {Object} Response object with message and data.
  */
 authRouter.post('/refresh-token', refreshTokenValidator, wrapRequestHandler(refreshTokenController))
+/**
+ * @description Send verify email for user.
+ * @path /api/auth/send-verify-email
+ * @method GET
+ * @header { Authorization: Bearer <access_token> }
+ * @returns {Object} Response object with message.
+ */
+authRouter.get(
+  '/send-verify-email',
+  accessTokenValidator,
+  unverifiedUserValidator,
+  wrapRequestHandler(sendVerifyEmailController)
+)
+/**
+ * @description Verify email when user client click on the link in email.
+ * @path /api/auth/verify-email
+ * @method POST
+ * @body { email_verify_token: string }
+ * @returns {Object} Response object with message.
+ */
+authRouter.post('/verify-email', emailVerifyTokenValidator, wrapRequestHandler(verifyEmailController))
 
 export default authRouter
