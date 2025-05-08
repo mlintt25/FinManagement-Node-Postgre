@@ -124,7 +124,17 @@ class AuthService {
       })
     }
     // Check email has been registered
-    const user = await prisma.users.findFirst({ where: { email: userInfo.email } })
+    const user = await prisma.users.findFirst({
+      where: { email: userInfo.email },
+      select: {
+        id: true,
+        name: true,
+        email: true,
+        verify: true,
+        role: true,
+        avatar: true
+      }
+    })
     if (user) {
       const [access_token, refresh_token] = await this.signAccessAndRefreshToken({
         user_id: user.id,
@@ -142,7 +152,8 @@ class AuthService {
         access_token,
         refresh_token,
         newUser: false,
-        verify: user.verify
+        verify: user.verify,
+        user
       }
     } else {
       // Random string password
