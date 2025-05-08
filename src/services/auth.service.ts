@@ -5,7 +5,7 @@ import HTTP_STATUS from '~/constants/httpStatus'
 import { USERS_MESSAGES } from '~/constants/messages'
 import prisma from '~/database'
 import { LogoutBodyType, RegisterBodyType } from '~/schemaValidations/auth.schema'
-import { sendWelcomeEmail } from '~/utils/email'
+import { sendVerifyEmail, sendWelcomeEmail } from '~/utils/email'
 import { ErrorWithStatus } from '~/utils/errors'
 import { hashPassword } from '~/utils/hash'
 import { signToken, verifyToken } from '~/utils/jwt'
@@ -244,6 +244,54 @@ class AuthService {
     ])
 
     return { accessToken: newAccessToken, refreshToken: newRefreshToken }
+  }
+
+  async sendVerifyEmail(user_id: string) {
+    const emailVerifyToken = await this.signEmailVerifyToken({
+      user_id,
+      verify: UserVerifyStatus.Unverified
+    })
+    const user = await prisma.users.update({
+      where: { id: user_id },
+      data: { email_verify_token: emailVerifyToken },
+      select: {
+        name: true,
+        email: true
+      }
+    })
+    await sendVerifyEmail(user.email, {
+      name: user.name,
+      verifyLink: `${envConfig.CLIENT_URL}/verify-email?token=${emailVerifyToken}`
+    })
+    return true
+  }
+
+  async verifyEmail(user_id: string) {
+    const [token] = await Promise.all([
+      this.signAccessAndRefreshToken({ user_id, verify: UserVerifyStatus.Verified }),
+      prisma.users.update({
+        where: { id: user_id },
+        data: {
+          verify: UserVerifyStatus.Verified,
+          email_verify_token: null
+        }
+      })
+    ])
+    const [, refresh_token] = token
+    const { exp } = await this.decodeRefreshToken(refresh_token)
+    await prisma.$transaction([
+      prisma.refresh_tokens.deleteMany({
+        where: { user_id }
+      }),
+      prisma.refresh_tokens.create({
+        data: {
+          user_id,
+          token: refresh_token,
+          expires_at: new Date(exp * 1000)
+        }
+      })
+    ])
+    return true
   }
 }
 

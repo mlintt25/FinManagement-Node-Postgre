@@ -57,3 +57,7 @@ export const sendEmail = async <T extends TemplateName>(
 export const sendWelcomeEmail = async (to: string, data: EmailData['welcome']) => {
   return await sendEmail(to, 'Chào mừng!', 'welcome', data)
 }
+
+export const sendVerifyEmail = async (to: string, data: EmailData['verify']) => {
+  return await sendEmail(to, 'Xác thực email!', 'verify', data)
+}

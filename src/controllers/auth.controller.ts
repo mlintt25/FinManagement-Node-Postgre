@@ -5,6 +5,8 @@ import { UserType } from '~/schemaValidations/users.schema'
 import authService from '~/services/auth.service'
 import { ParamsDictionary } from 'express-serve-static-core'
 import {
+  EmailVerifyTokenBodyType,
+  EmailVerifyTokenResType,
   LoginBodyType,
   LoginResType,
   LogoutBodyType,
@@ -12,7 +14,8 @@ import {
   RefreshTokenBodyType,
   RefreshTokenResType,
   RegisterBodyType,
-  RegisterResType
+  RegisterResType,
+  SendEmailVerifyTokenResType
 } from '~/schemaValidations/auth.schema'
 import { TokenPayload } from '~/types/jwt.type'
 
@@ -74,4 +77,24 @@ export const refreshTokenController = async (
   const { user_id, exp, verify } = req.decodedRefreshToken as TokenPayload
   const result = await authService.refreshToken({ oldRefreshToken: refreshToken, user_id, verify, exp })
   return res.json({ message: USERS_MESSAGES.REFRESH_TOKEN_SUCCESS, data: result })
+}
+
+export const sendVerifyEmailController = async (
+  req: Request,
+  res: Response<SendEmailVerifyTokenResType>,
+  next: NextFunction
+) => {
+  const { user_id } = req.decodedAccessToken as TokenPayload
+  await authService.sendVerifyEmail(user_id)
+  return res.json({ message: USERS_MESSAGES.SEND_EMAIL_VERIFY_SUCCESS })
+}
+
+export const verifyEmailController = async (
+  req: Request<ParamsDictionary, any, EmailVerifyTokenBodyType>,
+  res: Response<EmailVerifyTokenResType>,
+  next: NextFunction
+) => {
+  const { user_id } = req.decodedEmailVerifyToken as TokenPayload
+  await authService.verifyEmail(user_id)
+  return res.json({ message: USERS_MESSAGES.EMAIL_VERIFY_SUCCESS })
 }

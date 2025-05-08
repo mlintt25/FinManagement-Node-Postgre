@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Xác minh địa chỉ email</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet" />
+  </head>
+  <body style="margin: 0; padding: 0; background-color: #f4f6f9; font-family: 'Inter', sans-serif; color: #2d2d2d">
+    <table width="100%" cellpadding="0" cellspacing="0" style="padding: 50px 0">
+      <tr>
+        <td align="center">
+          <table
+            width="600"
+            cellpadding="0"
+            cellspacing="0"
+            style="
+              background-color: #ffffff;
+              border-radius: 12px;
+              box-shadow: 0 8px 24px rgba(0, 0, 0, 0.05);
+              overflow: hidden;
+            "
+          >
+            <!-- Header -->
+            <tr>
+              <td style="background-color: #1f2f46; padding: 40px 32px; text-align: center">
+                <h1 style="margin: 0; color: #ffffff; font-size: 24px; font-weight: 600">
+                  Xác minh địa chỉ email của bạn
+                </h1>
+                <p style="margin: 12px 0 0; color: #cbd5e1; font-size: 15px">
+                  Chào {{name}}, cảm ơn bạn đã đăng ký Misa.
+                </p>
+              </td>
+            </tr>
+
+            <!-- Body -->
+            <tr>
+              <td style="padding: 40px; font-size: 16px; line-height: 1.7">
+                <p>
+                  Để hoàn tất quá trình đăng ký và bắt đầu sử dụng Misa, vui lòng xác minh địa chỉ email của bạn bằng
+                  cách nhấn vào nút bên dưới:
+                </p>
+
+                <div style="text-align: center; margin: 36px 0">
+                  <a
+                    href="{{verifyLink}}"
+                    style="
+                      background-color: #1f2f46;
+                      color: #ffffff;
+                      text-decoration: none;
+                      padding: 14px 28px;
+                      font-size: 16px;
+                      font-weight: 600;
+                      border-radius: 6px;
+                      display: inline-block;
+                    "
+                  >
+                    Xác minh email
+                  </a>
+                </div>
+
+                <p>Nếu bạn không tạo tài khoản Misa, vui lòng bỏ qua email này.</p>
+              </td>
+            </tr>
+
+            <!-- Footer -->
+            <tr>
+              <td style="padding: 30px 40px 40px; font-size: 14px; color: #7b7b7b; text-align: center">
+                Email này được gửi tự động từ hệ thống Misa.<br />
+                Nếu có bất kỳ thắc mắc nào, vui lòng liên hệ bộ phận hỗ trợ của chúng tôi.
+              </td>
+            </tr>
+          </table>
+        </td>
+      </tr>
+    </table>
+  </body>
+</html>

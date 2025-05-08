@@ -6,6 +6,7 @@ declare module 'express-serve-static-core' {
   interface Request {
     decodedAccessToken?: TokenPayload
     decodedRefreshToken?: TokenPayload
+    decodedEmailVerifyToken?: TokenPayload
     user?: UserType
   }
 }

@@ -72,3 +72,21 @@ export const LogoutRes = z.object({
 })
 
 export type LogoutResType = z.infer<typeof LogoutRes>
+
+export const EmailVerifyTokenBody = z.object({
+  email_verify_token: z.string()
+})
+
+export type EmailVerifyTokenBodyType = z.infer<typeof EmailVerifyTokenBody>
+
+export const EmailVerifyTokenRes = z.object({
+  message: z.string()
+})
+
+export type EmailVerifyTokenResType = z.infer<typeof EmailVerifyTokenRes>
+
+export const SendEmailVerifyTokenRes = z.object({
+  message: z.string()
+})
+
+export type SendEmailVerifyTokenResType = z.infer<typeof SendEmailVerifyTokenRes>
