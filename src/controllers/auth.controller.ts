@@ -9,6 +9,7 @@ import {
   EmailVerifyTokenResType,
   LoginBodyType,
   LoginResType,
+  LoginWithGoogleBodyType,
   LogoutBodyType,
   LogoutResType,
   RefreshTokenBodyType,
@@ -17,7 +18,7 @@ import {
   RegisterResType,
   SendEmailVerifyTokenResType
 } from '~/schemaValidations/auth.schema'
-import { TokenPayload } from '~/types/jwt.type'
+import { OAuthTokenPayload, TokenPayload } from '~/types/jwt.type'
 
 export const loginController = async (
   req: Request<ParamsDictionary, any, LoginBodyType>,
@@ -36,12 +37,15 @@ export const loginController = async (
   })
 }
 
-export const loginWithGoogleController = async (req: Request, res: Response, next: NextFunction) => {
-  const { code } = req.query
-  const result = await authService.loginWithGoogle(code as string)
-  // const urlRedirect = `${envConfig.CLIENT_REDIRECT_CALLBACK}?access_token=${result.access_token}&refresh_token=${result.refresh_token}&new_user=${result.newUser}&verify=${result.verify}`
+export const loginWithGoogleController = async (
+  req: Request<ParamsDictionary, any, LoginWithGoogleBodyType>,
+  res: Response<LoginResType>,
+  next: NextFunction
+) => {
+  const payload = req.decodeOAuthToken as OAuthTokenPayload
+  const result = await authService.loginWithGoogle(payload)
   return res.json({
-    message: result.newUser ? USERS_MESSAGES.REGISTER_SUCCESS : USERS_MESSAGES.LOGIN_SUCCESS,
+    message: USERS_MESSAGES.LOGIN_SUCCESS,
     data: {
       accessToken: result.access_token,
       refreshToken: result.refresh_token,

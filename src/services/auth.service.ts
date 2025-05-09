@@ -1,12 +1,9 @@
-import axios from 'axios'
 import envConfig from '~/configs'
 import { Role, TokenType, UserVerifyStatus } from '~/constants/enums'
-import HTTP_STATUS from '~/constants/httpStatus'
-import { USERS_MESSAGES } from '~/constants/messages'
 import prisma from '~/database'
 import { LogoutBodyType, RegisterBodyType } from '~/schemaValidations/auth.schema'
+import { OAuthTokenPayload } from '~/types/jwt.type'
 import { sendVerifyEmail, sendWelcomeEmail } from '~/utils/email'
-import { ErrorWithStatus } from '~/utils/errors'
 import { hashPassword } from '~/utils/hash'
 import { signToken, verifyToken } from '~/utils/jwt'
 
@@ -73,59 +70,10 @@ class AuthService {
     })
   }
 
-  private async getOauthGoogleToken(code: string) {
-    const body = {
-      code,
-      client_id: envConfig.GOOGLE_CLIENT_ID,
-      client_secret: envConfig.GOOGLE_CLIENT_SECRET,
-      redirect_uri: envConfig.GOOGLE_REDIRECT_URI,
-      grant_type: 'authorization_code'
-    }
-    const { data } = await axios.post('https://oauth2.googleapis.com/token', body, {
-      headers: {
-        'Content-Type': 'application/x-www-form-urlencoded'
-      }
-    })
-    return data as {
-      access_token: string
-      id_token: string
-    }
-  }
-
-  private async getGoogleUserInfo(access_token: string, id_token: string) {
-    const { data } = await axios.get('https://www.googleapis.com/oauth2/v1/userinfo', {
-      params: {
-        access_token,
-        alt: 'json'
-      },
-      headers: {
-        Authorization: `Bearer ${id_token}`
-      }
-    })
-    return data as {
-      id: string
-      email: string
-      verified_email: boolean
-      name: string
-      given_name: string
-      family_name: string
-      picture: string
-      locale: string
-    }
-  }
-
-  async loginWithGoogle(code: string) {
-    const { id_token, access_token } = await this.getOauthGoogleToken(code)
-    const userInfo = await this.getGoogleUserInfo(access_token, id_token)
-    if (!userInfo.verified_email) {
-      throw new ErrorWithStatus({
-        message: USERS_MESSAGES.GMAIL_NOT_VERIFIED,
-        status: HTTP_STATUS.BAD_REQUEST
-      })
-    }
-    // Check email has been registered
-    const user = await prisma.users.findFirst({
-      where: { email: userInfo.email },
+  async loginWithGoogle(payload: OAuthTokenPayload) {
+    const { email, picture } = payload
+    let user = await prisma.users.findFirst({
+      where: { email },
       select: {
         id: true,
         name: true,
@@ -135,35 +83,45 @@ class AuthService {
         avatar: true
       }
     })
-    if (user) {
-      const [access_token, refresh_token] = await this.signAccessAndRefreshToken({
-        user_id: user.id,
-        verify: user.verify as UserVerifyStatus
-      })
-      const { exp } = await this.decodeRefreshToken(refresh_token)
-      await prisma.refresh_tokens.create({
-        data: {
-          user_id: user.id,
-          token: refresh_token,
-          expires_at: new Date(exp * 1000)
-        }
-      })
-      return {
-        access_token,
-        refresh_token,
-        newUser: false,
-        verify: user.verify,
-        user
-      }
-    } else {
-      // Random string password
-      const password = Math.random().toString(36).substring(2, 15)
-      const registerUser = await this.register({
-        email: userInfo.email,
+    if (!user) {
+      const password = Math.random().toString(36).slice(-10) // tạo mật khẩu ngắn gọn hơn
+      await this.register({
+        email,
         password,
         confirmPassword: password
       })
-      return { registerUser, newUser: true, verify: UserVerifyStatus.Unverified }
+      user = await prisma.users.update({
+        where: { email },
+        data: {
+          verify: UserVerifyStatus.Verified,
+          avatar: picture
+        },
+        select: {
+          id: true,
+          name: true,
+          email: true,
+          verify: true,
+          role: true,
+          avatar: true
+        }
+      })
+    }
+    const [access_token, refresh_token] = await this.signAccessAndRefreshToken({
+      user_id: user!.id,
+      verify: user!.verify as UserVerifyStatus
+    })
+    const { exp } = await this.decodeRefreshToken(refresh_token)
+    await prisma.refresh_tokens.create({
+      data: {
+        user_id: user!.id,
+        token: refresh_token,
+        expires_at: new Date(exp * 1000)
+      }
+    })
+    return {
+      access_token,
+      refresh_token,
+      user
     }
   }
 

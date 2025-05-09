@@ -1,11 +1,18 @@
 import { NextFunction, Request, Response } from 'express'
+import { OAuth2Client } from 'google-auth-library'
 import envConfig from '~/configs'
 import { UserVerifyStatus } from '~/constants/enums'
 import HTTP_STATUS from '~/constants/httpStatus'
 import { USERS_MESSAGES } from '~/constants/messages'
 import prisma from '~/database'
-import { EmailVerifyTokenBody, LoginBody, RefreshTokenBody, RegisterBody } from '~/schemaValidations/auth.schema'
-import { TokenPayload } from '~/types/jwt.type'
+import {
+  EmailVerifyTokenBody,
+  LoginBody,
+  LoginWithGoogleBody,
+  RefreshTokenBody,
+  RegisterBody
+} from '~/schemaValidations/auth.schema'
+import { OAuthTokenPayload, TokenPayload } from '~/types/jwt.type'
 import { AuthError, EntityError, ErrorWithStatus, ForbiddenError } from '~/utils/errors'
 import { verifyPassword } from '~/utils/hash'
 import { verifyToken } from '~/utils/jwt'
@@ -83,6 +90,36 @@ export const loginValidator = async (req: Request, res: Response, next: NextFunc
     // Remove password field from user object
     const { password: _, ...safeUser } = user
     ;(req as Request & { user: typeof safeUser }).user = safeUser
+
+    next()
+  } catch (error) {
+    next(error)
+  }
+}
+
+export const loginWithGoogleValidator = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const validatedData = LoginWithGoogleBody.parse(req.body)
+    const { idToken } = validatedData
+    const client = new OAuth2Client(envConfig.GOOGLE_CLIENT_ID)
+
+    const ticket = await client.verifyIdToken({
+      idToken,
+      audience: envConfig.GOOGLE_CLIENT_ID
+    })
+
+    const { name, email, picture, email_verified } = ticket.getPayload() as OAuthTokenPayload
+    if (!email_verified) {
+      throw new AuthError(USERS_MESSAGES.EMAIL_NOT_VERIFIED)
+    }
+
+    const decode_oauth_token = {
+      name,
+      email,
+      picture,
+      verify: UserVerifyStatus.Verified
+    }
+    ;(req as Request).decodeOAuthToken = decode_oauth_token
 
     next()
   } catch (error) {

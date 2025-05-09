@@ -23,7 +23,8 @@ export const USERS_MESSAGES = {
   EMAIL_VERIFY_TOKEN_INVALID: 'Email verify token invalid',
   EMAIL_ALREADY_VERIFIED_BEFORE: 'Email already verified before',
   EMAIL_VERIFY_SUCCESS: 'Email verify success',
-  SEND_EMAIL_VERIFY_SUCCESS: 'Send email verify success'
+  SEND_EMAIL_VERIFY_SUCCESS: 'Send email verify success',
+  EMAIL_NOT_VERIFIED: 'Email not verified'
 } as const
 
 export const ADMINS_MESSAGES = {
