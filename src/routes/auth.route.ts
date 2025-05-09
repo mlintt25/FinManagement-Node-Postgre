@@ -14,7 +14,8 @@ import {
   loginValidator,
   refreshTokenValidator,
   registerValidator,
-  unverifiedUserValidator
+  unverifiedUserValidator,
+  loginWithGoogleValidator
 } from '~/middlewares/auth.middleware'
 import { wrapRequestHandler } from '~/utils/handlers'
 
@@ -31,9 +32,10 @@ authRouter.post('/login', loginValidator, wrapRequestHandler(loginController))
  * @description Login with Google OAuth.
  * @path /api/auth/google
  * @method GET
+ * @body { idToken: string }
  * @returns {Object} Response object with message and data.
  */
-authRouter.get('/google', wrapRequestHandler(loginWithGoogleController))
+authRouter.post('/google', loginWithGoogleValidator, wrapRequestHandler(loginWithGoogleController))
 /**
  * @description Register a new account.
  * @path /api/auth/register

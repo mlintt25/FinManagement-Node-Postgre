@@ -8,3 +8,10 @@ export interface TokenPayload extends JwtPayload {
   iat: number
   exp: number
 }
+
+export interface OAuthTokenPayload extends TokenPayload {
+  name: string
+  email: string
+  picture: string
+  email_verified: boolean
+}

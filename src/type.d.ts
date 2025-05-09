@@ -7,6 +7,7 @@ declare module 'express-serve-static-core' {
     decodedAccessToken?: TokenPayload
     decodedRefreshToken?: TokenPayload
     decodedEmailVerifyToken?: TokenPayload
+    decodeOAuthToken?: OAuthTokenPayload
     user?: UserType
   }
 }

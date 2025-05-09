@@ -27,6 +27,12 @@ export const LoginRes = z.object({
 
 export type LoginResType = z.infer<typeof LoginRes>
 
+export const LoginWithGoogleBody = z.object({
+  idToken: z.string()
+})
+
+export type LoginWithGoogleBodyType = z.infer<typeof LoginWithGoogleBody>
+
 export const RegisterBody = z
   .object({
     email: z.string().email(),
