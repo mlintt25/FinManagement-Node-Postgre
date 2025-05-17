@@ -2,9 +2,14 @@ import { Router } from 'express'
 import {
   createMoneyAccountTypeController,
   createTransactionTypeController,
-  getAllMoneyAccountTypeController
+  getAllMoneyAccountTypeController,
+  getAllUsersController
 } from '~/controllers/admins.controller'
-import { createMoneyAccountTypeValidator, createTransactionTypeValidator } from '~/middlewares/admins.middleware'
+import {
+  adminRoleValidator,
+  createMoneyAccountTypeValidator,
+  createTransactionTypeValidator
+} from '~/middlewares/admins.middleware'
 import { accessTokenValidator } from '~/middlewares/auth.middleware'
 import { wrapRequestHandler } from '~/utils/handlers'
 
@@ -20,6 +25,7 @@ const adminsRouter = Router()
 adminsRouter.post(
   '/transaction-type',
   accessTokenValidator,
+  adminRoleValidator,
   createTransactionTypeValidator,
   wrapRequestHandler(createTransactionTypeController)
 )
@@ -34,6 +40,7 @@ adminsRouter.post(
 adminsRouter.post(
   '/money-account-type',
   accessTokenValidator,
+  adminRoleValidator,
   createMoneyAccountTypeValidator,
   wrapRequestHandler(createMoneyAccountTypeController)
 )
@@ -44,5 +51,13 @@ adminsRouter.post(
  * @returns {Object} Response object with message and data.
  */
 adminsRouter.get('/money-account-types', wrapRequestHandler(getAllMoneyAccountTypeController))
+/**
+ * @description Get all users.
+ * @path /api/admins/users
+ * @method GET
+ * @header { Authorization: Bearer <access_token> }
+ * @returns {Object} Response object with message and data.
+ */
+adminsRouter.get('/users', accessTokenValidator, adminRoleValidator, wrapRequestHandler(getAllUsersController))
 
 export default adminsRouter

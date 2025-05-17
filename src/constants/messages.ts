@@ -37,7 +37,9 @@ export const ADMINS_MESSAGES = {
   MONEY_ACCOUNT_TYPE_ALREADY_EXISTS: 'Money account type already exists',
   MONEY_ACCOUNT_TYPE_NOT_FOUND: 'Money account type not found',
   ADD_MONEY_ACCOUNT_TYPE_SUCCESS: 'Create money account type success',
-  GET_MONEY_ACCOUNT_TYPES_SUCCESS: 'Get all money account type success'
+  GET_MONEY_ACCOUNT_TYPES_SUCCESS: 'Get all money account type success',
+  UNAUTHORIZED: 'Unauthorized',
+  GET_USERS_SUCCESS: 'Get all users success'
 } as const
 
 export const APPS_MESSAGES = {
