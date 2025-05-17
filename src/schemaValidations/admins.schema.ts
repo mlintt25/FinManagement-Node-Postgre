@@ -87,3 +87,24 @@ export const AllMoneyAccountTypeRes = z.object({
 })
 
 export type AllMoneyAccountTypeResType = z.infer<typeof AllMoneyAccountTypeRes>
+
+const UserSchema = z.object({
+  id: z.string().uuid(),
+  name: z.string(),
+  avatar: z.string().nullable(),
+  email: z.string(),
+  phone: z.string().nullable(),
+  dob: z.date().nullable(),
+  address: z.string().nullable(),
+  gender: z.string().nullable(),
+  job: z.string().nullable(),
+  verify: z.string(),
+  role: z.string()
+})
+
+export const GetAllUsersRes = z.object({
+  message: z.string(),
+  data: z.array(UserSchema)
+})
+
+export type GetAllUsersResType = z.infer<typeof GetAllUsersRes>

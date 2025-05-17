@@ -1,8 +1,28 @@
 import { Request, Response, NextFunction } from 'express'
+import { Role } from '~/constants/enums'
 import { ADMINS_MESSAGES } from '~/constants/messages'
 import prisma from '~/database'
 import { CreateMoneyAccountTypeBody, CreateTransactionTypeBody } from '~/schemaValidations/admins.schema'
-import { EntityError } from '~/utils/errors'
+import { TokenPayload } from '~/types/jwt.type'
+import { AuthError, EntityError } from '~/utils/errors'
+
+export const adminRoleValidator = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const { user_id } = req.decodedAccessToken as TokenPayload
+    const user = (await prisma.users.findUnique({
+      where: { id: user_id },
+      select: { role: true }
+    })) as { role: string }
+
+    if (user.role !== Role.Admin) {
+      throw new AuthError(ADMINS_MESSAGES.UNAUTHORIZED)
+    }
+
+    next()
+  } catch (error) {
+    next(error)
+  }
+}
 
 export const createTransactionTypeValidator = async (req: Request, res: Response, next: NextFunction) => {
   try {

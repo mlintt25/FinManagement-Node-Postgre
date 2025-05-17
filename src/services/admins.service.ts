@@ -28,6 +28,30 @@ class AdminsService {
     })
     return result
   }
+
+  async getAllUsers() {
+    const result = await prisma.users.findMany({
+      select: {
+        id: true,
+        name: true,
+        avatar: true,
+        email: true,
+        phone: true,
+        dob: true,
+        address: true,
+        gender: true,
+        job: true,
+        verify: true,
+        role: true
+      },
+      where: {
+        NOT: {
+          role: 'Admin'
+        }
+      }
+    })
+    return result
+  }
 }
 
 const adminsService = new AdminsService()

@@ -6,7 +6,8 @@ import {
   CreateMoneyAccountTypeBodyType,
   CreateMoneyAccountTypeResType,
   CreateTransactionTypeBodyType,
-  CreateTransactionTypeResType
+  CreateTransactionTypeResType,
+  GetAllUsersResType
 } from '~/schemaValidations/admins.schema'
 import adminsService from '~/services/admins.service'
 
@@ -35,4 +36,9 @@ export const getAllMoneyAccountTypeController = async (
 ) => {
   const result = await adminsService.getAllMoneyAccountType()
   return res.json({ message: ADMINS_MESSAGES.GET_MONEY_ACCOUNT_TYPES_SUCCESS, data: result })
+}
+
+export const getAllUsersController = async (req: Request, res: Response<GetAllUsersResType>, next: NextFunction) => {
+  const result = await adminsService.getAllUsers()
+  return res.json({ message: ADMINS_MESSAGES.GET_USERS_SUCCESS, data: result })
 }
