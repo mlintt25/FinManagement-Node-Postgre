@@ -3,12 +3,14 @@ import {
   createMoneyAccountTypeController,
   createTransactionTypeController,
   getAllMoneyAccountTypeController,
-  getAllUsersController
+  getAllUsersController,
+  getUserByIdController
 } from '~/controllers/admins.controller'
 import {
   adminRoleValidator,
   createMoneyAccountTypeValidator,
-  createTransactionTypeValidator
+  createTransactionTypeValidator,
+  getUserByIdValidator
 } from '~/middlewares/admins.middleware'
 import { accessTokenValidator } from '~/middlewares/auth.middleware'
 import { wrapRequestHandler } from '~/utils/handlers'
@@ -59,5 +61,20 @@ adminsRouter.get('/money-account-types', wrapRequestHandler(getAllMoneyAccountTy
  * @returns {Object} Response object with message and data.
  */
 adminsRouter.get('/users', accessTokenValidator, adminRoleValidator, wrapRequestHandler(getAllUsersController))
+/**
+ * @description Get user by id.
+ * @path /api/admins/user/:id
+ * @method GET
+ * @header { Authorization: Bearer <access_token> }
+ * @params { id: string }
+ * @returns {Object} Response object with message and data.
+ */
+adminsRouter.get(
+  '/user/:id',
+  accessTokenValidator,
+  adminRoleValidator,
+  getUserByIdValidator,
+  wrapRequestHandler(getUserByIdController)
+)
 
 export default adminsRouter

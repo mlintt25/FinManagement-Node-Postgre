@@ -39,7 +39,9 @@ export const ADMINS_MESSAGES = {
   ADD_MONEY_ACCOUNT_TYPE_SUCCESS: 'Create money account type success',
   GET_MONEY_ACCOUNT_TYPES_SUCCESS: 'Get all money account type success',
   UNAUTHORIZED: 'Unauthorized',
-  GET_USERS_SUCCESS: 'Get all users success'
+  GET_USERS_SUCCESS: 'Get all users success',
+  USER_NOT_FOUND: 'User not found',
+  GET_USER_BY_ID_SUCCESS: 'Get user by id success'
 } as const
 
 export const APPS_MESSAGES = {

@@ -7,7 +7,9 @@ import {
   CreateMoneyAccountTypeResType,
   CreateTransactionTypeBodyType,
   CreateTransactionTypeResType,
-  GetAllUsersResType
+  GetAllUsersResType,
+  GetUserByIdParamsType,
+  GetUserByIdResType
 } from '~/schemaValidations/admins.schema'
 import adminsService from '~/services/admins.service'
 
@@ -41,4 +43,13 @@ export const getAllMoneyAccountTypeController = async (
 export const getAllUsersController = async (req: Request, res: Response<GetAllUsersResType>, next: NextFunction) => {
   const result = await adminsService.getAllUsers()
   return res.json({ message: ADMINS_MESSAGES.GET_USERS_SUCCESS, data: result })
+}
+
+export const getUserByIdController = async (
+  req: Request<GetUserByIdParamsType>,
+  res: Response<GetUserByIdResType>,
+  next: NextFunction
+) => {
+  const result = await adminsService.getUserById(req.params)
+  return res.json({ message: ADMINS_MESSAGES.GET_USER_BY_ID_SUCCESS, data: result })
 }

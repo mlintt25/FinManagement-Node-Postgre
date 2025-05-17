@@ -108,3 +108,16 @@ export const GetAllUsersRes = z.object({
 })
 
 export type GetAllUsersResType = z.infer<typeof GetAllUsersRes>
+
+export const GetUserByIdParams = z.object({
+  id: z.string().uuid()
+})
+
+export type GetUserByIdParamsType = z.infer<typeof GetUserByIdParams>
+
+export const GetUserByIdRes = z.object({
+  message: z.string(),
+  data: UserSchema
+})
+
+export type GetUserByIdResType = z.infer<typeof GetUserByIdRes>
