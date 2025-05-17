@@ -41,7 +41,8 @@ export const ADMINS_MESSAGES = {
   UNAUTHORIZED: 'Unauthorized',
   GET_USERS_SUCCESS: 'Get all users success',
   USER_NOT_FOUND: 'User not found',
-  GET_USER_BY_ID_SUCCESS: 'Get user by id success'
+  GET_USER_BY_ID_SUCCESS: 'Get user by id success',
+  CHANGE_USER_VERIFY_STATUS_SUCCESS: 'Change user verify status success'
 } as const
 
 export const APPS_MESSAGES = {

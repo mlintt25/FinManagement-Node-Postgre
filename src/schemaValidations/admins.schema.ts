@@ -1,5 +1,5 @@
 import z from 'zod'
-import { TransactionType } from '~/constants/enums'
+import { TransactionType, UserVerifyStatus } from '~/constants/enums'
 
 export const CreateTransactionTypeBody = z
   .object({
@@ -121,3 +121,16 @@ export const GetUserByIdRes = z.object({
 })
 
 export type GetUserByIdResType = z.infer<typeof GetUserByIdRes>
+
+export const ChangeUserVerifyStatusByIdBody = z.object({
+  id: z.string().uuid(),
+  verify: z.enum([UserVerifyStatus.Verified, UserVerifyStatus.Unverified, UserVerifyStatus.Banned])
+})
+
+export type ChangeUserVerifyStatusByIdBodyType = z.infer<typeof ChangeUserVerifyStatusByIdBody>
+
+export const ChangeUserVerifyStatusByIdRes = z.object({
+  message: z.string()
+})
+
+export type ChangeUserVerifyStatusByIdResType = z.infer<typeof ChangeUserVerifyStatusByIdRes>

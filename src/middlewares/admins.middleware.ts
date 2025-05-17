@@ -3,6 +3,7 @@ import { Role } from '~/constants/enums'
 import { ADMINS_MESSAGES } from '~/constants/messages'
 import prisma from '~/database'
 import {
+  ChangeUserVerifyStatusByIdBody,
   CreateMoneyAccountTypeBody,
   CreateTransactionTypeBody,
   GetUserByIdParams
@@ -63,6 +64,22 @@ export const createMoneyAccountTypeValidator = async (req: Request, res: Respons
 export const getUserByIdValidator = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const validatedData = GetUserByIdParams.parse(req.params)
+    const { id } = validatedData
+
+    const user = await prisma.users.findUnique({ where: { id } })
+    if (!user) {
+      throw new EntityError([{ message: ADMINS_MESSAGES.USER_NOT_FOUND, field: 'id' }])
+    }
+
+    next()
+  } catch (error) {
+    next(error)
+  }
+}
+
+export const changeUserVerifyStatusByIdValidator = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const validatedData = ChangeUserVerifyStatusByIdBody.parse(req.body)
     const { id } = validatedData
 
     const user = await prisma.users.findUnique({ where: { id } })

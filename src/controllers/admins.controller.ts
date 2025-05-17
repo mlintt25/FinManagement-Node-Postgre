@@ -3,6 +3,8 @@ import { ADMINS_MESSAGES } from '~/constants/messages'
 import { ParamsDictionary } from 'express-serve-static-core'
 import {
   AllMoneyAccountTypeResType,
+  ChangeUserVerifyStatusByIdBodyType,
+  ChangeUserVerifyStatusByIdResType,
   CreateMoneyAccountTypeBodyType,
   CreateMoneyAccountTypeResType,
   CreateTransactionTypeBodyType,
@@ -52,4 +54,13 @@ export const getUserByIdController = async (
 ) => {
   const result = await adminsService.getUserById(req.params)
   return res.json({ message: ADMINS_MESSAGES.GET_USER_BY_ID_SUCCESS, data: result })
+}
+
+export const changeUserVerifyStatusByIdController = async (
+  req: Request<ParamsDictionary, any, ChangeUserVerifyStatusByIdBodyType>,
+  res: Response<ChangeUserVerifyStatusByIdResType>,
+  next: NextFunction
+) => {
+  await adminsService.changeUserVerifyStatusById(req.body)
+  return res.json({ message: ADMINS_MESSAGES.CHANGE_USER_VERIFY_STATUS_SUCCESS })
 }

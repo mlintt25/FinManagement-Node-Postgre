@@ -1,5 +1,6 @@
 import { Router } from 'express'
 import {
+  changeUserVerifyStatusByIdController,
   createMoneyAccountTypeController,
   createTransactionTypeController,
   getAllMoneyAccountTypeController,
@@ -10,7 +11,8 @@ import {
   adminRoleValidator,
   createMoneyAccountTypeValidator,
   createTransactionTypeValidator,
-  getUserByIdValidator
+  getUserByIdValidator,
+  changeUserVerifyStatusByIdValidator
 } from '~/middlewares/admins.middleware'
 import { accessTokenValidator } from '~/middlewares/auth.middleware'
 import { wrapRequestHandler } from '~/utils/handlers'
@@ -75,6 +77,21 @@ adminsRouter.get(
   adminRoleValidator,
   getUserByIdValidator,
   wrapRequestHandler(getUserByIdController)
+)
+/**
+ * @description Change user verification status by id.
+ * @path /api/admins/user/verify
+ * @method PATCH
+ * @header { Authorization: Bearer <access_token> }
+ * @body { id: string, verify: string }
+ * @returns {Object} Response object with message.
+ */
+adminsRouter.patch(
+  '/user/verify',
+  accessTokenValidator,
+  adminRoleValidator,
+  changeUserVerifyStatusByIdValidator,
+  wrapRequestHandler(changeUserVerifyStatusByIdController)
 )
 
 export default adminsRouter
