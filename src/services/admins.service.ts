@@ -1,5 +1,6 @@
 import prisma from '~/database'
 import {
+  ChangeUserVerifyStatusByIdBodyType,
   CreateMoneyAccountTypeBodyType,
   CreateTransactionTypeBodyType,
   GetUserByIdParamsType
@@ -77,6 +78,18 @@ class AdminsService {
       }
     })
     return result
+  }
+
+  async changeUserVerifyStatusById(body: ChangeUserVerifyStatusByIdBodyType) {
+    await prisma.users.update({
+      where: {
+        id: body.id
+      },
+      data: {
+        verify: body.verify
+      }
+    })
+    return true
   }
 }
 
