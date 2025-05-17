@@ -2,7 +2,11 @@ import { Request, Response, NextFunction } from 'express'
 import { Role } from '~/constants/enums'
 import { ADMINS_MESSAGES } from '~/constants/messages'
 import prisma from '~/database'
-import { CreateMoneyAccountTypeBody, CreateTransactionTypeBody } from '~/schemaValidations/admins.schema'
+import {
+  CreateMoneyAccountTypeBody,
+  CreateTransactionTypeBody,
+  GetUserByIdParams
+} from '~/schemaValidations/admins.schema'
 import { TokenPayload } from '~/types/jwt.type'
 import { AuthError, EntityError } from '~/utils/errors'
 
@@ -48,6 +52,22 @@ export const createMoneyAccountTypeValidator = async (req: Request, res: Respons
     const moneyAccountType = await prisma.money_account_types.findFirst({ where: { name } })
     if (moneyAccountType) {
       throw new EntityError([{ message: ADMINS_MESSAGES.MONEY_ACCOUNT_TYPE_ALREADY_EXISTS, field: 'name' }])
+    }
+
+    next()
+  } catch (error) {
+    next(error)
+  }
+}
+
+export const getUserByIdValidator = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const validatedData = GetUserByIdParams.parse(req.params)
+    const { id } = validatedData
+
+    const user = await prisma.users.findUnique({ where: { id } })
+    if (!user) {
+      throw new EntityError([{ message: ADMINS_MESSAGES.USER_NOT_FOUND, field: 'id' }])
     }
 
     next()

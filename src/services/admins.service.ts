@@ -1,5 +1,9 @@
 import prisma from '~/database'
-import { CreateMoneyAccountTypeBodyType, CreateTransactionTypeBodyType } from '~/schemaValidations/admins.schema'
+import {
+  CreateMoneyAccountTypeBodyType,
+  CreateTransactionTypeBodyType,
+  GetUserByIdParamsType
+} from '~/schemaValidations/admins.schema'
 
 class AdminsService {
   async createTransactionType(body: CreateTransactionTypeBodyType) {
@@ -48,6 +52,28 @@ class AdminsService {
         NOT: {
           role: 'Admin'
         }
+      }
+    })
+    return result
+  }
+
+  async getUserById(params: GetUserByIdParamsType) {
+    const result = await prisma.users.findUniqueOrThrow({
+      where: {
+        id: params.id
+      },
+      select: {
+        id: true,
+        name: true,
+        avatar: true,
+        email: true,
+        phone: true,
+        dob: true,
+        address: true,
+        gender: true,
+        job: true,
+        verify: true,
+        role: true
       }
     })
     return result
