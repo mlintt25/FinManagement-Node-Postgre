@@ -11,7 +11,9 @@ import {
   CreateTransactionTypeResType,
   GetAllUsersResType,
   GetUserByIdParamsType,
-  GetUserByIdResType
+  GetUserByIdResType,
+  UpdateUserByIdBodyType,
+  UpdateUserByIdResType
 } from '~/schemaValidations/admins.schema'
 import adminsService from '~/services/admins.service'
 
@@ -63,4 +65,13 @@ export const changeUserVerifyStatusByIdController = async (
 ) => {
   await adminsService.changeUserVerifyStatusById(req.body)
   return res.json({ message: ADMINS_MESSAGES.CHANGE_USER_VERIFY_STATUS_SUCCESS })
+}
+
+export const updateUserByIdController = async (
+  req: Request<ParamsDictionary, any, UpdateUserByIdBodyType>,
+  res: Response<UpdateUserByIdResType>,
+  next: NextFunction
+) => {
+  await adminsService.updateUserById(req.body)
+  return res.json({ message: ADMINS_MESSAGES.UPDATE_USER_BY_ID_SUCCESS })
 }

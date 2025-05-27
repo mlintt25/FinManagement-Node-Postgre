@@ -5,14 +5,16 @@ import {
   createTransactionTypeController,
   getAllMoneyAccountTypeController,
   getAllUsersController,
-  getUserByIdController
+  getUserByIdController,
+  updateUserByIdController
 } from '~/controllers/admins.controller'
 import {
   adminRoleValidator,
   createMoneyAccountTypeValidator,
   createTransactionTypeValidator,
   getUserByIdValidator,
-  changeUserVerifyStatusByIdValidator
+  changeUserVerifyStatusByIdValidator,
+  updateUserByIdValidator
 } from '~/middlewares/admins.middleware'
 import { accessTokenValidator } from '~/middlewares/auth.middleware'
 import { wrapRequestHandler } from '~/utils/handlers'
@@ -77,6 +79,22 @@ adminsRouter.get(
   adminRoleValidator,
   getUserByIdValidator,
   wrapRequestHandler(getUserByIdController)
+)
+/**
+ * @description Update user by id.
+ * @path /api/admins/user
+ * @method PATCH
+ * @header { Authorization: Bearer <access_token> }
+ * @body { id: string, name: string, email: string, role: string, phone: string,
+ *  avatar: string, dob: date, address: string, gender: string, job: string, verify: string }
+ * @returns {Object} Response object with message.
+ */
+adminsRouter.patch(
+  '/user',
+  accessTokenValidator,
+  adminRoleValidator,
+  updateUserByIdValidator,
+  wrapRequestHandler(updateUserByIdController)
 )
 /**
  * @description Change user verification status by id.

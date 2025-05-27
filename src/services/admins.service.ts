@@ -1,9 +1,11 @@
+import { Role, UserVerifyStatus } from '~/constants/enums'
 import prisma from '~/database'
 import {
   ChangeUserVerifyStatusByIdBodyType,
   CreateMoneyAccountTypeBodyType,
   CreateTransactionTypeBodyType,
-  GetUserByIdParamsType
+  GetUserByIdParamsType,
+  UpdateUserByIdBodyType
 } from '~/schemaValidations/admins.schema'
 
 class AdminsService {
@@ -90,6 +92,26 @@ class AdminsService {
       }
     })
     return true
+  }
+
+  async updateUserById(body: UpdateUserByIdBodyType) {
+    await prisma.users.update({
+      data: {
+        name: body.name,
+        email: body.email,
+        role: body.role as Role,
+        phone: body.phone,
+        avatar: body.avatar,
+        dob: body.dob,
+        address: body.address,
+        gender: body.gender,
+        job: body.job,
+        verify: body.verify ? (body.verify as UserVerifyStatus) : UserVerifyStatus.Unverified
+      },
+      where: {
+        id: body.id
+      }
+    })
   }
 }
 

@@ -6,7 +6,8 @@ import {
   ChangeUserVerifyStatusByIdBody,
   CreateMoneyAccountTypeBody,
   CreateTransactionTypeBody,
-  GetUserByIdParams
+  GetUserByIdParams,
+  UpdateUserByIdBody
 } from '~/schemaValidations/admins.schema'
 import { TokenPayload } from '~/types/jwt.type'
 import { AuthError, EntityError } from '~/utils/errors'
@@ -85,6 +86,29 @@ export const changeUserVerifyStatusByIdValidator = async (req: Request, res: Res
     const user = await prisma.users.findUnique({ where: { id } })
     if (!user) {
       throw new EntityError([{ message: ADMINS_MESSAGES.USER_NOT_FOUND, field: 'id' }])
+    }
+
+    next()
+  } catch (error) {
+    next(error)
+  }
+}
+
+export const updateUserByIdValidator = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const { id, email } = UpdateUserByIdBody.parse(req.body)
+
+    const [user, existingUser] = await Promise.all([
+      prisma.users.findUnique({ where: { id } }),
+      prisma.users.findFirst({ where: { email, id: { not: id } } })
+    ])
+
+    if (!user) {
+      throw new EntityError([{ message: ADMINS_MESSAGES.USER_NOT_FOUND, field: 'id' }])
+    }
+
+    if (existingUser) {
+      throw new EntityError([{ message: ADMINS_MESSAGES.EMAIL_ALREADY_EXISTS, field: 'email' }])
     }
 
     next()
