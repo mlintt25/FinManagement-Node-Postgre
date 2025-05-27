@@ -1,5 +1,6 @@
+import { verify } from 'crypto'
 import z from 'zod'
-import { TransactionType, UserVerifyStatus } from '~/constants/enums'
+import { Role, TransactionType, UserVerifyStatus } from '~/constants/enums'
 
 export const CreateTransactionTypeBody = z
   .object({
@@ -91,14 +92,14 @@ export type AllMoneyAccountTypeResType = z.infer<typeof AllMoneyAccountTypeRes>
 const UserSchema = z.object({
   id: z.string().uuid(),
   name: z.string(),
-  avatar: z.string().nullable(),
-  email: z.string(),
-  phone: z.string().nullable(),
-  dob: z.date().nullable(),
-  address: z.string().nullable(),
-  gender: z.string().nullable(),
-  job: z.string().nullable(),
-  verify: z.string(),
+  avatar: z.string().nullable().optional(),
+  email: z.string().email(),
+  phone: z.string().nullable().optional(),
+  dob: z.date().nullable().optional(),
+  address: z.string().nullable().optional(),
+  gender: z.string().nullable().optional(),
+  job: z.string().nullable().optional(),
+  verify: z.string().optional(),
   role: z.string()
 })
 
@@ -134,3 +135,18 @@ export const ChangeUserVerifyStatusByIdRes = z.object({
 })
 
 export type ChangeUserVerifyStatusByIdResType = z.infer<typeof ChangeUserVerifyStatusByIdRes>
+
+export const UpdateUserByIdBody = UserSchema.extend({
+  verify: z.enum([UserVerifyStatus.Verified, UserVerifyStatus.Unverified, UserVerifyStatus.Banned]).optional(),
+  role: z.enum([Role.Admin, Role.User]),
+  gender: z.enum(['Male', 'Female', 'Other']).nullable().optional(),
+  dob: z.string().datetime().nullable().optional()
+})
+
+export type UpdateUserByIdBodyType = z.infer<typeof UpdateUserByIdBody>
+
+export const UpdateUserByIdRes = z.object({
+  message: z.string()
+})
+
+export type UpdateUserByIdResType = z.infer<typeof UpdateUserByIdRes>
