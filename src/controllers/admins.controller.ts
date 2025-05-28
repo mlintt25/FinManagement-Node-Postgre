@@ -9,6 +9,7 @@ import {
   CreateMoneyAccountTypeResType,
   CreateTransactionTypeBodyType,
   CreateTransactionTypeResType,
+  DeleteUserByIdResType,
   GetAllUsersResType,
   GetUserByIdParamsType,
   GetUserByIdResType,
@@ -74,4 +75,13 @@ export const updateUserByIdController = async (
 ) => {
   await adminsService.updateUserById(req.body)
   return res.json({ message: ADMINS_MESSAGES.UPDATE_USER_BY_ID_SUCCESS })
+}
+
+export const deleteUserByIdController = async (
+  req: Request<GetUserByIdParamsType>,
+  res: Response<DeleteUserByIdResType>,
+  next: NextFunction
+) => {
+  await adminsService.deleteUserById(req.params)
+  return res.json({ message: ADMINS_MESSAGES.DELETE_USER_BY_ID_SUCCESS })
 }

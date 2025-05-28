@@ -3,6 +3,7 @@ import {
   changeUserVerifyStatusByIdController,
   createMoneyAccountTypeController,
   createTransactionTypeController,
+  deleteUserByIdController,
   getAllMoneyAccountTypeController,
   getAllUsersController,
   getUserByIdController,
@@ -95,6 +96,21 @@ adminsRouter.patch(
   adminRoleValidator,
   updateUserByIdValidator,
   wrapRequestHandler(updateUserByIdController)
+)
+/**
+ * @description Delete user by id.
+ * @path /api/admins/user/:id
+ * @method DELETE
+ * @header { Authorization: Bearer <access_token> }
+ * @params { id: string }
+ * @returns {Object} Response object with message.
+ */
+adminsRouter.delete(
+  '/user/:id',
+  accessTokenValidator,
+  adminRoleValidator,
+  getUserByIdValidator,
+  wrapRequestHandler(deleteUserByIdController)
 )
 /**
  * @description Change user verification status by id.

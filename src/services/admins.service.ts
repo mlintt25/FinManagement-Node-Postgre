@@ -95,23 +95,34 @@ class AdminsService {
   }
 
   async updateUserById(body: UpdateUserByIdBodyType) {
+    const updateData: any = {
+      name: body.name,
+      email: body.email,
+      role: body.role as Role,
+      phone: body.phone,
+      avatar: body.avatar,
+      dob: body.dob,
+      address: body.address,
+      gender: body.gender,
+      job: body.job
+    }
+    if (body.verify !== undefined) {
+      updateData.verify = body.verify as UserVerifyStatus
+    }
     await prisma.users.update({
-      data: {
-        name: body.name,
-        email: body.email,
-        role: body.role as Role,
-        phone: body.phone,
-        avatar: body.avatar,
-        dob: body.dob,
-        address: body.address,
-        gender: body.gender,
-        job: body.job,
-        verify: body.verify ? (body.verify as UserVerifyStatus) : UserVerifyStatus.Unverified
-      },
+      data: updateData,
+      where: { id: body.id }
+    })
+    return true
+  }
+
+  async deleteUserById(params: GetUserByIdParamsType) {
+    await prisma.users.delete({
       where: {
-        id: body.id
+        id: params.id
       }
     })
+    return true
   }
 }
 
