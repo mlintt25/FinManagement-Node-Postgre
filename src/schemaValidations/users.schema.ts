@@ -12,6 +12,13 @@ export const UserSchema = z.object({
 
 export type UserType = z.infer<typeof UserSchema>
 
+export const GetMeRes = z.object({
+  message: z.string(),
+  data: UserSchema
+})
+
+export type GetMeResType = z.infer<typeof GetMeRes>
+
 export const ChangePasswordBody = z
   .object({
     oldPassword: z.string(),

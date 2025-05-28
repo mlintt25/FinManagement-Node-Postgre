@@ -5,7 +5,8 @@ import {
   updateUserPersonalizationController,
   getUserPersonalizationController,
   getUserPersonalizationStatusController,
-  getUserPersonalizationToChatbotController
+  getUserPersonalizationToChatbotController,
+  getMeController
 } from '~/controllers/users.controller'
 import { accessTokenValidator } from '~/middlewares/auth.middleware'
 import {
@@ -17,6 +18,14 @@ import {
 import { wrapRequestHandler } from '~/utils/handlers'
 
 const usersRouter = Router()
+/**
+ * @description Get user information.
+ * @path /api/users/me
+ * @method GET
+ * @header { Authorization: Bearer <access_token> }
+ * @returns {Object} Response object with message and data.
+ */
+usersRouter.get('/me', accessTokenValidator, wrapRequestHandler(getMeController))
 /**
  * @description Change password of acccount.
  * @path /api/users/change-password

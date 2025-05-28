@@ -24,7 +24,8 @@ export const USERS_MESSAGES = {
   EMAIL_ALREADY_VERIFIED_BEFORE: 'Email already verified before',
   EMAIL_VERIFY_SUCCESS: 'Email verify success',
   SEND_EMAIL_VERIFY_SUCCESS: 'Send email verify success',
-  EMAIL_NOT_VERIFIED: 'Email not verified'
+  EMAIL_NOT_VERIFIED: 'Email not verified',
+  GET_ME_SUCCESS: 'Get me success'
 } as const
 
 export const ADMINS_MESSAGES = {
