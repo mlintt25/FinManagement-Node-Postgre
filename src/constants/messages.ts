@@ -45,7 +45,8 @@ export const ADMINS_MESSAGES = {
   GET_USER_BY_ID_SUCCESS: 'Get user by id success',
   CHANGE_USER_VERIFY_STATUS_SUCCESS: 'Change user verify status success',
   UPDATE_USER_BY_ID_SUCCESS: 'Update user by id success',
-  EMAIL_ALREADY_EXISTS: 'Email already exists'
+  EMAIL_ALREADY_EXISTS: 'Email already exists',
+  DELETE_USER_BY_ID_SUCCESS: 'Delete user by id success'
 } as const
 
 export const APPS_MESSAGES = {

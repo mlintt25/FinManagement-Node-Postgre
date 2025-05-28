@@ -149,3 +149,9 @@ export const UpdateUserByIdRes = z.object({
 })
 
 export type UpdateUserByIdResType = z.infer<typeof UpdateUserByIdRes>
+
+export const DeleteUserByIdRes = z.object({
+  message: z.string()
+})
+
+export type DeleteUserByIdResType = z.infer<typeof DeleteUserByIdRes>
