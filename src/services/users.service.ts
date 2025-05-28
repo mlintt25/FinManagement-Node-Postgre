@@ -8,6 +8,21 @@ import {
 import { hashPassword } from '~/utils/hash'
 
 class UsersService {
+  async getMe(user_id: string) {
+    const result = await prisma.users.findUniqueOrThrow({
+      where: { id: user_id },
+      select: {
+        id: true,
+        name: true,
+        email: true,
+        verify: true,
+        role: true,
+        avatar: true
+      }
+    })
+    return result
+  }
+
   async changePassword(user_id: string, body: ChangePasswordBodyType) {
     const { newPassword } = body
     const hashedPassword = await hashPassword(newPassword)

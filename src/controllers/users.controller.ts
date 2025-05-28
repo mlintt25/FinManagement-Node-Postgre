@@ -8,12 +8,19 @@ import {
   ChangePasswordResType,
   CreateUserPersonalizationBodyType,
   CreateUserPersonalizationResType,
+  GetMeResType,
   GetUserPersonalizationResType,
   GetUserPersonalizationStatusResType,
   GetUserPersonalizationToChatbotResType,
   UpdateUserPersonalizationBodyType,
   UpdateUserPersonalizationResType
 } from '~/schemaValidations/users.schema'
+
+export const getMeController = async (req: Request, res: Response<GetMeResType>, next: NextFunction) => {
+  const { user_id } = req.decodedAccessToken as TokenPayload
+  const result = await usersService.getMe(user_id)
+  return res.json({ message: USERS_MESSAGES.GET_ME_SUCCESS, data: result })
+}
 
 export const changePasswordController = async (
   req: Request<ParamsDictionary, any, ChangePasswordBodyType>,
