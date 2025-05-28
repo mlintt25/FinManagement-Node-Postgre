@@ -4,6 +4,7 @@ import {
   createMoneyAccountTypeController,
   createTransactionTypeController,
   deleteUserByIdController,
+  getAllAdminsController,
   getAllMoneyAccountTypeController,
   getAllUsersController,
   getUserByIdController,
@@ -66,6 +67,14 @@ adminsRouter.get('/money-account-types', wrapRequestHandler(getAllMoneyAccountTy
  * @returns {Object} Response object with message and data.
  */
 adminsRouter.get('/users', accessTokenValidator, adminRoleValidator, wrapRequestHandler(getAllUsersController))
+/**
+ * @description Get all admins.
+ * @path /api/admins/admins
+ * @method GET
+ * @header { Authorization: Bearer <access_token> }
+ * @returns {Object} Response object with message and data.
+ */
+adminsRouter.get('/admins', accessTokenValidator, adminRoleValidator, wrapRequestHandler(getAllAdminsController))
 /**
  * @description Get user by id.
  * @path /api/admins/user/:id

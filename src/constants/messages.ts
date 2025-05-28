@@ -46,7 +46,8 @@ export const ADMINS_MESSAGES = {
   CHANGE_USER_VERIFY_STATUS_SUCCESS: 'Change user verify status success',
   UPDATE_USER_BY_ID_SUCCESS: 'Update user by id success',
   EMAIL_ALREADY_EXISTS: 'Email already exists',
-  DELETE_USER_BY_ID_SUCCESS: 'Delete user by id success'
+  DELETE_USER_BY_ID_SUCCESS: 'Delete user by id success',
+  GET_ADMINS_SUCCESS: 'Get all admins success'
 } as const
 
 export const APPS_MESSAGES = {
