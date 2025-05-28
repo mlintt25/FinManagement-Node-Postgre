@@ -60,6 +60,31 @@ class AdminsService {
     return result
   }
 
+  async getAllAdmins(user_id: string) {
+    const result = await prisma.users.findMany({
+      select: {
+        id: true,
+        name: true,
+        avatar: true,
+        email: true,
+        phone: true,
+        dob: true,
+        address: true,
+        gender: true,
+        job: true,
+        verify: true,
+        role: true
+      },
+      where: {
+        id: {
+          not: user_id
+        },
+        role: 'Admin'
+      }
+    })
+    return result
+  }
+
   async getUserById(params: GetUserByIdParamsType) {
     const result = await prisma.users.findUniqueOrThrow({
       where: {

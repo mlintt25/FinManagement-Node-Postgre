@@ -17,6 +17,7 @@ import {
   UpdateUserByIdResType
 } from '~/schemaValidations/admins.schema'
 import adminsService from '~/services/admins.service'
+import { TokenPayload } from '~/types/jwt.type'
 
 export const createTransactionTypeController = async (
   req: Request<ParamsDictionary, any, CreateTransactionTypeBodyType>,
@@ -48,6 +49,12 @@ export const getAllMoneyAccountTypeController = async (
 export const getAllUsersController = async (req: Request, res: Response<GetAllUsersResType>, next: NextFunction) => {
   const result = await adminsService.getAllUsers()
   return res.json({ message: ADMINS_MESSAGES.GET_USERS_SUCCESS, data: result })
+}
+
+export const getAllAdminsController = async (req: Request, res: Response<GetAllUsersResType>, next: NextFunction) => {
+  const { user_id } = req.decodedAccessToken as TokenPayload
+  const result = await adminsService.getAllAdmins(user_id)
+  return res.json({ message: ADMINS_MESSAGES.GET_ADMINS_SUCCESS, data: result })
 }
 
 export const getUserByIdController = async (
